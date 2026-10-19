@@ -19,7 +19,7 @@
 <meta name="theme-color" content="#0062C4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..800;1,400&display=swap">
 <style>
 /* Layout: a Stockholm-tunnelbana metaphor — every chapter is a coloured line, every lesson a station; one-screen app with bottom tabs, sessions take over the screen. */
 :root{
@@ -28,8 +28,8 @@
   --hero1:#0062C4; --hero2:#1E8BF0; --hero-ink:#FFFFFF; --hero-muted:#D4E8FF;
   --good:#0E9F4F; --good-bg:#DCF5E6; --bad:#E0393F; --bad-bg:#FDE3E4; --warn:#B87400; --warn-bg:#FFF1CC;
   --l0:#E5323B; --l1:#13A453; --l2:#1E7BE0; --l3:#6D4AFF; --l4:#F08A00; --l5:#D49A00; --l6:#00A39A; --l7:#E0458F; --l8:#9333EA;
-  --display:"Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
-  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --display:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body:"Archivo", "Helvetica Neue", Arial, sans-serif;
   --r:16px; --shadow:0 1px 0 rgba(10,40,90,.06), 0 8px 22px -12px rgba(10,50,120,.28);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -52,14 +52,15 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16p
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 input,textarea,select{font:inherit;color:var(--ink)}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
-h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;margin:0;text-wrap:balance;font-weight:800}
+h1{font-size:24px;line-height:1.15}h2{font-size:18px}h3{font-size:16px}
 .app{height:100%;display:flex;flex-direction:column;max-width:640px;margin:0 auto;position:relative}
 .view{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 24px}
 .apphead{background:var(--bg);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:6px 0}
 .apphead .top{padding:4px 0 8px}
 .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:16px;margin:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));padding:4px;box-shadow:var(--shadow);position:relative;z-index:2}
 .tab{border-radius:12px}
-.tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 6px;min-height:52px;justify-content:center;font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.02em}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 6px;min-height:52px;justify-content:center;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.02em}
 .tab svg{width:24px;height:24px}
 .tab[aria-current="page"]{color:var(--accent)}
 .tab[aria-current="page"] .tico{background:var(--sun);color:var(--sun-ink)}
@@ -70,7 +71,7 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .brand{display:flex;align-items:center;gap:10px}
 .logo{width:34px;height:34px;flex:none;display:block}
 .logo .t{fill:var(--sign)} .logo .y{fill:var(--sun)}
-.brand b{font-family:var(--display);font-stretch:110%;font-weight:500;font-size:20px;letter-spacing:-.01em;display:block;line-height:1.1}
+.brand b{font-family:var(--display);font-weight:500;font-size:24px;letter-spacing:-.01em;display:block;line-height:1.1}
 .brand b strong{font-weight:800}
 .brand small{display:block;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:-2px}
 .chips{display:flex;gap:8px;align-items:center}
@@ -83,28 +84,28 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .stack{display:flex;flex-direction:column;gap:14px}
 .eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .muted{color:var(--muted)}
-.small{font-size:13.5px}
+.small{font-size:14px}
 
 /* home */
 .hero{padding:20px 18px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:var(--hero-ink);border:0}
 .hero::after{content:"";position:absolute;right:-30px;bottom:-40px;width:150px;height:150px;border-radius:50%;background:var(--sun);opacity:.16;pointer-events:none}
-.hero h1{font-size:28px;font-weight:800;line-height:1.05}
+.hero h1{font-size:32px;font-weight:800;line-height:1.05}
 .hero p{margin:6px 0 0;color:var(--hero-muted)}
 .hero .eyebrow{color:var(--hero-muted)}
 .hero .ring .rv small{color:var(--hero-muted)}
 .ring{width:84px;height:84px;position:relative}
 .ring svg{width:84px;height:84px;transform:rotate(-90deg)}
-.ring .rv{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-family:var(--display);font-weight:800;font-size:17px;line-height:1;font-variant-numeric:tabular-nums}
-.ring .rv small{display:block;font-family:var(--body);font-size:11px;color:var(--muted);font-weight:700;margin-top:3px}
+.ring .rv{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-family:var(--display);font-weight:800;font-size:18px;line-height:1;font-variant-numeric:tabular-nums}
+.ring .rv small{display:block;font-family:var(--body);font-size:12px;color:var(--muted);font-weight:700;margin-top:3px}
 .next{display:flex;gap:14px;align-items:center;padding:16px;width:100%;text-align:left}
 .next .dot{flex:none;width:46px;height:46px;border-radius:50%;border:7px solid var(--lc);background:var(--surface);box-shadow:0 0 0 4px color-mix(in srgb,var(--lc) 20%,transparent)}
-.next b{display:block;font-size:18px;font-family:var(--display);font-stretch:110%}
+.next b{display:block;font-size:18px;font-family:var(--display);}
 .next .go{margin-left:auto;flex:none;background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:10px 14px;font-weight:700}
 .statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .stat{padding:12px;text-align:left}
 .stat b{display:block;font-family:var(--display);font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
-.stat span{font-size:12.5px;color:var(--muted);font-weight:700}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 18px;border-radius:14px;font-weight:700;font-size:16.5px;background:var(--accent);color:var(--accent-ink);box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000);transition:transform .08s}
+.stat span{font-size:12px;color:var(--muted);font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 18px;border-radius:14px;font-weight:700;font-size:16px;background:var(--accent);color:var(--accent-ink);box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000);transition:transform .08s}
 .btn:active{transform:translateY(2px);box-shadow:0 1px 0 color-mix(in srgb,var(--accent) 60%,#000)}
 .btn.ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--line);box-shadow:0 3px 0 var(--line)}
 .btn.block{width:100%}
@@ -114,21 +115,21 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .mode{padding:14px;text-align:left;display:flex;flex-direction:column;gap:8px;min-height:118px}
 .mode .mi{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--mc) 16%,transparent);color:var(--mc)}
 .mode .mi svg{width:22px;height:22px}
-.mode b{font-family:var(--display);font-stretch:108%;font-size:16.5px;line-height:1.15}
-.mode span{font-size:13px;color:var(--muted);line-height:1.3}
+.mode b{font-family:var(--display);font-size:16px;line-height:1.15}
+.mode span{font-size:14px;color:var(--muted);line-height:1.3}
 .week{display:flex;align-items:flex-end;gap:8px;height:74px;padding:0 4px}
 .week div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
 .week i{display:block;width:100%;max-width:26px;border-radius:5px 5px 2px 2px;background:var(--accent);min-height:3px}
 .week i.goal{background:var(--good)}
-.week span{font-size:11px;color:var(--muted);font-weight:700}
+.week span{font-size:12px;color:var(--muted);font-weight:700}
 .sect{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px}
-.sect h2{font-size:19px;font-weight:800}
+.sect h2{font-size:18px;font-weight:800}
 
 /* lines */
 .unit{overflow:hidden}
 .uhead{display:flex;align-items:center;gap:12px;padding:14px 14px 14px 12px;width:100%;text-align:left}
-.ubadge{flex:none;min-width:42px;height:42px;padding:0 6px;border-radius:10px;background:var(--lc);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:15px;font-stretch:100%}
-.uhead b{display:block;font-family:var(--display);font-size:18px;font-stretch:110%;font-weight:800;line-height:1.15}
+.ubadge{flex:none;min-width:42px;height:42px;padding:0 6px;border-radius:10px;background:var(--lc);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:16px;}
+.uhead b{display:block;font-family:var(--display);font-size:18px;font-weight:800;line-height:1.15}
 .uhead .bar{height:6px;border-radius:3px;background:var(--sunk);margin-top:7px;overflow:hidden}
 .uhead .bar i{display:block;height:100%;background:var(--lc);border-radius:3px}
 .uhead .chev{margin-left:auto;flex:none;color:var(--muted);transition:transform .2s}
@@ -144,12 +145,12 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .st.done .pip i{background:var(--lc);border-color:var(--lc);box-shadow:inset 0 0 0 3px var(--surface)}
 .st.here .pip i{width:26px;height:26px;box-shadow:0 0 0 5px color-mix(in srgb,var(--lc) 25%,transparent)}
 .st .sl{flex:1;min-width:0}
-.st .sl b{display:block;font-weight:700;font-size:15.5px}
-.st .sl span{font-size:12.5px;color:var(--muted)}
+.st .sl b{display:block;font-weight:700;font-size:16px}
+.st .sl span{font-size:12px;color:var(--muted)}
 .crowns{flex:none;display:flex;gap:2px;color:var(--warn)}
 .crowns svg{width:15px;height:15px}
 .crowns .off{color:var(--line)}
-.delhead{font-family:var(--display);font-stretch:112%;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:12px 2px -2px}
+.delhead{font-family:var(--display);font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:12px 2px -2px}
 
 /* session */
 .session{position:fixed;inset:0;background:var(--bg);z-index:30;display:flex;flex-direction:column;max-width:640px;margin:0 auto}
@@ -158,9 +159,9 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .prog i{display:block;height:100%;border-radius:7px;background:var(--lc,var(--good));transition:width .35s ease}
 .combo{font-weight:800;font-size:14px;color:var(--warn);min-width:34px;text-align:right;font-variant-numeric:tabular-nums}
 .stage{flex:1;overflow-y:auto;padding:8px max(18px,env(safe-area-inset-right,0px)) 20px max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:16px}
-.qlabel{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.qtitle{font-family:var(--display);font-stretch:108%;font-size:22px;font-weight:800;line-height:1.2}
-.bigword{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:clamp(30px,9vw,44px);line-height:1.05;letter-spacing:-.015em;word-break:break-word}
+.qlabel{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.qtitle{font-family:var(--display);font-size:24px;font-weight:800;line-height:1.2}
+.bigword{font-family:var(--display);font-weight:800;font-size:32px;line-height:1.05;letter-spacing:-.015em;word-break:break-word}
 .bigword .art{color:var(--muted);font-weight:600}
 .say{display:inline-flex;align-items:center;gap:8px}
 .spk{flex:none;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000)}
@@ -171,21 +172,21 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .spk.big{width:84px;height:84px}
 .spk.big svg{width:40px;height:40px}
 .forms{display:flex;flex-wrap:wrap;gap:6px}
-.forms span{background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:14.5px}
-.forms span em{font-style:normal;color:var(--muted);font-size:11.5px;display:block;line-height:1.1}
+.forms span{background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:14px}
+.forms span em{font-style:normal;color:var(--muted);font-size:12px;display:block;line-height:1.1}
 .opts{display:grid;gap:10px}
-.opt{display:flex;align-items:center;gap:12px;text-align:left;padding:13px 14px;min-height:54px;border-radius:14px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-size:16.5px;font-weight:700;line-height:1.25}
-.opt .k{flex:none;width:26px;height:26px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12.5px;color:var(--muted)}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;padding:13px 14px;min-height:54px;border-radius:14px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-size:16px;font-weight:700;line-height:1.25}
+.opt .k{flex:none;width:26px;height:26px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;color:var(--muted)}
 .opt.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface));box-shadow:0 3px 0 var(--accent)}
 .opt.right{border-color:var(--good);background:var(--good-bg);box-shadow:0 3px 0 var(--good)}
 .opt.wrong{border-color:var(--bad);background:var(--bad-bg);box-shadow:0 3px 0 var(--bad)}
 .opts.two{grid-template-columns:1fr 1fr}
-.opts.two .opt{justify-content:center;font-family:var(--display);font-size:26px;min-height:80px}
+.opts.two .opt{justify-content:center;font-family:var(--display);font-size:24px;min-height:80px}
 .intro{padding:20px;display:flex;flex-direction:column;gap:12px}
 .newtag{align-self:flex-start;background:var(--warn-bg);color:var(--warn);font-weight:800;font-size:12px;letter-spacing:.08em;padding:4px 9px;border-radius:6px;text-transform:uppercase}
 .ex{border-left:4px solid var(--lc,var(--accent));padding:6px 0 6px 12px}
 .ex p{margin:0}
-.ex p+p{color:var(--muted);font-size:14.5px}
+.ex p+p{color:var(--muted);font-size:14px}
 .typebox{display:flex;flex-direction:column;gap:8px}
 .typebox input,.typebox textarea{width:100%;padding:14px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font-size:18px;outline:none}
 .typebox textarea{min-height:110px;font-size:16px;resize:vertical}
@@ -195,16 +196,16 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .hint{font-size:14px;color:var(--muted)}
 .tiles{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;align-content:flex-start}
 .answerline{border-bottom:2px solid var(--line);padding-bottom:10px;min-height:64px}
-.tile{padding:9px 12px;border-radius:11px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-size:17px;font-weight:700}
+.tile{padding:9px 12px;border-radius:11px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-size:18px;font-weight:700}
 .tile.used{visibility:hidden}
 .match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .match .col{display:flex;flex-direction:column;gap:10px}
-.mt{min-height:56px;padding:10px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-weight:700;font-size:15px;line-height:1.2;text-align:center}
+.mt{min-height:56px;padding:10px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-weight:700;font-size:16px;line-height:1.2;text-align:center}
 .mt.sel{border-color:var(--accent);box-shadow:0 3px 0 var(--accent)}
 .mt.ok{opacity:.35;border-color:var(--good);pointer-events:none}
 .mt.no{border-color:var(--bad);animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-.cloze{font-size:20px;line-height:1.5;font-weight:700}
+.cloze{font-size:24px;line-height:1.5;font-weight:700}
 .cloze u{text-decoration:none;display:inline-block;min-width:70px;border-bottom:3px solid var(--accent);text-align:center;color:var(--accent)}
 .sfoot{padding:14px max(18px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 14px) max(18px,env(safe-area-inset-left,0px));border-top:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;gap:10px}
 .sfoot.good{background:var(--good-bg);border-color:transparent}
@@ -214,16 +215,16 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .fb .fi{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff}
 .sfoot.good .fi{background:var(--good)} .sfoot.bad .fi{background:var(--bad)} .sfoot.close .fi{background:var(--warn)}
 .fb .fi svg{width:20px;height:20px}
-.fb h3{font-size:19px;font-weight:800}
+.fb h3{font-size:18px;font-weight:800}
 .sfoot.good h3{color:var(--good)} .sfoot.bad h3{color:var(--bad)} .sfoot.close h3{color:var(--warn)}
-.fb p{margin:3px 0 0;font-size:15px}
-.fb .ans{font-weight:700;font-size:16.5px}
-.linkbtn{color:var(--accent);font-weight:700;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;align-self:flex-start;padding:4px 0}
+.fb p{margin:3px 0 0;font-size:16px}
+.fb .ans{font-weight:700;font-size:16px}
+.linkbtn{color:var(--accent);font-weight:700;font-size:14px;text-decoration:underline;text-underline-offset:3px;align-self:flex-start;padding:4px 0}
 .sfoot.good .btn{background:var(--good);box-shadow:0 3px 0 color-mix(in srgb,var(--good) 60%,#000)}
 .sfoot.bad .btn{background:var(--bad);box-shadow:0 3px 0 color-mix(in srgb,var(--bad) 60%,#000)}
 .sfoot.close .btn{background:var(--warn);box-shadow:0 3px 0 color-mix(in srgb,var(--warn) 60%,#000)}
-.reader p{margin:0 0 12px;font-size:17.5px;line-height:1.6}
-.reader .enp{color:var(--muted);font-size:15px;border-left:3px solid var(--line);padding-left:10px}
+.reader p{margin:0 0 12px;font-size:18px;line-height:1.6}
+.reader .enp{color:var(--muted);font-size:16px;border-left:3px solid var(--line);padding-left:10px}
 .para{display:flex;gap:10px;align-items:flex-start}
 .para .spk{margin-top:2px}
 .seg{display:flex;background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px}
@@ -232,7 +233,7 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .done-hero{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:24px}
 .done-hero .medal{width:112px;height:112px;border-radius:50%;background:var(--lc,var(--accent));color:#fff;display:grid;place-items:center;box-shadow:0 0 0 10px color-mix(in srgb,var(--lc,var(--accent)) 22%,transparent)}
 .done-hero .medal svg{width:56px;height:56px}
-.done-hero h1{font-size:30px}
+.done-hero h1{font-size:32px}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
 .kpi{padding:12px 8px;text-align:center}
 .kpi b{display:block;font-family:var(--display);font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
@@ -247,7 +248,7 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .face .tag{position:absolute;top:14px;left:16px}
 .rate{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .rate button{min-height:58px;border-radius:12px;font-weight:800;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:2px solid var(--line);background:var(--surface);box-shadow:0 3px 0 var(--line)}
-.rate button small{font-weight:700;font-size:11px;color:var(--muted)}
+.rate button small{font-weight:700;font-size:12px;color:var(--muted)}
 .rate .r1{color:var(--bad)} .rate .r2{color:var(--warn)} .rate .r3{color:var(--good)} .rate .r4{color:var(--accent)}
 /* memory */
 .mem{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -255,12 +256,12 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .mc .in{display:block}
 .mc .in{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d}
 .mc.up .in,.mc.got .in{transform:rotateY(180deg)}
-.mc .f,.mc .b{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;padding:8px;text-align:center;font-weight:700;font-size:14.5px;line-height:1.2;overflow-wrap:anywhere;hyphens:auto;-webkit-hyphens:auto}
+.mc .f,.mc .b{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;padding:8px;text-align:center;font-weight:700;font-size:14px;line-height:1.2;overflow-wrap:anywhere;hyphens:auto;-webkit-hyphens:auto}
 .mc .f{background:linear-gradient(140deg,var(--hero1),var(--hero2))}
 .mc .f svg{width:46%;height:auto}
 .mc .f .t{fill:rgba(255,255,255,.22)} .mc .f .y{fill:var(--sun)}
 .mc .b{transform:rotateY(180deg);background:var(--surface);border:2px solid var(--line)}
-.mc .b.sv{font-family:var(--display);font-stretch:100%;font-size:15px}
+.mc .b.sv{font-family:var(--display);font-size:16px}
 .mc.got .b{border-color:var(--good);background:var(--good-bg)}
 .mc.miss .b{border-color:var(--bad)}
 /* library */
@@ -268,7 +269,7 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .search input{width:100%;padding:12px 14px 12px 42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:16px}
 .search svg{position:absolute;left:13px;top:50%;margin-top:-10px;width:20px;height:20px;color:var(--muted)}
 .fchips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-.fchips button{flex:none;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:13.5px;color:var(--muted)}
+.fchips button{flex:none;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:14px;color:var(--muted)}
 .fchips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .wl{list-style:none;margin:0;padding:0}
 .wl li{display:flex;gap:10px;align-items:center;padding:11px 12px;border-bottom:1px solid var(--line)}
@@ -276,13 +277,13 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .wl .wt{flex:1;min-width:0}
 .wl .wt b{font-size:16px}
 .wl .wt .art{color:var(--muted);font-weight:400}
-.wl .wt div{font-size:13.5px;color:var(--muted)}
-.wl .wt .ff{font-size:12.5px;color:var(--muted);margin-top:2px}
+.wl .wt div{font-size:14px;color:var(--muted)}
+.wl .wt .ff{font-size:12px;color:var(--muted);margin-top:2px}
 .lv{flex:none;width:8px;height:28px;border-radius:4px;background:var(--line)}
 .lv.l1{background:var(--bad)}.lv.l2{background:var(--warn)}.lv.l3{background:color-mix(in srgb,var(--good) 60%,var(--warn))}.lv.l4,.lv.l5{background:var(--good)}
 .libitem{padding:14px;width:100%;text-align:left;display:flex;gap:12px;align-items:center}
-.libitem .ubadge{min-width:34px;height:34px;font-size:13px}
-.libitem b{display:block;font-size:15.5px}
+.libitem .ubadge{min-width:34px;height:34px;font-size:14px}
+.libitem b{display:block;font-size:16px}
 .sheet{position:fixed;inset:0;z-index:50;background:rgba(5,12,20,.45);display:flex;align-items:flex-end;justify-content:center}
 .sheet .panel{background:var(--bg);width:100%;max-width:640px;border-radius:20px 20px 0 0;max-height:88%;overflow:auto;padding:18px max(18px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 18px) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:12px}
@@ -293,18 +294,85 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .review ul{padding:0;margin:0}
 .review .ok{color:var(--good);font-weight:800}.review .no{color:var(--bad);font-weight:800}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 86px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;z-index:60;max-width:90%;text-align:center}
-.timer{font-family:var(--display);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;min-width:40px;text-align:right}
+.timer{font-family:var(--display);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;min-width:40px;text-align:right}
 .sync{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .sync i{width:8px;height:8px;border-radius:50%;background:var(--line)}
 .sync.on i{background:var(--good)}
 .aifb{background:var(--surface);border:1.5px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
 .aifb .eyebrow{color:var(--accent)}
-.aifb p{margin:0;font-size:15px}
+.aifb p{margin:0;font-size:16px}
 .aifb .spk{vertical-align:middle}
 .aiwait{display:flex;align-items:center;justify-content:center;gap:10px;min-height:50px;font-weight:700;color:var(--muted)}
 .spin{width:20px;height:20px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .rate button.sug{border-color:currentColor;box-shadow:0 3px 0 currentColor}
+/* ===== consistent components (one row, one card, one button) ===== */
+.view{padding-block:16px 32px}
+.stack{gap:12px}
+.apphead{padding-block:8px 0}
+.apphead .top{padding:0 0 10px}
+.brand{gap:10px}
+.brand b{font-size:18px;font-weight:500}
+.logo{width:30px;height:30px}
+.tabs{padding:4px;gap:2px}
+.tab{min-height:48px;font-size:12px;gap:1px;padding:4px 0}
+.tico{width:40px;height:26px}
+.tab svg{width:21px;height:21px}
+.card{border-radius:16px;box-shadow:none}
+.sect{display:flex;justify-content:space-between;align-items:baseline;margin:8px 2px -4px}
+.sect h2{font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sect span{font-size:12px;color:var(--muted)}
+.foot{margin:4px 2px 0;font-size:12px;color:var(--muted);line-height:1.5}
+.lab{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.pbar{display:block;height:8px;border-radius:4px;background:var(--sunk);overflow:hidden;border:1px solid var(--line)}
+.pbar i{display:block;height:100%;background:var(--lc,var(--accent));border-radius:4px;min-width:2px}
+.pbar.thin{height:6px;margin-top:8px;border:0}
+.today{padding:16px;display:flex;flex-direction:column;gap:10px}
+.today .trow{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.today .trow b{font-size:18px;font-weight:800}
+.today .pbar i{background:var(--sun)}
+.today .tmeta{font-size:14px;color:var(--muted)}
+.tstat{display:flex;gap:12px;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.tstat span{display:inline-flex;align-items:center;gap:4px}
+.tstat svg{width:18px;height:18px}
+.tstat span:first-child svg{color:var(--l4)} .tstat span:last-child svg{color:var(--warn)}
+.go{display:flex;align-items:center;gap:14px;padding:16px;width:100%;text-align:left;border-color:var(--lc)}
+.go .dot{flex:none;width:36px;height:36px;border-radius:50%;border:7px solid var(--lc);background:var(--surface)}
+.go .rt b{font-size:18px}
+.gobtn{flex:none;margin-left:auto;background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:0 18px;height:44px;display:grid;place-items:center;font-weight:800;font-size:16px}
+.list{overflow:hidden;padding:0}
+.lrow{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--line)}
+.lrow:last-child{border-bottom:0}
+.lrow:active{background:var(--sunk)}
+.ri{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--rc,var(--lc)) 14%,transparent);color:var(--rc,var(--lc))}
+.ri svg{width:22px;height:22px}
+.ri b{font-size:14px;font-weight:800}
+.rt{flex:1;min-width:0;display:flex;flex-direction:column}
+.rt b{font-size:16px;font-weight:700;line-height:1.25}
+.rt span{font-size:14px;color:var(--muted);line-height:1.3;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rt .lab{white-space:normal}
+.rchev{flex:none;width:18px;height:18px;color:var(--muted)}
+.uhead{display:flex;align-items:center;gap:14px;padding:12px 14px;width:100%;text-align:left;min-height:64px}
+.uhead .ri{background:var(--lc);color:#fff}
+.uhead .rt span.pbar{margin-top:8px}
+.stations{padding:0 14px 8px}
+.st button{min-height:56px;padding:6px 0;gap:14px}
+.st .pip{width:40px}
+.st .rt span{white-space:nowrap}
+.sheet .panel h2{font-size:24px}
+.btn{min-height:48px;border-radius:12px;font-size:16px}
+.opt{min-height:56px;font-size:16px;border-radius:12px}
+.opts.two .opt{font-size:24px;min-height:72px}
+.qtitle{font-size:18px;line-height:1.35}
+.qlabel{font-size:12px}
+.tile{font-size:16px;border-radius:10px}
+.mt{font-size:14px;min-height:56px;border-radius:12px}
+.typebox input{font-size:18px;border-radius:12px}
+.typebox textarea{border-radius:12px}
+.done-hero h1{font-size:24px}
+.kpi b{font-size:24px}
+.fb h3{font-size:18px}
+.mode,.hero,.statrow,.week,.next,.libitem,.ubadge,.delhead{}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 @media (min-width:560px){.grid2{grid-template-columns:repeat(3,1fr)}.mem{grid-template-columns:repeat(4,1fr)}}
 </style>
@@ -674,43 +742,44 @@ function render(){
 }
 root.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){TAB=t.dataset.tab;try{sessionStorage.setItem('sfi-tab',TAB)}catch(_){};render();$('#view').scrollTop=0}});
 function topbar(){return ''}
-function topbarHTML(){return `<header class="top"><div class="brand">${LOGO()}<div><b>SFI<strong>Kompis</strong></b><small>Kurs D · Linje D</small></div></div>
-  <div class="chips"><span class="chip" style="color:var(--l4)" title="Dagar i rad">${I.fire}<span style="color:var(--ink)">${streakNow()}</span></span><span class="chip" title="Total XP" style="color:var(--warn)">${I.bolt}<span style="color:var(--ink)">${P.xp}</span></span>
-  <button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></div></header>`}
+function topbarHTML(){return `<header class="top"><div class="brand">${LOGO()}<b>SFI<strong>Kompis</strong></b></div>
+  <button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></header>`}
+const CHEV='<svg class="rchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
+/* one list-row component for every menu in the app */
+function rowHTML({icon,label,color,title,sub,attrs='',right=''}){
+  return `<button class="lrow" ${attrs} style="--rc:${color||'var(--accent)'}"><span class="ri">${icon?icon:`<b>${esc(label)}</b>`}</span><span class="rt"><b>${esc(title)}</b>${sub?`<span>${esc(sub)}</span>`:''}</span>${right}${CHEV}</button>`}
+const listHTML=rows=>`<div class="card list">${rows.join('')}</div>`;
+const headHTML=(t,sub)=>`<div class="sect"><h2>${esc(t)}</h2>${sub?`<span>${esc(sub)}</span>`:''}</div>`;
 function greet(){const h=new Date().getHours();return h>=5&&h<10?'God morgon':h>=10&&h<18?'Hej igen':'God kväll'}
 
 function vHome(v){
-  const d=DAY(),today=P.days[d]||0,pct=Math.min(1,today/P.goal),due=dueKeys().length,nx=nextStation(),u=U[nx.ui];
-  const C=2*Math.PI*36;
-  const days=[...Array(7)].map((_,i)=>d-6+i);const mx=Math.max(P.goal,...days.map(x=>P.days[x]||0));
-  const wd=['sön','mån','tis','ons','tor','fre','lör'];
-  v.innerHTML=topbar()+`<div class="stack">
-  <section class="card hero"><div><div class="eyebrow">${greet()}</div><h1>${today>=P.goal?'Dagens mål klart. Bra jobbat!':today>0?'Fortsätt, du är på väg.':'Dags för dagens tur.'}</h1><p>${today} av ${P.goal} XP i dag</p></div>
-   <div class="ring"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="36" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><circle cx="42" cy="42" r="36" fill="none" stroke="var(--sun)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/></svg><div class="rv">${Math.round(pct*100)}%<small>mål</small></div></div></section>
-  <button class="card next" id="goNext" style="--lc:${u.lc}"><span class="dot"></span><span style="min-width:0"><span class="eyebrow">Nästa station · ${esc(u.n)}</span><b>${esc(nx.ti)}</b><span class="small muted">${esc(nx.sub)}</span></span><span class="go">Kör</span></button>
-  <div class="grid2" style="grid-template-columns:1fr 1fr">
-   <button class="card mode" id="goReview" style="--mc:var(--l4)"><span class="mi">${I.redo}</span><b>Repetera</b><span>${due?`${due} kort väntar i dag`:'Inget att repetera just nu'}</span></button>
-   <button class="card mode" id="goMist" style="--mc:var(--bad)"><span class="mi">${I.x}</span><b>Mina fel</b><span>${mistakeKeys().length} saker att öva igen</span></button>
-  </div>
-  <div class="statrow"><div class="card stat"><b>${learnedCount()}</b><span>ord sitter</span></div><div class="card stat"><b>${Object.keys(P.done).length}</b><span>av ${ALLST.length} stationer</span></div><div class="card stat"><b>${seenKeys().length}</b><span>övade kort</span></div></div>
-  <section class="card" style="padding:14px"><div class="sect" style="margin:0 0 10px"><h2>Veckan</h2><span class="small muted">XP per dag</span></div>
-   <div class="week">${days.map(x=>{const val=P.days[x]||0;return `<div><i class="${val>=P.goal?'goal':''}" style="height:${Math.max(3,val/mx*52)}px" title="${val} XP"></i><span>${wd[new Date((x)*86400000).getUTCDay()]}</span></div>`}).join('')}</div></section>
-  <p class="small muted" style="margin:2px 2px 0">Repetition efter 1, 3, 7, 14 och 30 dagar, som studieguiden rekommenderar. <span class="sync ${syncOn?'on':''}"><i></i> ${syncOn?'Synkas mellan dina enheter':'Sparas på den här enheten'}</span></p>
+  const d=DAY(),today=P.days[d]||0,pct=Math.min(1,today/P.goal),due=dueKeys().length,nx=nextStation(),u=U[nx.ui],mist=mistakeKeys().length;
+  v.innerHTML=`<div class="stack">
+  <section class="card today"><div class="trow"><div><span class="lab">${greet()}</span><b>${today} av ${P.goal} XP i dag</b></div>
+    <div class="tstat"><span title="Dagar i rad">${I.fire}${streakNow()}</span><span title="Total XP">${I.bolt}${P.xp}</span></div></div>
+    <div class="pbar"><i style="width:${pct*100}%"></i></div>
+    <div class="tmeta">${learnedCount()} ord sitter · ${Object.keys(P.done).length} av ${ALLST.length} stationer klara</div></section>
+  ${headHTML('Fortsätt')}
+  <button class="card go" id="goNext" style="--lc:${u.lc}"><span class="dot"></span><span class="rt"><span class="lab">${esc(u.n)}</span><b>${esc(nx.ti)}</b><span>${esc(nx.sub)}</span></span><span class="gobtn">Kör</span></button>
+  ${headHTML('Repetera')}
+  ${listHTML([
+    rowHTML({icon:I.redo,color:'var(--l4)',title:'Dagens repetition',sub:due?`${due} kort väntar`:'Inget väntar, du får nya ord',attrs:'id="goReview"'}),
+    rowHTML({icon:I.x,color:'var(--bad)',title:'Mina fel',sub:mist?`${mist} saker att öva igen`:'Inga fel just nu',attrs:'id="goMist"'})])}
+  <p class="foot"><span class="sync ${syncOn?'on':''}"><i></i>${syncOn?'Synkas mellan dina enheter':'Sparas på den här enheten'}</span></p>
   </div>`;
   $('#goNext').onclick=()=>startStation(nx);
   $('#goReview').onclick=()=>startReview();
   $('#goMist').onclick=()=>startMistakes();
-  {const s=$('#settings');if(s)s.onclick=openSettings};
 }
 function crownsHTML(n){return `<span class="crowns" aria-label="${n} av 3 kronor">${[0,1,2].map(i=>`<span class="${i<n?'':'off'}">${I.crown}</span>`).join('')}</span>`}
 let openUnit=null;
 function vLines(v){
   const nx=nextStation(); if(openUnit===null)openUnit=nx.ui;
-  let h=topbar()+`<div class="stack">`;
-  [1,2].forEach(p=>{h+=`<div class="delhead">Del ${p} · Kapitel ${p===1?'1–3':'4–7'}</div>`;
+  let h=`<div class="stack">`;
+  [1,2].forEach(p=>{h+=headHTML(`Del ${p}`,`Kapitel ${p===1?'1–3':'4–7'}`);
     U.forEach((u,ui)=>{if(u.p!==p)return;const line=LINES[ui];const dn=line.filter(s=>P.done[s.id]).length;
-      h+=`<section class="card unit ${openUnit===ui?'open':''}" style="--lc:${u.lc}"><button class="uhead" data-unit="${ui}" aria-expanded="${openUnit===ui}"><span class="ubadge">${u.code}</span><span style="flex:1;min-width:0"><b>${esc(u.n)}</b><span class="small muted">${dn} av ${line.length} stationer · ${UW[ui].length} ord</span><div class="bar"><i style="width:${dn/line.length*100}%"></i></div></span><span class="chev">${I.chev}</span></button>`;
-      if(openUnit===ui){h+=`<ol class="stations">`+line.map(s=>{const c=P.done[s.id]||0;return `<li class="st ${c?'done':''} ${s===nx?'here':''}"><button data-st="${s.id}"><span class="pip"><i></i></span><span class="sl"><b>${esc(s.ti)}</b><span>${esc(s.sub)}</span></span>${c?crownsHTML(c):''}</button></li>`}).join('')+`</ol>`}
+      h+=`<section class="card unit ${openUnit===ui?'open':''}" style="--lc:${u.lc}"><button class="uhead" data-unit="${ui}" aria-expanded="${openUnit===ui}"><span class="ri"><b>${u.code}</b></span><span class="rt"><b>${esc(u.n)}</b><span>${dn} av ${line.length} stationer · ${UW[ui].length} ord</span><span class="pbar thin"><i style="width:${dn/line.length*100}%"></i></span></span><span class="chev">${I.chev}</span></button>`;
+      if(openUnit===ui){h+=`<ol class="stations">`+line.map(s=>{const c=P.done[s.id]||0;return `<li class="st ${c?'done':''} ${s===nx?'here':''}"><button data-st="${s.id}"><span class="pip"><i></i></span><span class="rt"><b>${esc(s.ti)}</b><span>${esc(s.sub)}</span></span>${c?crownsHTML(c):''}</button></li>`}).join('')+`</ol>`}
       h+=`</section>`})});
   v.innerHTML=h+`</div>`;
   $$('[data-unit]',v).forEach(b=>b.onclick=()=>{const ui=+b.dataset.unit;openUnit=openUnit===ui?-1:ui;vLines(v);const el=$(`[data-unit="${ui}"]`,v);el&&el.scrollIntoView({block:'start'})});
@@ -720,45 +789,44 @@ function vLines(v){
 }
 function vPractice(v){
   const modes=[
-   ['fc','Kortlek','Vänd kort och sortera efter hur väl du kan dem',I.cards,'var(--l2)'],
-   ['mem','Memory','Hitta paren: svenska och engelska',I.grid,'var(--l3)'],
-   ['build','Meningsbygget','Bygg svenska meningar med ordbrickor',I.build,'var(--l1)'],
+   ['fc','Kortlek','Vänd kort, sortera efter hur väl du kan dem',I.cards,'var(--l2)'],
+   ['mem','Memory',P.best.mem?`Para ihop orden · bäst ${P.best.mem} drag`:'Para ihop svenska och engelska',I.grid,'var(--l3)'],
+   ['build','Meningsbygget','Bygg meningar med ordbrickor',I.build,'var(--l1)'],
    ['dict','Lyssna och skriv','Diktamen med ord och meningar',I.ear,'var(--l6)'],
    ['verb','Verbgymmet','Presens, preteritum och supinum',I.verb,'var(--l0)'],
-   ['blitz','En eller ett?','60 sekunder. Hur många hinner du?',I.bolt,'var(--l4)'],
+   ['blitz','En eller ett?',P.best.blitz?`60 sekunder · rekord ${P.best.blitz}`:'60 sekunder, så många du hinner',I.bolt,'var(--l4)'],
   ];
-  v.innerHTML=topbar()+`<div class="stack"><div class="sect"><h2>Öva fritt</h2><span class="small muted">Välj linje när du startar</span></div>
-   <div class="grid2">${modes.map(m=>`<button class="card mode" data-mode="${m[0]}" style="--mc:${m[4]}"><span class="mi">${m[3]}</span><b>${m[1]}</b><span>${m[2]}${m[0]==='blitz'&&P.best.blitz?` · Rekord ${P.best.blitz}`:''}${m[0]==='mem'&&P.best.mem?` · Bäst ${P.best.mem} drag`:''}</span></button>`).join('')}</div>
-   <div class="sect"><h2>Övningsboken</h2><span class="small muted">Från guidens arbetsbok</span></div>
-   <div class="card">${Object.entries(groupBy(X.filter(x=>!x.s.startsWith('test')),x=>x.s)).map(([s,xs])=>`<button class="libitem" data-set="${s}" style="border-bottom:1px solid var(--line)"><span class="ubadge" style="background:${xs[0].u>=0?U[xs[0].u].lc:'var(--l8)'}">${s.startsWith('p1')?'D1':'D2'}</span><span style="flex:1;min-width:0"><b>${esc(setName(s,xs))}</b><span class="small muted">${xs.length} uppgifter · ${xs.filter(x=>srs('x'+x.i)&&srs('x'+x.i)[0]>=2).length} klara</span></span>${I.chev.replace('m6 9 6 6 6-6','m9 6 6 6-6 6')}</button>`).join('')}</div>
+  const sets=Object.entries(groupBy(X.filter(x=>!x.s.startsWith('test')),x=>x.s));
+  v.innerHTML=`<div class="stack">${headHTML('Spel')}
+   ${listHTML(modes.map(m=>rowHTML({icon:m[3],color:m[4],title:m[1],sub:m[2],attrs:`data-mode="${m[0]}"`})))}
+   ${headHTML('Övningsboken','Från studieguiden')}
+   ${listHTML(sets.map(([s,xs])=>rowHTML({label:s.startsWith('p1')?'D1':'D2',color:xs[0].u>=0?U[xs[0].u].lc:'var(--l8)',title:setName(s,xs),sub:`${xs.length} uppgifter · ${xs.filter(x=>srs('x'+x.i)&&srs('x'+x.i)[0]>=2).length} klara`,attrs:`data-set="${s}"`})))}
   </div>`;
   $$('[data-mode]',v).forEach(b=>b.onclick=()=>pickSource(b.dataset.mode));
   $$('[data-set]',v).forEach(b=>b.onclick=()=>{const xs=X.filter(x=>x.s===b.dataset.set);runSession({title:setName(b.dataset.set,xs),lc:xs[0].u>=0?U[xs[0].u].lc:'var(--l8)',qs:xs.map(Q.ex)})});
-  {const s=$('#settings');if(s)s.onclick=openSettings};
 }
 function groupBy(a,f){const o={};a.forEach(x=>{(o[f(x)]=o[f(x)]||[]).push(x)});return o}
 function setName(s,xs){const t=xs[0].ti||'';const map={p1I:'Läsfrågor, kapitel 1–3',p2R:'Läsfrågor, kapitel 4–7'};return map[s]||(s.startsWith('p1')?t.replace(/^[A-J] /,''):t)||s}
 function vTest(v){
-  const t1=X.filter(x=>x.s==='test1'),t2=X.filter(x=>x.s==='test2');
-  const last=k=>P.tests[k]?`Senast: ${P.tests[k][0]} av ${P.tests[k][1]}`:'Inte gjort än';
-  v.innerHTML=topbar()+`<div class="stack"><div class="sect"><h2>Prov</h2><span class="small muted">Svaren visas när du är klar</span></div>
-  ${[['test1','Slutprov del 1','Kapitel 1–3 · 20 uppgifter · ca 40 min',t1.length,'var(--l0)'],['test2','Slutprov del 2','Kapitel 4–7 · 40 uppgifter · ca 45 min',t2.length,'var(--l4)'],['mix','Snabbprov','20 blandade uppgifter från hela guiden','20','var(--l2)'],['words','Ordprov','25 ord att skriva på svenska','25','var(--l1)']].map(t=>`<button class="card libitem" data-test="${t[0]}" style="--lc:${t[4]}"><span class="ubadge" style="background:${t[4]}">${t[3]}</span><span style="flex:1;min-width:0"><b>${t[1]}</b><span class="small muted">${t[2]}</span><div class="small" style="margin-top:2px">${last(t[0])}</div></span></button>`).join('')}
-  <p class="small muted">Det här är övningsprov från din studieguide, inte en officiell SFI-bedömning. Guiden sätter målet till minst 16 av 20 på del 1. På del 2 betyder 34–40 god återgivning.</p></div>`;
+  const last=k=>P.tests[k]?` · senast ${P.tests[k][0]} av ${P.tests[k][1]}`:'';
+  const T_=[['test1','Slutprov del 1','Kapitel 1–3 · 20 uppgifter','20','var(--l0)'],['test2','Slutprov del 2','Kapitel 4–7 · 40 uppgifter','40','var(--l4)'],['mix','Snabbprov','20 blandade uppgifter','20','var(--l2)'],['words','Ordprov','25 ord att skriva','25','var(--l1)']];
+  v.innerHTML=`<div class="stack">${headHTML('Prov','Svaren visas när du är klar')}
+  ${listHTML(T_.map(t=>rowHTML({label:t[3],color:t[4],title:t[1],sub:t[2]+last(t[0]),attrs:`data-test="${t[0]}"`})))}
+  <p class="foot">Övningsprov från studieguiden, inte en officiell SFI-bedömning. Mål: minst 16 av 20 på del 1 och 34 av 40 på del 2.</p></div>`;
   $$('[data-test]',v).forEach(b=>b.onclick=()=>startTest(b.dataset.test));
-  {const s=$('#settings');if(s)s.onclick=openSettings};
 }
 function vLib(v){
   const st=libState;
-  let h=topbar()+`<div class="stack"><div class="seg" role="group">${[['ord','Ord'],['gram','Grammatik'],['text','Texter']].map(([k,n])=>`<button data-seg="${k}" aria-pressed="${st.seg===k}">${n}</button>`).join('')}</div>`;
+  let h=`<div class="stack"><div class="seg" role="group">${[['ord','Ord'],['gram','Grammatik'],['text','Texter']].map(([k,n])=>`<button data-seg="${k}" aria-pressed="${st.seg===k}">${n}</button>`).join('')}</div>`;
   if(st.seg==='ord'){
     h+=`<div class="search">${I.search}<input id="q" type="search" placeholder="Sök på svenska eller engelska" value="${esc(st.q)}" autocomplete="off" autocapitalize="off"></div>
     <div class="fchips">${[['all','Alla'],['n','Substantiv'],['v','Verb'],['a','Adjektiv'],['x','Uttryck'],['d','Adverb']].map(([k,n])=>`<button data-t="${k}" aria-pressed="${st.t===k}">${n}</button>`).join('')}</div>
     <div class="fchips">${[[-1,'Alla linjer'],...U.map((u,i)=>[i,u.code])].map(([k,n])=>`<button data-u="${k}" aria-pressed="${st.u===k}">${n}</button>`).join('')}</div>
     <div class="card"><ul class="wl" id="wl"></ul></div>`;
   } else if(st.seg==='gram'){
-    h+=`<div class="card">`+L.map(l=>`<button class="libitem" data-les="${l.i}" style="border-bottom:1px solid var(--line)"><span class="ubadge" style="background:${U[l.c].lc}">${U[l.c].code}</span><span style="flex:1;min-width:0"><b>${esc(l.ti)}</b><span class="small muted">${esc(U[l.c].n)}</span></span></button>`).join('')+`</div>`;
+    h+=listHTML(L.map(l=>rowHTML({label:U[l.c].code,color:U[l.c].lc,title:l.ti,sub:U[l.c].n,attrs:`data-les="${l.i}"`})));
   } else {
-    h+=`<div class="card">`+R.map(r=>`<button class="libitem" data-rd="${r.i}" style="border-bottom:1px solid var(--line)"><span class="ubadge" style="background:${U[r.c].lc}">${U[r.c].code}</span><span style="flex:1;min-width:0"><b>${esc(r.ti)}</b><span class="small muted">${esc(U[r.c].n)}</span></span></button>`).join('')+`</div>`;
+    h+=listHTML(R.map(r=>rowHTML({label:U[r.c].code,color:U[r.c].lc,title:r.ti,sub:U[r.c].n,attrs:`data-rd="${r.i}"`})));
   }
   v.innerHTML=h+`</div>`;
   $$('[data-seg]',v).forEach(b=>b.onclick=()=>{st.seg=b.dataset.seg;vLib(v)});
@@ -777,7 +845,7 @@ function vLib(v){
 function sheet(html,onMount){const s=document.createElement('div');s.className='sheet';s.innerHTML=`<div class="panel" role="dialog" aria-modal="true">${html}</div>`;
   s.addEventListener('click',e=>{if(e.target===s)s.remove()});document.body.appendChild(s);onMount&&onMount(s.firstChild,()=>s.remove());return s}
 function openSettings(){let armed=false;
-  sheet(`<div class="row"><h2 style="font-size:22px">Inställningar</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div>
+  sheet(`<div class="row"><h2>Inställningar</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div>
   <div><div class="eyebrow" style="margin-bottom:8px">Dagligt mål</div><div class="pick" id="pg">${[20,50,100,150].map(g=>`<button data-g="${g}" aria-pressed="${P.goal===g}">${g} XP</button>`).join('')}</div></div>
   <div><div class="eyebrow" style="margin-bottom:8px">Uppläsningstakt</div><div class="pick" id="pr">${[[.7,'Långsam'],[.9,'Normal'],[1.05,'Snabb']].map(([r,n])=>`<button data-r="${r}" aria-pressed="${P.rate===r}">${n}</button>`).join('')}</div>
    <p class="small muted" style="margin:8px 0 0">${TTS?(VOICE?`Röst: ${esc(VOICE.name)}`:'Ingen svensk röst hittades. Lägg till svenska under telefonens inställningar för uppläsning (Hjälpmedel › Uppläst innehåll › Röster).'):'Uppläsning stöds inte här.'}</p>
@@ -797,11 +865,11 @@ function pickSource(mode){
   const title={fc:'Kortlek',mem:'Memory',build:'Meningsbygget',dict:'Lyssna och skriv',verb:'Verbgymmet',blitz:'En eller ett?'}[mode];
   if((mode==='dict')&&!TTS)return toast('Uppläsning stöds inte i den här webbläsaren');
   const extra=mode==='fc'?[['due','Dagens repetition'],['mist','Mina fel']]:[];
-  sheet(`<div class="row"><h2 style="font-size:22px">${title}</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div>
-   <div class="eyebrow">Välj ord från</div><div class="stack" style="gap:8px">
-   ${extra.map(([k,n])=>`<button class="card libitem" data-src="${k}"><span class="ubadge" style="background:var(--accent)">${k==='due'?dueKeys().filter(k=>k[0]==='w').length:mistakeKeys().filter(k=>k[0]==='w').length}</span><b>${n}</b></button>`).join('')}
-   <button class="card libitem" data-src="all"><span class="ubadge" style="background:var(--l8)">∗</span><b>Hela guiden</b></button>
-   ${U.map((u,i)=>`<button class="card libitem" data-src="${i}"><span class="ubadge" style="background:${u.lc}">${u.code}</span><span><b>${esc(u.n)}</b><span class="small muted">${mode==='build'?US[i].length+' meningar':UW[i].length+' ord'}</span></span></button>`).join('')}</div>`,(p,close)=>{
+  sheet(`<div class="row"><h2>${title}</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div>
+   ${listHTML([
+     ...extra.map(([k,n])=>rowHTML({label:String(k==='due'?dueKeys().filter(k=>k[0]==='w').length:mistakeKeys().filter(k=>k[0]==='w').length),color:'var(--accent)',title:n,attrs:`data-src="${k}"`})),
+     rowHTML({label:'Alla',color:'var(--l8)',title:'Hela guiden',sub:`${W.length} ord`,attrs:'data-src="all"'}),
+     ...U.map((u,i)=>rowHTML({label:u.code,color:u.lc,title:u.n,sub:mode==='build'?US[i].length+' meningar':UW[i].length+' ord',attrs:`data-src="${i}"`}))])}`,(p,close)=>{
     $('[data-close]',p).onclick=close;
     $$('[data-src]',p).forEach(b=>b.onclick=()=>{close();startMode(mode,b.dataset.src)})})}
 function srcWords(src,filter=()=>true){let ws;
@@ -883,7 +951,7 @@ function qHead(q){let h=`<div class="qlabel">${esc(q.label||'')}${q.retry?' · i
   if(q.html)h+=q.html;
   return h}
 function rIntro(q,st,ft){const w=q.w;
-  st.innerHTML=`<div class="qlabel">Nytt ord · ${TYPE[w.t]}</div><div class="card intro"><span class="newtag">Nytt</span><div class="say" style="gap:12px"><div class="bigword">${dispH(w)}</div>${spkBtn(disp(w))}</div><div style="font-size:19px;font-weight:700">${esc(w.en)}</div>${formsHTML(w)}${w.ex?`<div class="ex"><p>${esc(w.ex[0])} ${spkBtn(w.ex[0],'sm')}</p><p>${esc(w.ex[1])}</p></div>`:''}</div>`;
+  st.innerHTML=`<div class="qlabel">Nytt ord · ${TYPE[w.t]}</div><div class="card intro"><span class="newtag">Nytt</span><div class="say" style="gap:12px"><div class="bigword">${dispH(w)}</div>${spkBtn(disp(w))}</div><div style="font-size:18px;font-weight:700">${esc(w.en)}</div>${formsHTML(w)}${w.ex?`<div class="ex"><p>${esc(w.ex[0])} ${spkBtn(w.ex[0],'sm')}</p><p>${esc(w.ex[1])}</p></div>`:''}</div>`;
   speak(disp(w));
   ft.innerHTML=`<button class="btn block" id="chk">Jag har koll</button>`;$('#chk').onclick=()=>{SES.i++;showQ()};
 }
@@ -939,7 +1007,7 @@ function rOpen(q,st,ft){
   const inp=$('#inp');$$('[data-k]',st).forEach(b=>{b.onmousedown=e=>e.preventDefault();b.onclick=()=>{const s=inp.selectionStart??inp.value.length;inp.value=inp.value.slice(0,s)+b.dataset.k+inp.value.slice(s);inp.setSelectionRange(s+1,s+1);inp.focus()}});
   ft.innerHTML=`<button class="btn block" id="chk">Visa modellsvar</button>`;
   $('#chk').onclick=()=>{const m=q.model.replace(/^SV:\s*/,'');const [sv,en]=m.split(/\s+EN:\s+/);
-    $('#model').innerHTML=`<div class="card intro" style="border-color:var(--good)"><span class="eyebrow" style="color:var(--good)">Modellsvar</span><div class="say" style="align-items:flex-start;gap:10px"><p style="margin:0;flex:1;font-size:17px">${esc(sv)}</p>${spkBtn(sv.split(/(?<=[.!?])\s+[A-Z][a-z]+ [a-z]/)[0],'sm')}</div>${en?`<p class="small muted" style="margin:0">${esc(en)}</p>`:''}</div>`;
+    $('#model').innerHTML=`<div class="card intro" style="border-color:var(--good)"><span class="eyebrow" style="color:var(--good)">Modellsvar</span><div class="say" style="align-items:flex-start;gap:10px"><p style="margin:0;flex:1;font-size:18px">${esc(sv)}</p>${spkBtn(sv.split(/(?<=[.!?])\s+[A-Z][a-z]+ [a-z]/)[0],'sm')}</div>${en?`<p class="small muted" style="margin:0">${esc(en)}</p>`:''}</div>`;
     $('#model').scrollIntoView({behavior:'smooth',block:'start'});inp.readOnly=true;
     const rateHTML=`<div class="hint" style="text-align:center">Jämför med ditt svar. Hur gick det?</div><div class="rate" style="grid-template-columns:repeat(3,1fr)"><button class="r1" data-g="0">Inte än</button><button class="r2" data-g="1">Delvis</button><button class="r3" data-g="2">Jag kunde</button></div>`;
     const bindRate=()=>$$('[data-g]',ft).forEach(b=>b.onclick=()=>{const g=+b.dataset.g;if(q.key)grade(q.key,g===2);SES.graded++;if(g>0){SES.right+=g/2;SES.xp+=g;SES.combo++}else SES.combo=0;SES.log.push({q,ok:g===2,half:g===1,user:inp.value});save();SES.i++;showQ()});
@@ -952,14 +1020,14 @@ function rOpen(q,st,ft){
       catch(e){if(!SES||SES.qs[SES.i]!==q)return;const w=$('.aiwait',ft);if(w)w.outerHTML=`<div class="hint" style="text-align:center">${esc(aiFail(e))}</div>`}};
   }}
 function rRead(q,st,ft){const r=q.r;let en=false;
-  const draw=()=>{st.innerHTML=`<div class="qlabel">Läsning · ${esc(U[r.c].n)}</div><h1 style="font-size:26px">${esc(r.ti)}</h1><div class="seg" role="group"><button data-l="sv" aria-pressed="${!en}">Svenska</button><button data-l="en" aria-pressed="${en}">Svenska + English</button></div>
+  const draw=()=>{st.innerHTML=`<div class="qlabel">Läsning · ${esc(U[r.c].n)}</div><h1 style="font-size:24px">${esc(r.ti)}</h1><div class="seg" role="group"><button data-l="sv" aria-pressed="${!en}">Svenska</button><button data-l="en" aria-pressed="${en}">Svenska + English</button></div>
    <div class="reader">${r.sv.map((p,i)=>`<div class="para">${spkBtn(p,'sm')}<div><p>${esc(p)}</p>${en&&r.en[i]?`<p class="enp">${esc(r.en[i])}</p>`:''}</div></div>`).join('')}</div>
    <p class="small muted">Tips från guiden: läs en gång, lyssna en gång och återberätta sedan med egna ord utan att titta.</p>`;
    $$('[data-l]',st).forEach(b=>b.onclick=()=>{en=b.dataset.l==='en';draw()})};
   draw();ft.innerHTML=`<button class="btn block" id="chk">Jag har läst</button>`;$('#chk').onclick=()=>{SES.i++;SES.xp+=3;showQ()}}
 function rNote(q,st,ft){const l=q.l;let lang='en';
-  const draw=()=>{const ps=lang==='en'?l.en:l.sv;st.innerHTML=`<div class="qlabel">Grammatik · ${esc(U[l.c].n)}</div><h1 style="font-size:26px">${esc(l.ti)}</h1><div class="seg"><button data-l="en" aria-pressed="${lang==='en'}">English</button><button data-l="sv" aria-pressed="${lang==='sv'}">Svenska</button></div>
-   <div class="reader">${(ps.length?ps:l.en).map(p=>`<p style="font-size:16.5px">${esc(p)}</p>`).join('')}</div>`;
+  const draw=()=>{const ps=lang==='en'?l.en:l.sv;st.innerHTML=`<div class="qlabel">Grammatik · ${esc(U[l.c].n)}</div><h1 style="font-size:24px">${esc(l.ti)}</h1><div class="seg"><button data-l="en" aria-pressed="${lang==='en'}">English</button><button data-l="sv" aria-pressed="${lang==='sv'}">Svenska</button></div>
+   <div class="reader">${(ps.length?ps:l.en).map(p=>`<p style="font-size:16px">${esc(p)}</p>`).join('')}</div>`;
    $$('[data-l]',st).forEach(b=>b.onclick=()=>{lang=b.dataset.l;draw()})};
   draw();ft.innerHTML=`<button class="btn block" id="chk">Klart</button>`;$('#chk').onclick=()=>{SES.i++;SES.xp+=3;showQ()}}
 
@@ -1014,8 +1082,8 @@ function runFlash(ws,lc){let i=0,rev=false,stats=[0,0,0,0];SES={flash:true};
   $('#quit').onclick=()=>endSession();
   $('#dir').onclick=()=>{rev=!rev;$('#dir').textContent=rev?'EN → SV':'SV → EN';draw()};
   const draw=()=>{if(i>=ws.length)return done();$('#pbar').style.width=(i/ws.length*100)+'%';const w=ws[i];
-    const front=rev?`<div class="bigword" style="font-size:30px">${esc(w.en)}</div>`:`<div class="bigword">${dispH(w)}</div>${spkBtn(disp(w))}`;
-    const back=`<div class="bigword" style="font-size:30px">${dispH(w)}</div>${spkBtn(disp(w))}<div style="font-size:19px;font-weight:700">${esc(w.en)}</div>${formsHTML(w)}${w.ex?`<div class="ex" style="text-align:left"><p>${esc(w.ex[0])}</p><p>${esc(w.ex[1])}</p></div>`:''}`;
+    const front=rev?`<div class="bigword" style="font-size:32px">${esc(w.en)}</div>`:`<div class="bigword">${dispH(w)}</div>${spkBtn(disp(w))}`;
+    const back=`<div class="bigword" style="font-size:32px">${dispH(w)}</div>${spkBtn(disp(w))}<div style="font-size:18px;font-weight:700">${esc(w.en)}</div>${formsHTML(w)}${w.ex?`<div class="ex" style="text-align:left"><p>${esc(w.ex[0])}</p><p>${esc(w.ex[1])}</p></div>`:''}`;
     $('#stage').innerHTML=`<div class="qlabel">${i+1} av ${ws.length} · ${TYPE[w.t]}</div><div class="fc" id="fc"><div class="fcin"><div class="face card">${front}<span class="hint" style="position:absolute;bottom:14px">Tryck för att vända</span></div><div class="face card back">${back}</div></div></div>`;
     if(!rev)speak(disp(w));
     const fc=$('#fc');fc.onclick=e=>{if(e.target.closest('[data-say]'))return;fc.classList.toggle('flip');if(fc.classList.contains('flip')){rateBar();if(rev)speak(disp(w))}};
