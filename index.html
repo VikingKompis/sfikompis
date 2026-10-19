@@ -4,41 +4,48 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Öva svenska för SFI Kurs D: ord, meningar, grammatik, läsning och prov. Spela på mobilen.">
-<meta property="og:title" content="SFI Kompis · Linje D">
+<meta property="og:title" content="SFI Kompis">
 <meta property="og:description" content="Öva svenska för SFI Kurs D: ord, meningar, grammatik, läsning och prov.">
+<meta property="og:image" content="https://sfikompis.com/icon-512.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SFI Kompis">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B5CAD'/%3E%3Ctext x='32' y='46' font-family='Arial,sans-serif' font-weight='800' font-size='42' text-anchor='middle' fill='%23fff'%3ET%3C/text%3E%3C/svg%3E">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>SFI Kompis · Linje D</title>
+<title>SFI Kompis</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="theme-color" content="#0E2236">
+<meta name="theme-color" content="#0062C4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
 /* Layout: a Stockholm-tunnelbana metaphor — every chapter is a coloured line, every lesson a station; one-screen app with bottom tabs, sessions take over the screen. */
 :root{
-  --bg:#E9EEEC; --surface:#FFFFFF; --sunk:#F3F6F5; --ink:#0E2236; --muted:#5A6B77; --line:#D3DBDD;
-  --accent:#0B5CAD; --accent-ink:#FFFFFF; --sign:#0B5CAD;
-  --good:#17804A; --good-bg:#DDF2E5; --bad:#B8323A; --bad-bg:#F8E1E2; --warn:#9A6514; --warn-bg:#FBEFD6;
-  --l0:#D0262F; --l1:#1E8C49; --l2:#1C68C2; --l3:#6E4BA3; --l4:#DC7410; --l5:#B3307F; --l6:#178A82; --l7:#8A642A; --l8:#46525F;
+  --bg:#E8F1FC; --surface:#FFFFFF; --sunk:#F1F6FD; --ink:#0A1E3A; --muted:#4F6482; --line:#CFDDEE;
+  --accent:#0062C4; --accent-ink:#FFFFFF; --sign:#006AA7; --sun:#FECC02; --sun-ink:#2B2200;
+  --hero1:#0062C4; --hero2:#1E8BF0; --hero-ink:#FFFFFF; --hero-muted:#D4E8FF;
+  --good:#0E9F4F; --good-bg:#DCF5E6; --bad:#E0393F; --bad-bg:#FDE3E4; --warn:#B87400; --warn-bg:#FFF1CC;
+  --l0:#E5323B; --l1:#13A453; --l2:#1E7BE0; --l3:#6D4AFF; --l4:#F08A00; --l5:#D49A00; --l6:#00A39A; --l7:#E0458F; --l8:#9333EA;
   --display:"Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --r:14px; --shadow:0 1px 0 rgba(14,34,54,.06), 0 6px 18px -10px rgba(14,34,54,.25);
+  --r:16px; --shadow:0 1px 0 rgba(10,40,90,.06), 0 8px 22px -12px rgba(10,50,120,.28);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0A131C; --surface:#13202C; --sunk:#0F1A24; --ink:#E6EDF2; --muted:#93A4B1; --line:#253645;
-  --accent:#4D9BEA; --accent-ink:#06121D; --sign:#2E7BD0;
-  --good:#45C07A; --good-bg:#11301F; --bad:#F06B72; --bad-bg:#3A171B; --warn:#E3AC4F; --warn-bg:#33270F;
-  --l0:#F0525A; --l1:#3DBA6C; --l2:#4D93E6; --l3:#9C7BD6; --l4:#F29A3D; --l5:#DE5FAE; --l6:#39B9AF; --l7:#C29A57; --l8:#8A97A5;
-  --shadow:0 1px 0 rgba(0,0,0,.3), 0 8px 22px -12px rgba(0,0,0,.7); color-scheme:dark}}
+  --bg:#06111F; --surface:#0E1F35; --sunk:#0A1829; --ink:#EAF2FC; --muted:#9DB2CC; --line:#1F3553;
+  --accent:#4DA6FF; --accent-ink:#04101E; --sign:#2C88D9; --sun:#FFD43B; --sun-ink:#231B00;
+  --hero1:#0B4C96; --hero2:#1A73D1; --hero-ink:#FFFFFF; --hero-muted:#C6DEFA;
+  --good:#3CCB7F; --good-bg:#0F3020; --bad:#FF6B70; --bad-bg:#3B1519; --warn:#FFC040; --warn-bg:#352808;
+  --l0:#FF5A62; --l1:#34CE76; --l2:#4C9DFF; --l3:#977BFF; --l4:#FFA43A; --l5:#F2C230; --l6:#2CCFC4; --l7:#FF6FAE; --l8:#B972FF;
+  --shadow:0 1px 0 rgba(0,0,0,.35), 0 10px 26px -14px rgba(0,0,0,.8); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0A131C; --surface:#13202C; --sunk:#0F1A24; --ink:#E6EDF2; --muted:#93A4B1; --line:#253645;
-  --accent:#4D9BEA; --accent-ink:#06121D; --sign:#2E7BD0;
-  --good:#45C07A; --good-bg:#11301F; --bad:#F06B72; --bad-bg:#3A171B; --warn:#E3AC4F; --warn-bg:#33270F;
-  --l0:#F0525A; --l1:#3DBA6C; --l2:#4D93E6; --l3:#9C7BD6; --l4:#F29A3D; --l5:#DE5FAE; --l6:#39B9AF; --l7:#C29A57; --l8:#8A97A5;
-  --shadow:0 1px 0 rgba(0,0,0,.3), 0 8px 22px -12px rgba(0,0,0,.7); color-scheme:dark}
+  --bg:#06111F; --surface:#0E1F35; --sunk:#0A1829; --ink:#EAF2FC; --muted:#9DB2CC; --line:#1F3553;
+  --accent:#4DA6FF; --accent-ink:#04101E; --sign:#2C88D9; --sun:#FFD43B; --sun-ink:#231B00;
+  --hero1:#0B4C96; --hero2:#1A73D1; --hero-ink:#FFFFFF; --hero-muted:#C6DEFA;
+  --good:#3CCB7F; --good-bg:#0F3020; --bad:#FF6B70; --bad-bg:#3B1519; --warn:#FFC040; --warn-bg:#352808;
+  --l0:#FF5A62; --l1:#34CE76; --l2:#4C9DFF; --l3:#977BFF; --l4:#FFA43A; --l5:#F2C230; --l6:#2CCFC4; --l7:#FF6FAE; --l8:#B972FF;
+  --shadow:0 1px 0 rgba(0,0,0,.35), 0 10px 26px -14px rgba(0,0,0,.8); color-scheme:dark}
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%;overscroll-behavior:none}
 *{box-sizing:border-box}
@@ -52,17 +59,19 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.02em}
 .tab svg{width:24px;height:24px}
 .tab[aria-current="page"]{color:var(--accent)}
-.tab[aria-current="page"] .tico{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.tab[aria-current="page"] .tico{background:var(--sun);color:var(--sun-ink)}
 .tico{display:grid;place-items:center;width:44px;height:28px;border-radius:14px}
 
 /* top bar */
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 12px}
 .brand{display:flex;align-items:center;gap:10px}
-.tsign{width:34px;height:34px;border-radius:8px;background:var(--sign);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:22px;font-stretch:100%}
-.brand b{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:19px;letter-spacing:-.01em}
+.logo{width:34px;height:34px;flex:none;display:block}
+.logo .t{fill:var(--sign)} .logo .y{fill:var(--sun)}
+.brand b{font-family:var(--display);font-stretch:110%;font-weight:500;font-size:20px;letter-spacing:-.01em;display:block;line-height:1.1}
+.brand b strong{font-weight:800}
 .brand small{display:block;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:-2px}
 .chips{display:flex;gap:8px;align-items:center}
-.chip{display:inline-flex;align-items:center;gap:5px;font-weight:700;font-size:14px;padding:6px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.chip{display:inline-flex;box-shadow:var(--shadow);align-items:center;gap:5px;font-weight:700;font-size:14px;padding:6px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-variant-numeric:tabular-nums}
 .chip svg{width:16px;height:16px}
 .iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--muted)}
 .iconbtn svg{width:22px;height:22px}
@@ -74,9 +83,12 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .small{font-size:13.5px}
 
 /* home */
-.hero{padding:18px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;position:relative;overflow:hidden}
+.hero{padding:20px 18px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--hero1),var(--hero2));color:var(--hero-ink);border:0}
+.hero::after{content:"";position:absolute;right:-30px;bottom:-40px;width:150px;height:150px;border-radius:50%;background:var(--sun);opacity:.16;pointer-events:none}
 .hero h1{font-size:28px;font-weight:800;line-height:1.05}
-.hero p{margin:6px 0 0;color:var(--muted)}
+.hero p{margin:6px 0 0;color:var(--hero-muted)}
+.hero .eyebrow{color:var(--hero-muted)}
+.hero .ring .rv small{color:var(--hero-muted)}
 .ring{width:84px;height:84px;position:relative}
 .ring svg{width:84px;height:84px;transform:rotate(-90deg)}
 .ring .rv{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-family:var(--display);font-weight:800;font-size:17px;line-height:1;font-variant-numeric:tabular-nums}
@@ -241,7 +253,9 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 .mc .in{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d}
 .mc.up .in,.mc.got .in{transform:rotateY(180deg)}
 .mc .f,.mc .b{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;padding:8px;text-align:center;font-weight:700;font-size:14.5px;line-height:1.2;overflow-wrap:anywhere;hyphens:auto;-webkit-hyphens:auto}
-.mc .f{background:var(--sign);color:#fff;font-family:var(--display);font-size:30px;font-weight:800;background-image:radial-gradient(circle at 50% 50%,rgba(255,255,255,.14) 0 22%,transparent 23%)}
+.mc .f{background:linear-gradient(140deg,var(--hero1),var(--hero2))}
+.mc .f svg{width:46%;height:auto}
+.mc .f .t{fill:rgba(255,255,255,.22)} .mc .f .y{fill:var(--sun)}
 .mc .b{transform:rotateY(180deg);background:var(--surface);border:2px solid var(--line)}
 .mc .b.sv{font-family:var(--display);font-stretch:100%;font-size:15px}
 .mc.got .b{border-color:var(--good);background:var(--good-bg)}
@@ -291,7 +305,6 @@ h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;marg
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 @media (min-width:560px){.grid2{grid-template-columns:repeat(3,1fr)}.mem{grid-template-columns:repeat(4,1fr)}}
 </style>
-
 </head>
 <body>
 <div id="app" class="app"></div>
@@ -335,6 +348,7 @@ const I={
  star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4-4.7-4.4 6.4-.8z"/></svg>',
 };
 
+const LOGO=(cls='logo')=>`<svg class="${cls}" viewBox="0 0 64 64" role="img" aria-label="SFI Kompis logo">${[[4,4],[24,4],[44,4],[4,24],[24,24],[44,24],[4,44],[24,44],[44,44]].map(([x,y],i)=>`<rect class="${(i===1||i>=3&&i<=5||i===7)?'y':'t'}" x="${x}" y="${y}" width="16" height="16" rx="3"/>`).join('')}</svg>`;
 /* ---------- data prep ---------- */
 const U=[ // unit meta
  {k:'bostad',n:'Bostad',en:'Housing',p:1,code:'B'},
@@ -655,10 +669,10 @@ function render(){
   ({home:vHome,lines:vLines,practice:vPractice,test:vTest,lib:vLib})[TAB](v);
 }
 root.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){TAB=t.dataset.tab;try{sessionStorage.setItem('sfi-tab',TAB)}catch(_){};render();$('#view').scrollTop=0}});
-function topbar(){return `<header class="top"><div class="brand"><div class="tsign">T</div><div><b>Linje D</b><small>SFI Kurs D</small></div></div>
+function topbar(){return `<header class="top"><div class="brand">${LOGO()}<div><b>SFI<strong>Kompis</strong></b><small>Kurs D · Linje D</small></div></div>
   <div class="chips"><span class="chip" style="color:var(--l4)" title="Dagar i rad">${I.fire}<span style="color:var(--ink)">${streakNow()}</span></span><span class="chip" title="Total XP" style="color:var(--warn)">${I.bolt}<span style="color:var(--ink)">${P.xp}</span></span>
   <button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></div></header>`}
-function greet(){const h=new Date().getHours();return h<10?'God morgon':h<18?'Hej igen':'God kväll'}
+function greet(){const h=new Date().getHours();return h>=5&&h<10?'God morgon':h>=10&&h<18?'Hej igen':'God kväll'}
 
 function vHome(v){
   const d=DAY(),today=P.days[d]||0,pct=Math.min(1,today/P.goal),due=dueKeys().length,nx=nextStation(),u=U[nx.ui];
@@ -667,7 +681,7 @@ function vHome(v){
   const wd=['sön','mån','tis','ons','tor','fre','lör'];
   v.innerHTML=topbar()+`<div class="stack">
   <section class="card hero"><div><div class="eyebrow">${greet()}</div><h1>${today>=P.goal?'Dagens mål klart. Bra jobbat!':today>0?'Fortsätt, du är på väg.':'Dags för dagens tur.'}</h1><p>${today} av ${P.goal} XP i dag</p></div>
-   <div class="ring"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="36" fill="none" stroke="var(--line)" stroke-width="9"/><circle cx="42" cy="42" r="36" fill="none" stroke="${today>=P.goal?'var(--good)':'var(--accent)'}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/></svg><div class="rv">${Math.round(pct*100)}%<small>mål</small></div></div></section>
+   <div class="ring"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="36" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><circle cx="42" cy="42" r="36" fill="none" stroke="var(--sun)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/></svg><div class="rv">${Math.round(pct*100)}%<small>mål</small></div></div></section>
   <button class="card next" id="goNext" style="--lc:${u.lc}"><span class="dot"></span><span style="min-width:0"><span class="eyebrow">Nästa station · ${esc(u.n)}</span><b>${esc(nx.ti)}</b><span class="small muted">${esc(nx.sub)}</span></span><span class="go">Kör</span></button>
   <div class="grid2" style="grid-template-columns:1fr 1fr">
    <button class="card mode" id="goReview" style="--mc:var(--l4)"><span class="mi">${I.redo}</span><b>Repetera</b><span>${due?`${due} kort väntar i dag`:'Inget att repetera just nu'}</span></button>
@@ -1013,7 +1027,7 @@ function runFlash(ws,lc){let i=0,rev=false,stats=[0,0,0,0];SES={flash:true};
 /* ---------- memory ---------- */
 function runMemory(ws,lc){SES={mem:true};let moves=0,open=[],got=0,lock=false;const t0=Date.now();
   const cards=shuffle(ws.flatMap(w=>[{id:w.i,t:disp(w),sv:1},{id:w.i,t:enShort(w),sv:0}]));
-  root.innerHTML=`<div class="session" style="--lc:${lc}"><div class="shead"><button class="iconbtn" id="quit" aria-label="Avsluta">${I.x}</button><div style="flex:1;font-family:var(--display);font-weight:800;font-size:18px">Memory</div><span class="chip" id="mv">0 drag</span></div><div class="stage" id="stage"><div class="hint">Vänd två kort. Hitta det svenska ordet och dess betydelse.</div><div class="mem">${cards.map((c,i)=>`<button class="mc" data-i="${i}" aria-label="Kort ${i+1}"><span class="in"><span class="f">T</span><span class="b ${c.sv?'sv':''}" lang="${c.sv?'sv':'en'}">${esc(c.t)}</span></span></button>`).join('')}</div></div><div class="sfoot" id="foot"><div class="hint" style="text-align:center">${P.best.mem?`Ditt rekord: ${P.best.mem} drag`:'Försök klara det på så få drag som möjligt'}</div></div></div>`;
+  root.innerHTML=`<div class="session" style="--lc:${lc}"><div class="shead"><button class="iconbtn" id="quit" aria-label="Avsluta">${I.x}</button><div style="flex:1;font-family:var(--display);font-weight:800;font-size:18px">Memory</div><span class="chip" id="mv">0 drag</span></div><div class="stage" id="stage"><div class="hint">Vänd två kort. Hitta det svenska ordet och dess betydelse.</div><div class="mem">${cards.map((c,i)=>`<button class="mc" data-i="${i}" aria-label="Kort ${i+1}"><span class="in"><span class="f">${LOGO('')}</span><span class="b ${c.sv?'sv':''}" lang="${c.sv?'sv':'en'}">${esc(c.t)}</span></span></button>`).join('')}</div></div><div class="sfoot" id="foot"><div class="hint" style="text-align:center">${P.best.mem?`Ditt rekord: ${P.best.mem} drag`:'Försök klara det på så få drag som möjligt'}</div></div></div>`;
   $('#quit').onclick=()=>endSession();
   $$('.mc').forEach(el=>el.onclick=()=>{if(lock||el.classList.contains('up')||el.classList.contains('got'))return;const c=cards[+el.dataset.i];el.classList.add('up');if(c.sv)speak(c.t);open.push(el);
     if(open.length===2){moves++;$('#mv').textContent=moves+' drag';const [a,b]=open.map(e=>cards[+e.dataset.i]);
