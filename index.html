@@ -55,8 +55,11 @@ input,textarea,select{font:inherit;color:var(--ink)}
 h1,h2,h3{font-family:var(--display);font-stretch:112%;letter-spacing:-.01em;margin:0;text-wrap:balance}
 .app{height:100%;display:flex;flex-direction:column;max-width:640px;margin:0 auto;position:relative}
 .view{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 24px}
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-.tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.02em}
+.apphead{background:var(--bg);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:6px 0}
+.apphead .top{padding:4px 0 8px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:16px;margin:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));padding:4px;box-shadow:var(--shadow);position:relative;z-index:2}
+.tab{border-radius:12px}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 6px;min-height:52px;justify-content:center;font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.02em}
 .tab svg{width:24px;height:24px}
 .tab[aria-current="page"]{color:var(--accent)}
 .tab[aria-current="page"] .tico{background:var(--sun);color:var(--sun-ink)}
@@ -664,12 +667,14 @@ try{const t=sessionStorage.getItem('sfi-tab');if(t)TAB=t}catch(e){}
 const root=$('#app');
 function render(){
   if(SES)return;
-  root.innerHTML=`<main class="view" id="view"></main><nav class="tabs" aria-label="Huvudmeny">${[['home','Hem',I.home],['lines','Linjer',I.lines],['practice','Öva',I.practice],['test','Prov',I.test],['lib','Ordbok',I.book]].map(([k,n,ic])=>`<button class="tab" data-tab="${k}" ${TAB===k?'aria-current="page"':''}><span class="tico">${ic}</span>${n}</button>`).join('')}</nav>`;
+  root.innerHTML=`<div class="apphead">${topbarHTML()}</div><nav class="tabs" aria-label="Huvudmeny">${[['home','Hem',I.home],['lines','Linjer',I.lines],['practice','Öva',I.practice],['test','Prov',I.test],['lib','Ordbok',I.book]].map(([k,n,ic])=>`<button class="tab" data-tab="${k}" ${TAB===k?'aria-current="page"':''}><span class="tico">${ic}</span>${n}</button>`).join('')}</nav><main class="view" id="view"></main>`;
+  {const s=$('#settings');if(s)s.onclick=openSettings};
   const v=$('#view');
   ({home:vHome,lines:vLines,practice:vPractice,test:vTest,lib:vLib})[TAB](v);
 }
 root.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){TAB=t.dataset.tab;try{sessionStorage.setItem('sfi-tab',TAB)}catch(_){};render();$('#view').scrollTop=0}});
-function topbar(){return `<header class="top"><div class="brand">${LOGO()}<div><b>SFI<strong>Kompis</strong></b><small>Kurs D · Linje D</small></div></div>
+function topbar(){return ''}
+function topbarHTML(){return `<header class="top"><div class="brand">${LOGO()}<div><b>SFI<strong>Kompis</strong></b><small>Kurs D · Linje D</small></div></div>
   <div class="chips"><span class="chip" style="color:var(--l4)" title="Dagar i rad">${I.fire}<span style="color:var(--ink)">${streakNow()}</span></span><span class="chip" title="Total XP" style="color:var(--warn)">${I.bolt}<span style="color:var(--ink)">${P.xp}</span></span>
   <button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></div></header>`}
 function greet(){const h=new Date().getHours();return h>=5&&h<10?'God morgon':h>=10&&h<18?'Hej igen':'God kväll'}
@@ -695,7 +700,7 @@ function vHome(v){
   $('#goNext').onclick=()=>startStation(nx);
   $('#goReview').onclick=()=>startReview();
   $('#goMist').onclick=()=>startMistakes();
-  $('#settings').onclick=openSettings;
+  {const s=$('#settings');if(s)s.onclick=openSettings};
 }
 function crownsHTML(n){return `<span class="crowns" aria-label="${n} av 3 kronor">${[0,1,2].map(i=>`<span class="${i<n?'':'off'}">${I.crown}</span>`).join('')}</span>`}
 let openUnit=null;
@@ -710,7 +715,7 @@ function vLines(v){
   v.innerHTML=h+`</div>`;
   $$('[data-unit]',v).forEach(b=>b.onclick=()=>{const ui=+b.dataset.unit;openUnit=openUnit===ui?-1:ui;vLines(v);const el=$(`[data-unit="${ui}"]`,v);el&&el.scrollIntoView({block:'start'})});
   $$('[data-st]',v).forEach(b=>b.onclick=()=>startStation(STBY[b.dataset.st]));
-  $('#settings').onclick=openSettings;
+  {const s=$('#settings');if(s)s.onclick=openSettings};
   const here=$('.st.here',v);if(here)setTimeout(()=>here.scrollIntoView({block:'center'}),30);
 }
 function vPractice(v){
@@ -729,7 +734,7 @@ function vPractice(v){
   </div>`;
   $$('[data-mode]',v).forEach(b=>b.onclick=()=>pickSource(b.dataset.mode));
   $$('[data-set]',v).forEach(b=>b.onclick=()=>{const xs=X.filter(x=>x.s===b.dataset.set);runSession({title:setName(b.dataset.set,xs),lc:xs[0].u>=0?U[xs[0].u].lc:'var(--l8)',qs:xs.map(Q.ex)})});
-  $('#settings').onclick=openSettings;
+  {const s=$('#settings');if(s)s.onclick=openSettings};
 }
 function groupBy(a,f){const o={};a.forEach(x=>{(o[f(x)]=o[f(x)]||[]).push(x)});return o}
 function setName(s,xs){const t=xs[0].ti||'';const map={p1I:'Läsfrågor, kapitel 1–3',p2R:'Läsfrågor, kapitel 4–7'};return map[s]||(s.startsWith('p1')?t.replace(/^[A-J] /,''):t)||s}
@@ -740,7 +745,7 @@ function vTest(v){
   ${[['test1','Slutprov del 1','Kapitel 1–3 · 20 uppgifter · ca 40 min',t1.length,'var(--l0)'],['test2','Slutprov del 2','Kapitel 4–7 · 40 uppgifter · ca 45 min',t2.length,'var(--l4)'],['mix','Snabbprov','20 blandade uppgifter från hela guiden','20','var(--l2)'],['words','Ordprov','25 ord att skriva på svenska','25','var(--l1)']].map(t=>`<button class="card libitem" data-test="${t[0]}" style="--lc:${t[4]}"><span class="ubadge" style="background:${t[4]}">${t[3]}</span><span style="flex:1;min-width:0"><b>${t[1]}</b><span class="small muted">${t[2]}</span><div class="small" style="margin-top:2px">${last(t[0])}</div></span></button>`).join('')}
   <p class="small muted">Det här är övningsprov från din studieguide, inte en officiell SFI-bedömning. Guiden sätter målet till minst 16 av 20 på del 1. På del 2 betyder 34–40 god återgivning.</p></div>`;
   $$('[data-test]',v).forEach(b=>b.onclick=()=>startTest(b.dataset.test));
-  $('#settings').onclick=openSettings;
+  {const s=$('#settings');if(s)s.onclick=openSettings};
 }
 function vLib(v){
   const st=libState;
@@ -757,7 +762,7 @@ function vLib(v){
   }
   v.innerHTML=h+`</div>`;
   $$('[data-seg]',v).forEach(b=>b.onclick=()=>{st.seg=b.dataset.seg;vLib(v)});
-  $('#settings').onclick=openSettings;
+  {const s=$('#settings');if(s)s.onclick=openSettings};
   if(st.seg==='ord'){const draw=()=>{const q=norm(st.q);let list=W.filter(w=>(st.t==='all'||w.t===st.t)&&(st.u<0||w.c.includes(st.u)));
       if(q)list=list.filter(w=>norm(disp(w)+' '+w.en+' '+(w.f||[]).join(' ')).includes(q));
       const shown=list.slice(0,150);
