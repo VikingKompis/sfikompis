@@ -394,6 +394,16 @@ h1{font-size:24px;line-height:1.15}h2{font-size:18px}h3{font-size:16px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 @media (min-width:560px){.grid2{grid-template-columns:repeat(3,1fr)}.mem{grid-template-columns:repeat(4,1fr)}}
 /* mock exam */
+.stopbig{background:var(--bad)!important;box-shadow:0 3px 0 color-mix(in srgb,var(--bad) 60%,#000)!important;min-height:58px}.stopbig svg{width:18px;height:18px}
+.livebox{padding:14px;display:flex;flex-direction:column;gap:6px}.livebox p{margin:0;font-size:16px;line-height:1.5}
+.recdot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--bad);margin-right:6px;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+#rec.stop{background:var(--bad);box-shadow:0 3px 0 color-mix(in srgb,var(--bad) 60%,#000)}
+#rec svg{width:20px;height:20px}
+.statrow{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip.okc{color:var(--good);border-color:var(--good)}
+details.ctx summary{cursor:pointer;color:var(--accent);font-weight:700;font-size:14px}
+details.ctx .reader p{font-size:14px}
 .stage>*{flex-shrink:0}
 .xtext{padding:16px;display:flex;flex-direction:column;gap:6px}
 .xtext h3{margin:0;font-size:18px}
@@ -466,6 +476,8 @@ const I={
  pen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13 7 4 4"/></svg>',
  redo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4h4"/></svg>',
  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+ mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+ stop:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
  star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4-4.7-4.4 6.4-.8z"/></svg>',
 };
 
@@ -570,7 +582,7 @@ function grade(k,ok,weight=1){const d=DAY();let s=P.srs[k]||[0,d,0,0];
   P.srs[k]=s}
 function seenKeys(){return Object.keys(P.srs)}
 function dueKeys(){const d=DAY();return Object.entries(P.srs).filter(([k,s])=>s[1]<=d&&validKey(k)).sort((a,b)=>a[1][1]-b[1][1]||a[1][0]-b[1][0]).map(e=>e[0])}
-function validKey(k){const t=k[0];if(t==='g'){const [gi,j]=k.slice(1).split('_').map(Number);return !!(GR[gi]&&GR[gi].pr[j])}const i=+k.slice(1);return t==='w'?!!W[i]:t==='s'?!!S[i]:t==='x'?!!X[i]&&X[i].k!=='open':false}
+function validKey(k){const t=k[0];if(t==='p')return mkValid(k);if(t==='g'){const [gi,j]=k.slice(1).split('_').map(Number);return !!(GR[gi]&&GR[gi].pr[j])}const i=+k.slice(1);return t==='w'?!!W[i]:t==='s'?!!S[i]:t==='x'?!!X[i]&&X[i].k!=='open':false}
 function learnedCount(){return Object.entries(P.srs).filter(([k,s])=>k[0]==='w'&&s[0]>=3).length}
 function mistakeKeys(){return Object.entries(P.srs).filter(([k,s])=>s[3]>0&&s[0]<=2&&validKey(k)).map(e=>e[0])}
 
@@ -747,7 +759,8 @@ function keyQ(k,level=2){const t=k[0],i=+k.slice(1);
   if(t==='w')return wordQ(W[i],level);
   if(t==='s'){const s=S[i];return level>=2&&TTS&&Math.random()<.3?Q.build(s,true):Q.build(s,false)}
   if(t==='x')return Q.ex(X[i]);
-  if(t==='g'){const [gi,j]=k.slice(1).split('_').map(Number);return gramQ(GR[gi],j)}}
+  if(t==='g'){const [gi,j]=k.slice(1).split('_').map(Number);return gramQ(GR[gi],j)}
+  if(t==='p')return mkQ(k)}
 
 /* ---------- stations (the metro lines) ---------- */
 const chunk=(a,n)=>{const o=[];for(let i=0;i<a.length;i+=n)o.push(a.slice(i,i+n));return o};
@@ -1145,7 +1158,7 @@ function endSession(){try{speechSynthesis.cancel()}catch(e){}
   try{if(history.state&&history.state.sfi){history.back();return}}catch(e){}
   SES=null;render()}
 function pageOpened(){try{if(history.state&&history.state.sfi)history.replaceState({sfi:1},'');else history.pushState({sfi:1},'')}catch(e){}}
-window.addEventListener('popstate',()=>{if(SES){clearInterval(MT);try{speechSynthesis.cancel()}catch(e){};SES=null;render()}});
+window.addEventListener('popstate',()=>{if(SES){clearInterval(MT);stopRec();try{speechSynthesis.cancel()}catch(e){};SES=null;render()}});
 function examResults(again){
   const s=SES;const items=s.examItems||(s.examItems=s.log.filter(l=>l.q.type!=='intro'));const n=items.length;
   let pts=0;items.forEach(l=>pts+=l.ok?1:l.half?.5:0);pts=Math.round(pts*10)/10;
@@ -1204,7 +1217,7 @@ function runMock(cfg){// cfg: {id,title,mocks:[...],parts:[...]}
   const pages=buildMock(cfg.mocks,cfg.parts);
   SES={mock:true,cfg,pages,i:0,start:Date.now(),partStart:{},write:{},talk:{}};pageOpened();
   root.innerHTML=`<div class="session" style="--lc:var(--sign)"><div class="shead"><button class="back" id="quit" aria-label="Tillbaka">${I.back}<span>Tillbaka</span></button><div class="prog"><i id="pbar" style="width:0"></i></div><span class="chip" id="clock">0:00</span></div><div class="stage" id="stage"></div><div class="sfoot" id="foot"></div></div>`;
-  $('#quit').onclick=()=>{clearInterval(MT);endSession()};
+  $('#quit').onclick=()=>{clearInterval(MT);stopRec();endSession()};
   clearInterval(MT);MT=setInterval(tickMock,1000);mockPage()}
 function tickMock(){if(!SES||!SES.mock){clearInterval(MT);return}const c=$('#clock');if(!c)return;
   const pg=SES.pages[SES.i];if(!pg){c.textContent='';return}const ps=SES.partStart[pg.part];
@@ -1212,7 +1225,7 @@ function tickMock(){if(!SES||!SES.mock){clearInterval(MT);return}const c=$('#clo
   const el=Math.round((Date.now()-ps)/1000),lim=PART[pg.part][2]*60;
   if(pg.part==='skriva'){const left=lim-el;c.textContent=(left<0?'+':'')+fmtT(Math.abs(left));c.classList.toggle('late',left<0);if(left===0)toast('Tiden för Skriva är slut. Avsluta din text.')}
   else{c.textContent=fmtT(el);c.classList.toggle('late',el>lim)}}
-function mockPage(){const s=SES,pg=s.pages[s.i],st=$('#stage'),ft=$('#foot');try{speechSynthesis.cancel()}catch(e){}
+function mockPage(){stopRec();const s=SES,pg=s.pages[s.i],st=$('#stage'),ft=$('#foot');try{speechSynthesis.cancel()}catch(e){}
   if(!pg)return mockResults();
   $('#pbar').style.width=(s.i/s.pages.length*100)+'%';st.scrollTop=0;ft.className='sfoot';
   const nav=(next='Nästa',ok=true)=>{ft.innerHTML=`<div class="navrow">${s.i>0&&s.pages[s.i-1].part===pg.part&&s.pages[s.i-1].kind!=='intro'?'<button class="btn ghost" id="prev">Föregående</button>':''}<button class="btn" id="next" ${ok?'':'disabled'}>${next}</button></div>`;
@@ -1255,14 +1268,36 @@ function mockPage(){const s=SES,pg=s.pages[s.i],st=$('#stage'),ft=$('#foot');try
     nav(nextLabel);return}
   if(pg.kind==='talk'){const t=pg.t,key=pg.m.id+'_'+t.n;const T=s.talk[key]=s.talk[key]||{g:null};let tm=null;
     st.innerHTML=lab+`<div class="xtext card talkcard"><span class="eyebrow">Uppgift ${t.n} · ${esc(t.kind)}</span><h3>${esc(t.task)}</h3><ul class="rules">${t.help.map(h=>`<li>${esc(h)}</li>`).join('')}</ul></div>
-     <div class="playrow"><button class="btn ghost" id="prep">Förbered 1 min</button><button class="btn" id="talk">Prata ${t.n===1?'3':'5'} min</button><span class="chip" id="tt">–</span></div>
+     <div class="playrow"><button class="btn ghost" id="prep">Förbered 1 min</button><button class="btn" id="rec">${I.mic} Spela in svar</button><span class="chip" id="tt">${t.n===1?'3:00':'5:00'}</span><button class="linkbtn" id="tstop" hidden>Stoppa klockan</button></div>
+     <div id="live" class="card livebox" hidden></div><div id="recres"></div>
      ${t.partner?`<section class="gcard"><h3>Samtalspartner</h3><p class="hint" style="margin:0 0 8px">Tryck på en fråga för att höra den. Svara högt och ge skäl för din åsikt. Fråga också vad din partner tycker.</p><ul class="exl">${t.partner.map(p=>`<li>${spkBtn(p,'sm')}<div><b>${esc(p)}</b></div></li>`).join('')}</ul></section>`:''}
      <section class="gcard"><h3>Tips</h3><ul class="rules"><li>Börja med en mening som svarar på frågan direkt.</li><li>Ge exempel från ditt eget liv.</li><li>Använd bindeord: först, sedan, eftersom, men, till exempel, därför, å ena sidan … å andra sidan.</li>${t.partner?'<li>Visa att du lyssnar: Jag håller med dig. Hur menar du? Det har jag inte tänkt på.</li>':''}</ul></section>
      <div id="tmodel"></div>`;
-    const run=(sec,label)=>{clearInterval(tm);let left=sec;const tt=$('#tt');tt.textContent=fmtT(left);tm=setInterval(()=>{if(!$('#tt')){clearInterval(tm);return}left--;tt.textContent=left>0?fmtT(left):'Klart';if(left<=0){clearInterval(tm);beep(true);toast(label)}},1000)};
-    $('#prep').onclick=()=>run(60,'Förberedelsen är slut. Börja prata!');$('#talk').onclick=()=>run(t.n===1?180:300,'Tiden är slut.');
-    ft.innerHTML=`<div class="hint" style="text-align:center">Hur gick det? Din egen bedömning räknas i resultatet.</div><div class="rate" style="grid-template-columns:repeat(3,1fr)"><button class="r1" data-g="0">Svårt</button><button class="r2" data-g="1">Ganska bra</button><button class="r3" data-g="2">Bra</button></div>${t.model?'<button class="linkbtn" id="showm">Visa ett exempelsvar</button>':''}`;
-    $$('[data-g]',ft).forEach(b=>b.onclick=()=>{clearInterval(tm);T.g=+b.dataset.g;s.i++;mockPage()});
+    const tstop=()=>{clearInterval(tm);const b=$('#tstop');if(b)b.hidden=true;const tt=$('#tt');if(tt&&!REC)tt.textContent=fmtT(t.n===1?180:300)};
+    const run=(sec,label)=>{clearInterval(tm);let left=sec;const tt=$('#tt');tt.textContent=fmtT(left);const b=$('#tstop');if(b){b.hidden=false;b.onclick=tstop}
+      tm=setInterval(()=>{if(!$('#tt')){clearInterval(tm);return}left--;tt.textContent=left>0?fmtT(left):'Klart';if(left<=0){clearInterval(tm);const b2=$('#tstop');if(b2)b2.hidden=true;beep(true);toast(label)}},1000)};
+    const lim=t.n===1?180:300;
+    $('#prep').onclick=()=>run(60,'Förberedelsen är slut. Börja prata!');
+    const showRes=()=>{const rr=$('#recres');if(!rr)return;rr.innerHTML=talkResHTML(T,t);
+      const ta=$('#trx',rr);if(ta)ta.oninput=()=>{T.tr=ta.value;T.ai=null;const sx=$('#tstats',rr);if(sx)sx.innerHTML=talkStats(T)};
+      const ab=$('#askt',rr);if(ab)ab.onclick=async()=>{if(talkFacts(T).words<10)return toast('Säg minst ett par meningar först.');ab.outerHTML=WAIT('Claude lyssnar på din text… det kan ta en halv minut');
+        try{const j=await AI.json(pTalk(t,T),{modelTier:'default'});if(!j||!['G','nära','IG'].includes(j.grade))throw {code:'invalid_json'};
+          if(SES!==s||!$('#recres'))return;j.pts=j.grade==='G'?2:j.grade==='nära'?1:0;T.ai=j;showRes();
+          $$('[data-g]',ft).forEach(b=>{b.classList.toggle('sug',+b.dataset.g===j.pts)});$('#recres .aifb')&&$('#recres .aifb').scrollIntoView({behavior:'smooth',block:'start'})}
+        catch(e){if(SES!==s)return;const w=$('#recres .aiwait');if(w)w.outerHTML=`<div class="hint">${esc(aiFail(e))}</div>`}}};
+    const recBtn=$('#rec'),live=$('#live');
+    recBtn.onclick=async()=>{if(REC){stopRec();return}
+      if(recBtn.dataset.busy)return;recBtn.dataset.busy=1;clearInterval(tm);live.hidden=false;live.innerHTML='<span class="hint">Startar mikrofonen…</span>';
+      try{await startRec(T,lim,r=>{const el=Math.round((Date.now()-r.t0)/1000);const tt=$('#tt');if(tt)tt.textContent=fmtT(Math.max(0,lim-el));const rl=$('#recleft');if(rl)rl.textContent=fmtT(Math.max(0,lim-el))+' kvar';
+          if(!$('#live'))return;live.innerHTML=`<span class="eyebrow" style="color:var(--bad)"><span class="recdot"></span>Spelar in</span>${SR&&!r.srErr?`<p>${esc(r.final)}<span class="muted">${esc(r.interim)}</span>${!r.final&&!r.interim?'<span class="hint">Börja prata, texten visas här…</span>':''}</p>`:'<p class="hint">Din webbläsare kan inte skriva ut tal här, men du kan lyssna på dig själv efteråt.</p>'}`},
+        ()=>{if(!$('#rec'))return;recMode(false);const tt=$('#tt');if(tt)tt.textContent=fmtT(T.dur||0);recBtn.innerHTML=`${I.mic} Spela in igen`;recBtn.classList.remove('stop');live.hidden=true;showRes();beep(true)});
+        recBtn.innerHTML=`${I.stop} Stoppa`;recBtn.classList.add('stop');recMode(true);const b=$('#tstop');if(b)b.hidden=true}
+      catch(e){live.innerHTML=`<p class="hint">Mikrofonen gick inte att starta${e&&e.name==='NotAllowedError'?' (åtkomst nekad)':''}. Tillåt mikrofonen i webbläsaren, eller öppna sfikompis.com direkt i Safari eller Chrome. Du kan fortfarande prata mot klockan.</p>`;run(lim,'Tiden är slut.')}
+      finally{delete recBtn.dataset.busy}};
+    if(T.tr!=null||T.url)showRes();
+    ft.innerHTML=`<button class="btn block stopbig" id="recstop" hidden>${I.stop} Stoppa inspelningen · <span id="recleft"></span></button><div class="hint rateui" style="text-align:center">${AI?'Spela in ditt svar så kan Claude bedöma det. Välj sedan hur det gick.':'Spela in ditt svar och lyssna. Välj sedan hur det gick.'}</div><div class="rate rateui" style="grid-template-columns:repeat(3,1fr)"><button class="r1" data-g="0">Svårt</button><button class="r2" data-g="1">Ganska bra</button><button class="r3" data-g="2">Bra</button></div>${t.model?'<button class="linkbtn rateui" id="showm">Visa ett exempelsvar</button>':''}`;
+    const recMode=on=>{const b=$('#recstop',ft);if(b){b.hidden=!on;b.onclick=()=>stopRec()}$$('.rateui',ft).forEach(x=>x.hidden=on)};
+    $$('[data-g]',ft).forEach(b=>{if(T.ai&&+b.dataset.g===T.ai.pts)b.classList.add('sug');b.onclick=()=>{clearInterval(tm);stopRec();T.g=+b.dataset.g;s.i++;mockPage()}});
     const sm=$('#showm');if(sm)sm.onclick=()=>{$('#tmodel').innerHTML=`<div class="card intro" style="border-color:var(--good)"><span class="eyebrow" style="color:var(--good)">Exempelsvar</span><div class="say" style="align-items:flex-start;gap:10px"><p style="margin:0;flex:1;font-size:16px;line-height:1.55">${esc(t.model)}</p>${spkBtn(t.model,'sm')}</div></div>`;sm.remove();$('#tmodel').scrollIntoView({behavior:'smooth'})};
     return}
 }
@@ -1276,7 +1311,7 @@ function mockScore(s){const out={};
     pg.items.forEach((it,k)=>{o.n++;if(pg.sel[k]!=null&&it.o[pg.sel[k]]===it.a)o.pts++})}
   for(const part of ['skriva','tala'])if(out[part]){const o=out[part];o.pts=0;o.n=0;
     o.pages.forEach(pg=>{const key=pg.m.id+'_'+pg.t.n;o.n+=2;
-      if(part==='tala'){const g=(s.talk[key]||{}).g;o.pts+=g==null?0:g}
+      if(part==='tala'){const T=s.talk[key]||{};o.pts+=T.g!=null?T.g:T.ai?T.ai.pts:0}
       else{const a=(s.ai||{})[key],sw=(s.selfW||{})[key];o.pts+=a?a.pts:sw!=null?sw:0;o.self=o.self||(!a&&sw==null)}})}
   return out}
 function bandOf(o){const p=o.n?o.pts/o.n:0;return p>=.75?['good','På god väg mot G']:p>=.6?['warn','Nära, öva lite till']:['bad','Behöver mer övning']}
@@ -1295,7 +1330,7 @@ function mockResults(again){const s=SES;clearInterval(MT);try{speechSynthesis.ca
   if(lasa.length)rows.push(['Läsa',lasa.reduce((a,p)=>({pts:a.pts+sc[p].pts,n:a.n+sc[p].n}),{pts:0,n:0})]);
   ['hora','skriva','tala'].forEach(p=>{if(sc[p])rows.push([PART[p][0],sc[p]])});
   const all=rows.every(([,o])=>bandOf(o)[0]==='good')&&!(sc.skriva&&sc.skriva.self);
-  if(!again&&!s.saved){s.saved=true;const tot=rows.reduce((a,[,o])=>a+o.pts,0);addXP(Math.round(tot)+15);P.tests[s.cfg.id]=[Math.round(rows.reduce((a,[,o])=>a+o.pts,0)*10)/10,rows.reduce((a,[,o])=>a+o.n,0),DAY()];save()}
+  if(!again&&!s.saved){s.saved=true;s.pages.forEach(pg=>{if(pg.kind==='text'||pg.kind==='clip')pg.items.forEach((it,k)=>{const key=mkKey(pg.t,k);const u=pg.sel[k]!=null?it.o[pg.sel[k]]:null;if(key&&u!==it.a)grade(key,false)})});const tot=rows.reduce((a,[,o])=>a+o.pts,0);addXP(Math.round(tot)+15);P.tests[s.cfg.id]=[Math.round(rows.reduce((a,[,o])=>a+o.pts,0)*10)/10,rows.reduce((a,[,o])=>a+o.n,0),DAY()];save()}
   const st=$('#stage'),ft=$('#foot');$('#pbar').style.width='100%';ft.className='sfoot';$('#clock').textContent=fmtT(Math.round((Date.now()-s.start)/1000));
   const rev=part=>sc[part]?sc[part].pages.map(pg=>{
     if(pg.kind==='text'||pg.kind==='clip')return `<li><b>${esc(pg.t.title)}</b> <span class="small muted">${esc(pg.t.kind)}</span>
@@ -1308,7 +1343,7 @@ function mockResults(again){const s=SES;clearInterval(MT);try{speechSynthesis.ca
        ${!a&&AI&&txt.split(/\s+/).length>=15?`<button class="btn ghost block" data-ai="${esc(key)}">${I.pen} Låt Claude bedöma texten</button>`:''}
        ${!a?`<div class="rate" style="grid-template-columns:repeat(3,1fr);margin-top:8px">${['IG','nära','G'].map((g,i)=>`<button class="r${i+1} ${(s.selfW||{})[key]===i?'sug':''}" data-sw="${esc(key)}" data-v="${i}">${g==='nära'?'Nära G':g}</button>`).join('')}</div><p class="small muted" style="margin:4px 0 0">${AI?'Eller bedöm själv efter att du har läst exempeltexten.':'Bedöm själv efter att du har läst exempeltexten.'}</p>`:''}
        <details class="small"><summary>Visa exempeltext</summary><p>${esc(pg.t.model)} ${spkBtn(pg.t.model,'sm')}</p></details></li>`}
-    if(pg.kind==='talk'){const g=(s.talk[pg.m.id+'_'+pg.t.n]||{}).g;return `<li><b>Tala, uppgift ${pg.t.n}</b> <span class="small muted">${esc(pg.t.task)}</span><div class="small">Din bedömning: <b>${g==null?'–':['Svårt','Ganska bra','Bra'][g]}</b></div>${pg.t.model?`<details class="small"><summary>Visa exempelsvar</summary><p>${esc(pg.t.model)}</p></details>`:''}</li>`}
+    if(pg.kind==='talk'){const g=(s.talk[pg.m.id+'_'+pg.t.n]||{}).g;return `<li><b>Tala, uppgift ${pg.t.n}</b> <span class="small muted">${esc(pg.t.task)}</span><div class="small">Din bedömning: <b>${g==null?'–':['Svårt','Ganska bra','Bra'][g]}</b>${(s.talk[pg.m.id+'_'+pg.t.n]||{}).ai?` · Claude: <b>${esc(s.talk[pg.m.id+'_'+pg.t.n].ai.grade)}</b>`:''}</div>${(s.talk[pg.m.id+'_'+pg.t.n]||{}).tr?`<details class="small"><summary>Visa vad du sa</summary><p>${esc(s.talk[pg.m.id+'_'+pg.t.n].tr)}</p></details>`:''}${pg.t.model?`<details class="small"><summary>Visa exempelsvar</summary><p>${esc(pg.t.model)}</p></details>`:''}</li>`}
     return ''}).join(''):'';
   st.innerHTML=`<div class="done-hero"><div class="medal">${I.test}</div><div class="eyebrow">${esc(s.cfg.title)}</div><h1>${all?'Godkänt i alla delar':'Ditt resultat'}</h1><p class="muted" style="margin:0;max-width:42ch">${all?'Om du klarar så här på provdagen ligger du bra till. Gör en annan version för att vara säker.':'I det riktiga provet måste du klara varje del för att få G. Öva den del som är svagast.'}</p></div>
    <div class="card list">${rows.map(([n,o])=>{const un=n==='Skriva'&&sc.skriva&&sc.skriva.self;const [c,t]=un?['muted','Inte bedömd än · bedöm dina texter nedan']:bandOf(o);return `<div class="lrow static" style="--rc:var(--${c})"><span class="ri"><b>${Math.round(o.n?o.pts/o.n*100:0)}%</b></span><span class="rt"><b>${esc(n)} · ${Math.round(o.pts*10)/10} av ${o.n}</b><span style="color:var(--${c})">${esc(t)}</span></span></div>`}).join('')}</div>
@@ -1328,6 +1363,72 @@ function startMock(k){
   const [mid,part]=k.split(':');const m=MK.find(x=>x.id===mid);if(!m)return;
   const parts=part==='all'?['lasaA','lasaB','hora','skriva','tala']:part==='lasa'?['lasaA','lasaB']:[part];
   runMock({id:`mock_${mid}_${part}`,title:part==='all'?m.name:`${m.name} · ${part==='lasa'?'Läsa':PART[part][0]}`,mocks:[m],parts})}
+
+/* ---- Tala: record, transcribe, mark ---- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let REC=null;
+const BIND=['eftersom','därför','sedan','först','till exempel','dessutom','även om','trots att','å ena sidan','å andra sidan','så att','alltså','till sist','slutligen','jag tycker','enligt mig','jag håller med','medan','innan','efter att','men','när','om','fast','både','antingen','till skillnad från','på grund av'];
+function stopRec(){const r=REC;if(!r)return;REC=null;r.stop=true;clearInterval(r.tm);
+  try{r.sr&&r.sr.stop()}catch(e){}
+  const fin=()=>{try{r.stream&&r.stream.getTracks().forEach(t=>t.stop())}catch(e){}
+    setTimeout(()=>{const T=r.T;T.dur=Math.round((Date.now()-r.t0)/1000);if(SR&&!r.srErr)T.tr=(r.final+' '+r.interim).replace(/\s+/g,' ').trim();T.ai=null;
+      if(r.chunks&&r.chunks.length){try{if(T.url)URL.revokeObjectURL(T.url);T.url=URL.createObjectURL(new Blob(r.chunks,{type:(r.mr&&r.mr.mimeType)||'audio/webm'}))}catch(e){}}
+      r.onDone&&r.onDone()},SR?700:50)};
+  if(r.mr&&r.mr.state!=='inactive'){r.mr.onstop=fin;try{r.mr.stop()}catch(e){fin()}}else fin()}
+async function startRec(T,limit,onUpd,onDone){stopRec();
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw {name:'NoMic'};
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  const r={T,final:'',interim:'',t0:Date.now(),stream,onDone,chunks:[]};REC=r;
+  if(window.MediaRecorder){try{r.mr=new MediaRecorder(stream);r.mr.ondataavailable=e=>{if(e.data&&e.data.size)r.chunks.push(e.data)};r.mr.start(1000)}catch(e){r.mr=null}}
+  if(SR){try{const sr=new SR();sr.lang='sv-SE';sr.continuous=true;sr.interimResults=true;
+    sr.onresult=e=>{let it='';for(let i=e.resultIndex;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)r.final+=x[0].transcript.trim()+' ';else it+=x[0].transcript}r.interim=it;onUpd(r)};
+    sr.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='language-not-supported')r.srErr=e.error};
+    sr.onend=()=>{if(REC===r&&!r.stop&&!r.srErr){r.final+=r.interim?r.interim.trim()+' ':'';r.interim='';try{sr.start()}catch(e){}}};
+    sr.start();r.sr=sr}catch(e){r.srErr='start'}}
+  onUpd(r);r.tm=setInterval(()=>{onUpd(r);if((Date.now()-r.t0)/1000>=limit){toast('Tiden är slut.');stopRec()}},500)}
+function talkFacts(T){const tr=(T.tr||'').toLowerCase(),words=(tr.match(/[a-zåäöé0-9]+/gi)||[]).length,dur=T.dur||0;
+  const bind=BIND.filter(b=>new RegExp('(^|[^a-zåäö])'+b.replace(/ /g,'\\s+')+'([^a-zåäö]|$)').test(tr));
+  return {words,dur,wpm:dur>=10?Math.round(words/(dur/60)):0,bind}}
+function talkStats(T){const f=talkFacts(T);const ok=(c,t)=>`<span class="chip ${c?'okc':''}">${t}</span>`;
+  return `${ok(f.dur>=60,`${fmtT(f.dur)} min`)}${T.tr?ok(f.words>=80,`${f.words} ord`)+ok(f.wpm>=70,`${f.wpm||'–'} ord/min`)+ok(f.bind.length>=4,`${f.bind.length} bindeord`):''}`}
+function talkResHTML(T,t){const f=talkFacts(T);
+  const tips=[];if(f.dur<60)tips.push('Försök prata längre, minst 1–2 minuter. Utveckla med exempel och skäl.');
+  if(T.tr){if(f.wpm&&f.wpm<60)tips.push('Du pratar ganska långsamt. Det är okej, men försök hålla flytet utan långa pauser.');
+    if(f.bind.length<4)tips.push('Använd fler bindeord, till exempel eftersom, därför, till exempel, dessutom, å andra sidan.');
+    if(f.bind.length)tips.push('Bindeord du använde: '+f.bind.join(', ')+'.')}
+  return `<section class="gcard"><h3>Din inspelning</h3>${T.url?`<audio controls src="${T.url}" style="width:100%"></audio>`:''}
+   <div class="statrow" id="tstats">${talkStats(T)}</div>
+   ${T.tr!=null?`<label class="small muted" for="trx">Det telefonen hörde. Rätta bara ord som tydligt blev fel. Ord som ofta hörs fel kan vara ett tips om uttal.</label><div class="typebox"><textarea id="trx">${esc(T.tr)}</textarea></div>`:''}
+   ${tips.length?`<ul class="rules small">${tips.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+   ${T.ai?`<div class="aifb"><span class="eyebrow">Claude · ${esc(T.ai.grade==='nära'?'Nära G':T.ai.grade)}</span><p>${esc(T.ai.strengths_sv||'')}</p><p>${esc(T.ai.improve_sv||'')}</p>${T.ai.feedback_en?`<p class="small muted">${esc(T.ai.feedback_en)}</p>`:''}${(T.ai.pron||[]).length?`<p class="small">Öva uttalet: <b>${T.ai.pron.map(esc).join(', ')}</b></p>`:''}${T.ai.better?`<p class="small">Så kan du säga det: ${esc(T.ai.better)} ${spkBtn(T.ai.better,'sm')}</p>`:''}</div>`
+     :AI&&T.tr!=null?'<button class="btn ghost block" id="askt">'+I.pen+' Låt Claude bedöma mitt svar</button>':''}</section>`}
+function pTalk(t,T){const f=talkFacts(T);return `You are an experienced examiner for the speaking part of the Swedish national test for SFI course D (about CEFR B1). Below is an automatic speech-to-text transcript of the learner speaking. It has no punctuation and may contain recognition errors: a word that makes no sense in context may be a recognition error or a sign of unclear pronunciation, so do not punish it as grammar.
+Task type: ${t.kind==='Samtal i par'?'paired discussion (the learner is giving their side of a conversation about the topic and statements)':'individual monologue'}
+Task: ${t.task}
+Support points on the card: ${t.help.join(' | ')}
+Speaking time: ${f.dur} seconds, ${f.words} words.
+Transcript: ${T.tr}
+
+Judge like the national test: does the learner answer the task and develop it with examples, reasons and opinions; is the speech connected (linking words, logical order) and long enough; is vocabulary varied enough for the topic; are grammar and word order correct enough to be understood without effort. Very short answers cannot pass.
+grade: "G" (would likely pass), "nära" (close) or "IG" (not yet).
+Reply with only this JSON object:
+{"grade":"G|nära|IG","strengths_sv":"one or two short sentences in simple Swedish","improve_sv":"the two most important improvements, in simple Swedish","feedback_en":"two short sentences in English","pron":["up to 3 words from the transcript that look misheard and are worth practising aloud, or empty"],"better":"a short improved version (3–5 sentences) of what the learner said, in natural spoken Swedish, keeping their ideas"}`}
+
+/* ---- mock mistakes feed the review queue ---- */
+const MKREF=new Map(), MKKEY=[];
+MK.forEach((m,mi)=>['lasaA','lasaB','hora'].forEach(part=>m[part].forEach((t,ti)=>{const id=MKKEY.length;MKKEY.push([t,part]);MKREF.set(t,id)})));
+const mkKey=(t,k)=>MKREF.has(t)?`p${MKREF.get(t)}_${k}`:null;
+function mkValid(k){const [a,b]=k.slice(1).split('_').map(Number);const e=MKKEY[a];if(!e)return false;const t=e[0];return b<(t.qs||t.gaps||t.match||[]).length}
+function mkQ(k){const [a,b]=k.slice(1).split('_').map(Number);const [t,part]=MKKEY[a]||[];if(!t)return null;
+  const base={type:'mc',key:k,label:`Prov · ${part==='hora'?'Höra':'Läsa'} · ${t.kind}`};
+  if(t.qs){const q=t.qs[b];const ctx=part==='hora'?{listen:t.lines.map(l=>l.t).join(' ')}:{html:`<details class="ctx"><summary>Visa texten: ${esc(t.title)}</summary><div class="reader">${paraHTML(t.body)}</div></details>`};
+    return {...base,...ctx,prompt:q.q,opts:shuffle(q.o),ans:q.a,fb:q.e||''}}
+  if(t.gaps){let txt=t.body;t.gaps.forEach((g,i)=>{txt=txt.replace(`{${i+1}}`,i===b?'___':g.a)});const sent=txt.split(/(?<=[.!?])\s+/).find(x=>x.includes('___'))||txt;
+    return {...base,prompt:sent,opts:shuffle(t.gaps[b].o),ans:t.gaps[b].a,fb:'Lucktext: '+t.title}}
+  if(t.match){const m=t.match[b];const others=shuffle([...t.match.map(x=>x.a).filter(x=>x!==m.a),...t.extra]).slice(0,3);
+    return t.kind==='Intervju'?{...base,prompt:m.t,sub:'Vilket svar passar frågan?',opts:shuffle([m.a,...others]),ans:m.a}
+      :{...base,prompt:'Vilken rubrik passar stycket?',html:`<div class="cloze" style="font-size:16px;text-align:left">${esc(m.t)}</div>`,opts:shuffle([m.a,...others]),ans:m.a}}
+  return null}
 
 /* ---------- flashcards ---------- */
 function runFlash(ws,lc){let i=0,rev=false,stats=[0,0,0,0];SES={flash:true};pageOpened();
