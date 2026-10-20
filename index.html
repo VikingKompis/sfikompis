@@ -465,25 +465,25 @@ UW.forEach((arr,i)=>{arr.sort((a,b)=>(b.u||0)-(a.u||0));const by={n:[],v:[],a:[]
 /* grammar table drills */
 const TD={
  pronouns:{u:0,ti:'Indefinita pronomen',hide:[1,2,3],show:[0]},
- plurals:{u:0,ti:'Pluralmönster',hide:[0],show:[1,2]},
+ plurals:{u:0,ti:'Pluralmönster',hide:[0],show:[1,2],sayCol:1},
  adjpattern:{u:1,ti:'Adjektivets former',hide:[2,3],show:[0,1]},
  adjdef:{u:1,ti:'Bestämd och possessiv form',hide:[1,2],show:[0]},
  compare:{u:1,ti:'Komparation',hide:[1,2,3],show:[0,4]},
  transitive:{u:2,ti:'Lägga eller ligga?',hide:[0,1],show:[2]},
  vgroups1:{u:2,ti:'Verbgrupper',hide:[2,3,4,5],show:[0,1]},
- tenses1:{u:2,ti:'Tempus och tid',hide:[0],show:[1,2]},
- links:{u:3,ti:'Bindeord',hide:[1],show:[0,2]},
+ tenses1:{u:2,ti:'Tempus och tid',hide:[0],show:[1,2],sayCol:1},
+ links:{u:3,ti:'Bindeord',hide:[1],show:[0,2],sayCol:2},
  time:{u:3,ti:'Tidsuttryck',hide:[0],show:[1,2]},
- reflexive:{u:8,ti:'Reflexiva pronomen',hide:[1],show:[0,3]},
+ reflexive:{u:8,ti:'Reflexiva pronomen',hide:[1],show:[0,3],sayCol:3},
  vgroups2:{u:8,ti:'Verbgrupper 2',hide:[2,3,4],show:[0,1]},
- av:{u:8,ti:'Prepositionen av',hide:[0],show:[1,2]},
+ av:{u:8,ti:'Prepositionen av',hide:[0],show:[1,2],sayCol:1},
  preps1:{u:8,ti:'Prepositioner',cloze:true},
  passive:{u:8,ti:'S-passiv',hide:[1,2,3,4],show:[0]},
  participles:{u:8,ti:'Perfekt particip',hide:[1,2,3],show:[0,4]},
  bli:{u:8,ti:'Bli-passiv',hide:[1],show:[0,2]},
  budget:{u:5,ti:'Familjens budget',hide:[1],show:[0]},
  prespart:{u:9,ti:'Presens particip',hide:[1],show:[0,2]},
- tempus:{u:10,ti:'Vilket tempus?',hide:[0,2],show:[3]},
+ tempus:{u:10,ti:'Vilket tempus?',hide:[0,2],show:[3],sayCol:3},
 };
 const PREPS=['innanför','utanför','ovanför','nedanför','inför','kring','runt','inom','utom','bland','sedan','vid','av','på','under','över','mellan','bakom','framför','genom','mot','efter','före','till','från','hos','om','med','för','i'];
 
@@ -528,9 +528,16 @@ let VOICE=null, TTS='speechSynthesis' in window;
 function loadVoices(){if(!TTS)return;const vs=speechSynthesis.getVoices();
   VOICE=vs.find(v=>/^sv/i.test(v.lang)&&/alva|klara|oskar|google/i.test(v.name))||vs.find(v=>/^sv/i.test(v.lang))||null}
 if(TTS){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
-function speak(t,slow){if(!TTS)return toast('Uppläsning stöds inte i den här webbläsaren');try{speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(String(t).replace(/___/g,'…'));u.lang='sv-SE';if(VOICE)u.voice=VOICE;u.rate=(slow?.6:1)*P.rate;speechSynthesis.speak(u)}catch(e){}}
-function spkBtn(t,cls=''){return `<button class="spk ${cls}" data-say="${esc(t)}" aria-label="Lyssna">${I.spk}</button>`}
+const ENW=/\b(the|and|is|are|of|to|with|for|you|it|this|that|they|their|was|have|has|not|or|an|by|from|before|after|past|now|habit|event|completed|connected|prediction|intention|conditional|possibility|reference|ending|vowel|stem|irregular|definite|singular|plural|infinitive|passive|agent|source|cause|part|group|fixed|phrase|added|nouns|verbs|means|other|person|people|job|used|fully|skills|education)\b/gi;
+const SVW=/\b(och|är|att|jag|det|en|ett|som|på|med|för|inte|har|vi|de|hon|han|i|av|man|kan|ska|den|till|om|sig|var|blir|eller|du|ni|nu)\b/i;
+function svOnly(t){t=String(t??'').replace(/___/g,'…').replace(/\s*→\s*/g,', ').replace(/\s+or\s+/g,' eller ').replace(/\s*\/\s*/g,' eller ').replace(/\+\s*infinitive?/gi,'plus infinitiv').replace(/\+\s*supinum/g,'plus supinum').replace(/\s\+\s/g,' plus ').trim();
+  if(!/\s/.test(t))return t; // a single word is always spoken
+  const isEn=s=>{if(/[åäöÅÄÖ]/.test(s))return false;const en=(s.match(ENW)||[]).length+(/(^|\s)I (am|have|had|was|walk|rest|live|lived|want|think|like|go|went|do|did|can|could|will|would|need|try|work|learn|learned|understand|prefer|suggest|hope|feel|found|moved|met|got|know|see|saw)\b/.test(s)?2:0)+((s.match(/\b(therefore|because|when|walk|we|he|she|his|her|will|would|your|its|our|but|so|also|then|there|here|very|much|many|more|less|some|any|all)\b/gi)||[]).length);return en>=2||(en>=1&&!SVW.test(s))};
+  const groups=t.split(/;\s*/).map(g=>g.split(/(?<=[.!?])\s+/).filter(s=>s.trim()&&!isEn(s)).join(' ')).filter(Boolean);
+  return groups.join(', ').trim()}
+function speak(t,slow){if(!TTS)return toast('Uppläsning stöds inte i den här webbläsaren');const txt=svOnly(t);if(!txt)return;try{speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt);u.lang='sv-SE';if(VOICE)u.voice=VOICE;u.rate=(slow?.6:1)*P.rate;speechSynthesis.speak(u)}catch(e){}}
+function spkBtn(t,cls=''){if(!svOnly(t))return '';return `<button class="spk ${cls}" data-say="${esc(t)}" aria-label="Lyssna">${I.spk}</button>`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-say]');if(b){e.stopPropagation();speak(b.dataset.say,b.classList.contains('slow'))}},true);
 
 /* ---------- sounds ---------- */
@@ -672,7 +679,8 @@ const Q={
    const mask=v=>{let s=v;ans.split(/;\s*/).forEach(p=>{if(p.length>1)s=s.replace(new RegExp('(^|[^A-Za-zÅÄÖåäö])'+p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=[^A-Za-zÅÄÖåäö]|$)','gi'),'$1___')});return s};
    const showcells=cfg.show;
    const info=showcells.map(c=>`<div><span class="eyebrow">${esc(head[c])}</span><div style="font-size:18px;font-weight:700">${esc(mask(r[c]))}</div></div>`).join('');
-   return mcq({key:null,label:cfg.ti,html:`<div class="card intro" style="gap:10px">${info}</div><div class="qtitle">Välj rätt: ${esc(head[hc])}</div>`,opts:shuffle([ans,...shuffle(colvals).slice(0,3)]),ans,fb:r.filter(Boolean).join(' · '),say:/[åäö]|[a-z]{3}/i.test(ans)?ans:null,sayAfter:!!ans})},
+   const sayTxt=(cfg.sayCol!=null&&svOnly(r[cfg.sayCol]))?r[cfg.sayCol]:(svOnly(ans)?ans:null);
+   return mcq({key:null,label:cfg.ti,html:`<div class="card intro" style="gap:10px">${info}</div><div class="qtitle">Välj rätt: ${esc(head[hc])}</div>`,opts:shuffle([ans,...shuffle(colvals).slice(0,3)]),ans,fb:r.filter(Boolean).join(' · '),say:sayTxt,sayAfter:!!sayTxt})},
 };
 function wordQ(w,level){ // level 0 recognition .. 2 production
   const pool=[];
@@ -1137,7 +1145,7 @@ function runBlitz(ws,lc){SES={blitz:true};let score=0,miss=[],i=0,left=60,timer=
 
 /* ---------- boot ---------- */
 render();
-
+window.__build=buildStation;window.__disp=disp;window.__svOnly=svOnly;
 })();
 </script>
 </body>
