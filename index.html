@@ -441,11 +441,12 @@ details.ctx .reader p{font-size:14px}
 .about summary b{font-weight:600}
 .about .rules{margin-top:12px;font-size:14px}
 audio{height:40px}
-.inst{display:flex;align-items:center;gap:12px;padding:14px 8px 14px 16px}
-.inst .rt span{white-space:normal}
-.inst .btn{min-height:40px;padding:0 14px;font-size:14px}
-.inst .iconbtn{width:36px;height:36px;margin:0}
-.inst .iconbtn svg{width:18px;height:18px}
+.topr{display:flex;align-items:center;gap:6px}
+.instbtn{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 12px 0 10px;border-radius:999px;background:var(--sun);color:#1D4F82;font-size:13px;font-weight:600;letter-spacing:-.005em}
+.instbtn svg{width:15px;height:15px}
+.instbtn:active{filter:brightness(.95)}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:1.5}
+.steps li::marker{color:var(--muted);font-weight:600}
 svg.inl{width:16px;height:16px;vertical-align:-3px;color:var(--accent)}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
@@ -837,14 +838,14 @@ const root=$('#app');
 function render(){
   if(SES)return;
   root.innerHTML=`<div class="apphead">${topbarHTML()}</div><nav class="tabs" aria-label="Huvudmeny">${[['home','Hem',I.home],['lines','Kapitel',I.lines],['practice','Öva',I.practice],['test','Prov',I.test],['lib','Ordbok',I.book]].map(([k,n,ic])=>`<button class="tab" data-tab="${k}" ${TAB===k?'aria-current="page"':''}><span class="tico">${ic}</span>${n}</button>`).join('')}</nav><main class="view" id="view"></main>`;
-  {const s=$('#settings');if(s)s.onclick=openSettings};
+  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall};
   const v=$('#view');
   ({home:vHome,lines:vLines,practice:vPractice,test:vTest,lib:vLib})[TAB](v);
 }
 root.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){TAB=t.dataset.tab;try{sessionStorage.setItem('sfi-tab',TAB)}catch(_){};render();$('#view').scrollTop=0}});
 function topbar(){return ''}
 function topbarHTML(){return `<header class="top"><div class="brand" aria-label="SFI Kompis">${LOGO()}<b>Kompis</b></div>
-  <button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></header>`}
+  <div class="topr">${installBtn()}<button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></div></header>`}
 const CHEV='<svg class="rchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 /* one list-row component for every menu in the app */
 function rowHTML({icon,label,color,title,sub,attrs='',right=''}){
@@ -857,14 +858,15 @@ function greet(){const h=new Date().getHours();return h>=5&&h<10?'God morgon':h>
 let DEFER=null;
 const STANDALONE=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
 const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();DEFER=e;if(!SES&&TAB==='home')render()});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();DEFER=e;if(!SES)render()});
 window.addEventListener('appinstalled',()=>{DEFER=null;toast('SFI Kompis finns nu på din hemskärm');if(!SES)render()});
-function installHTML(){if(!window.SFI_PUBLIC||STANDALONE())return '';try{if(localStorage.getItem('sfi-inst-x'))return ''}catch(e){}
-  if(DEFER)return `<section class="card inst"><span class="ri">${I.download}</span><span class="rt"><b>Installera appen</b><span>Fungerar även utan nät.</span></span><button class="btn" id="instGo">Installera</button><button class="iconbtn" id="instX" aria-label="Stäng">${I.x}</button></section>`;
-  if(IOS)return `<section class="card inst"><span class="ri">${I.share}</span><span class="rt"><b>Lägg till på hemskärmen</b><span>Tryck på Dela-knappen ${I.share.replace('<svg','<svg class="inl"')} och välj <b>Lägg till på hemskärmen</b>.</span></span><button class="iconbtn" id="instX" aria-label="Stäng">${I.x}</button></section>`;
-  return ''}
-function bindInstall(v){const g=$('#instGo',v);if(g)g.onclick=async()=>{const e=DEFER;if(!e)return;DEFER=null;e.prompt();try{await e.userChoice}catch(_){};render()};
-  const x=$('#instX',v);if(x)x.onclick=()=>{try{localStorage.setItem('sfi-inst-x','1')}catch(_){};render()}}
+const canInstall=()=>!!window.SFI_PUBLIC&&!STANDALONE()&&(!!DEFER||IOS);
+function installBtn(){return canInstall()?`<button class="instbtn" id="inst">${I.download}<span>Ladda ner appen</span></button>`:''}
+async function doInstall(){
+  if(DEFER){const e=DEFER;DEFER=null;e.prompt();try{await e.userChoice}catch(_){};render();return}
+  sheet(`<div class="row"><h2>Ladda ner appen</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div>
+   <ol class="steps"><li>Tryck på Dela-knappen ${I.share.replace('<svg','<svg class="inl"')} längst ner i Safari.</li><li>Välj <b>Lägg till på hemskärmen</b>.</li><li>Tryck på <b>Lägg till</b>. SFI Kompis finns nu bland dina appar och fungerar även utan nät.</li></ol>
+   <button class="btn block" data-close>Okej</button>`,(p,close)=>p.querySelectorAll('[data-close]').forEach(b=>b.onclick=close))}
 function vHome(v){
   const d=DAY(),today=P.days[d]||0,pct=Math.min(1,today/P.goal),due=dueKeys().length,nx=nextStation(),u=U[nx.ui],mist=mistakeKeys().length;
   v.innerHTML=`<div class="stack">
@@ -872,7 +874,6 @@ function vHome(v){
     <div class="tstat"><span title="Dagar i rad">${I.fire}${streakNow()}</span><span title="Total XP">${I.bolt}${P.xp}</span></div></div>
     <div class="pbar"><i style="width:${pct*100}%"></i></div>
     <div class="tmeta">${learnedCount()} ord sitter · ${Object.keys(P.done).length} av ${ALLST.length} lektioner klara</div></section>
-  ${installHTML()}
   ${headHTML('Fortsätt')}
   <button class="card go" id="goNext" style="--lc:${u.lc}"><span class="dot"></span><span class="rt"><span class="lab">${esc(u.lab)} · ${esc(u.n)}</span><b>${esc(nx.ti)}</b><span>${esc(nx.sub)}</span></span><span class="gobtn">Kör</span></button>
   ${headHTML('Repetera')}
@@ -881,7 +882,7 @@ function vHome(v){
     rowHTML({icon:I.x,color:'var(--bad)',title:'Mina fel',sub:mist?`${mist} saker att öva igen`:'Inga fel just nu',attrs:'id="goMist"'})])}
   <p class="foot"><span class="sync ${syncOn?'on':''}"><i></i>${syncOn?'Synkas mellan dina enheter':'Sparas på den här enheten'}</span></p>
   </div>`;
-  $('#goNext').onclick=()=>startStation(nx);bindInstall(v);
+  $('#goNext').onclick=()=>startStation(nx);
   $('#goReview').onclick=()=>startReview();
   $('#goMist').onclick=()=>startMistakes();
 }
@@ -898,7 +899,7 @@ function vLines(v){
   v.innerHTML=h+`</div>`;
   $$('[data-unit]',v).forEach(b=>b.onclick=()=>{const ui=+b.dataset.unit;openUnit=openUnit===ui?-1:ui;vLines(v);const el=$(`[data-unit="${ui}"]`,v);el&&el.scrollIntoView({block:'start'})});
   $$('[data-st]',v).forEach(b=>b.onclick=()=>startStation(STBY[b.dataset.st]));
-  {const s=$('#settings');if(s)s.onclick=openSettings};
+  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall};
   const here=$('.st.here',v);if(here)setTimeout(()=>here.scrollIntoView({block:'center'}),30);
 }
 function vPractice(v){
@@ -956,7 +957,7 @@ function vLib(v){
   }
   v.innerHTML=h+`</div>`;
   $$('[data-seg]',v).forEach(b=>b.onclick=()=>{st.seg=b.dataset.seg;vLib(v)});
-  {const s=$('#settings');if(s)s.onclick=openSettings};
+  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall};
   if(st.seg==='ord'){const draw=()=>{const q=norm(st.q);let list=W.filter(w=>(st.t==='all'||w.t===st.t)&&(st.u<0||w.c.includes(st.u)));
       if(q)list=list.filter(w=>norm(disp(w)+' '+w.en+' '+(w.f||[]).join(' ')).includes(q));
       const shown=list.slice(0,150);
