@@ -13,10 +13,14 @@
 <link rel="manifest" href="/site.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SFI Kompis">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>window.SFI_PUBLIC=true;if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));</script>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>SFI Kompis</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#F4F6F8">
+<meta name="theme-color" content="#0E151C" media="(prefers-color-scheme: dark)">
 <link rel="preload" href="/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"Schibsted Grotesk";font-style:normal;font-weight:400 700;font-display:swap;src:url(/fonts/schibsted-grotesk.woff2) format("woff2")}</style>
 <style>
 /* SFI Kompis — design system
@@ -70,10 +74,9 @@ svg{flex:none}
 .apphead{background:var(--bg);padding:10px max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px))}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 0 10px}
 .brand{display:flex;align-items:center;gap:10px}
-.logo{width:26px;height:26px;flex:none;display:block}
-.logo .t{fill:var(--sign)} .logo .y{fill:var(--sun)}
-.brand b{font-family:var(--display);font-weight:400;font-size:19px;letter-spacing:-.02em;line-height:1}
-.brand b strong{font-weight:700}
+.sfib{display:inline-grid;place-items:center;background:var(--sun);color:#1D4F82;font-weight:700;letter-spacing:-.01em;line-height:1;border-radius:7px;padding:5px 7px 4px;font-size:16px}
+.brand{gap:8px}
+.brand b{font-family:var(--display);font-weight:650;font-size:20px;letter-spacing:-.02em;line-height:1}
 .iconbtn{width:40px;height:40px;border-radius:var(--rctl);display:grid;place-items:center;color:var(--muted);margin-right:-8px}
 .iconbtn svg{width:22px;height:22px}
 .iconbtn:active{background:var(--sunk)}
@@ -328,8 +331,7 @@ svg{flex:none}
 .mc.up .in,.mc.got .in{transform:rotateY(180deg)}
 .mc .f,.mc .b{position:absolute;inset:0;border-radius:var(--rctl);backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;padding:8px;text-align:center;font-weight:500;font-size:14px;line-height:1.25;overflow-wrap:anywhere;hyphens:auto;-webkit-hyphens:auto}
 .mc .f{background:var(--surface);border:1px solid var(--line)}
-.mc .f svg{width:34%;height:auto;opacity:.9}
-.mc .f .t{fill:var(--line2)} .mc .f .y{fill:var(--accent)}
+.mc .f .sfib{font-size:15px;padding:5px 7px 4px}
 .mc .b{transform:rotateY(180deg);background:var(--surface);border:1px solid var(--accent)}
 .mc .b.sv{font-size:16px;font-weight:600}
 .mc.got .b{border-color:var(--good);background:var(--good-bg)}
@@ -439,6 +441,12 @@ details.ctx .reader p{font-size:14px}
 .about summary b{font-weight:600}
 .about .rules{margin-top:12px;font-size:14px}
 audio{height:40px}
+.inst{display:flex;align-items:center;gap:12px;padding:14px 8px 14px 16px}
+.inst .rt span{white-space:normal}
+.inst .btn{min-height:40px;padding:0 14px;font-size:14px}
+.inst .iconbtn{width:36px;height:36px;margin:0}
+.inst .iconbtn svg{width:18px;height:18px}
+svg.inl{width:16px;height:16px;vertical-align:-3px;color:var(--accent)}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 @media (min-width:560px){.grid2{grid-template-columns:repeat(3,1fr)}.mem{grid-template-columns:repeat(4,1fr)}}
@@ -487,10 +495,12 @@ const I={ // one outline icon family: 24px grid, 1.75 stroke, round joins
  search:SV('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/>'),
  mic:SV('<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3"/>'),
  stop:SV('<rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="currentColor" stroke="none"/>'),
+ share:SV('<path d="M12 3.5v11"/><path d="m8 7.5 4-4 4 4"/><path d="M7 11H5.5v9.5h13V11H17"/>'),
+ download:SV('<path d="M12 4v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M5 19.5h14"/>'),
  star:SV('<path d="m12 4 2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/>'),
 };
 
-const LOGO=(cls='logo')=>`<svg class="${cls}" viewBox="0 0 64 64" role="img" aria-label="SFI Kompis logo">${[[4,4],[24,4],[44,4],[4,24],[24,24],[44,24],[4,44],[24,44],[44,44]].map(([x,y],i)=>`<rect class="${(i===1||i>=3&&i<=5||i===7)?'y':'t'}" x="${x}" y="${y}" width="16" height="16" rx="3"/>`).join('')}</svg>`;
+const LOGO=(cls='logo')=>`<span class="sfib ${cls}" aria-hidden="true">SFI</span>`;
 /* ---------- data prep ---------- */
 const U=[ // unit meta
  {k:'bostad',n:'Bostad',en:'Housing',p:1,code:'1'},
@@ -833,7 +843,7 @@ function render(){
 }
 root.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){TAB=t.dataset.tab;try{sessionStorage.setItem('sfi-tab',TAB)}catch(_){};render();$('#view').scrollTop=0}});
 function topbar(){return ''}
-function topbarHTML(){return `<header class="top"><div class="brand">${LOGO()}<b>SFI<strong>Kompis</strong></b></div>
+function topbarHTML(){return `<header class="top"><div class="brand" aria-label="SFI Kompis">${LOGO()}<b>Kompis</b></div>
   <button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></header>`}
 const CHEV='<svg class="rchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 /* one list-row component for every menu in the app */
@@ -843,6 +853,18 @@ const listHTML=rows=>`<div class="card list">${rows.join('')}</div>`;
 const headHTML=(t,sub)=>`<div class="sect"><h2>${esc(t)}</h2>${sub?`<span>${esc(sub)}</span>`:''}</div>`;
 function greet(){const h=new Date().getHours();return h>=5&&h<10?'God morgon':h>=10&&h<18?'Hej igen':'God kväll'}
 
+/* ---------- install as a web app (public site only) ---------- */
+let DEFER=null;
+const STANDALONE=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();DEFER=e;if(!SES&&TAB==='home')render()});
+window.addEventListener('appinstalled',()=>{DEFER=null;toast('SFI Kompis finns nu på din hemskärm');if(!SES)render()});
+function installHTML(){if(!window.SFI_PUBLIC||STANDALONE())return '';try{if(localStorage.getItem('sfi-inst-x'))return ''}catch(e){}
+  if(DEFER)return `<section class="card inst"><span class="ri">${I.download}</span><span class="rt"><b>Installera appen</b><span>Fungerar även utan nät.</span></span><button class="btn" id="instGo">Installera</button><button class="iconbtn" id="instX" aria-label="Stäng">${I.x}</button></section>`;
+  if(IOS)return `<section class="card inst"><span class="ri">${I.share}</span><span class="rt"><b>Lägg till på hemskärmen</b><span>Tryck på Dela-knappen ${I.share.replace('<svg','<svg class="inl"')} och välj <b>Lägg till på hemskärmen</b>.</span></span><button class="iconbtn" id="instX" aria-label="Stäng">${I.x}</button></section>`;
+  return ''}
+function bindInstall(v){const g=$('#instGo',v);if(g)g.onclick=async()=>{const e=DEFER;if(!e)return;DEFER=null;e.prompt();try{await e.userChoice}catch(_){};render()};
+  const x=$('#instX',v);if(x)x.onclick=()=>{try{localStorage.setItem('sfi-inst-x','1')}catch(_){};render()}}
 function vHome(v){
   const d=DAY(),today=P.days[d]||0,pct=Math.min(1,today/P.goal),due=dueKeys().length,nx=nextStation(),u=U[nx.ui],mist=mistakeKeys().length;
   v.innerHTML=`<div class="stack">
@@ -850,6 +872,7 @@ function vHome(v){
     <div class="tstat"><span title="Dagar i rad">${I.fire}${streakNow()}</span><span title="Total XP">${I.bolt}${P.xp}</span></div></div>
     <div class="pbar"><i style="width:${pct*100}%"></i></div>
     <div class="tmeta">${learnedCount()} ord sitter · ${Object.keys(P.done).length} av ${ALLST.length} lektioner klara</div></section>
+  ${installHTML()}
   ${headHTML('Fortsätt')}
   <button class="card go" id="goNext" style="--lc:${u.lc}"><span class="dot"></span><span class="rt"><span class="lab">${esc(u.lab)} · ${esc(u.n)}</span><b>${esc(nx.ti)}</b><span>${esc(nx.sub)}</span></span><span class="gobtn">Kör</span></button>
   ${headHTML('Repetera')}
@@ -858,7 +881,7 @@ function vHome(v){
     rowHTML({icon:I.x,color:'var(--bad)',title:'Mina fel',sub:mist?`${mist} saker att öva igen`:'Inga fel just nu',attrs:'id="goMist"'})])}
   <p class="foot"><span class="sync ${syncOn?'on':''}"><i></i>${syncOn?'Synkas mellan dina enheter':'Sparas på den här enheten'}</span></p>
   </div>`;
-  $('#goNext').onclick=()=>startStation(nx);
+  $('#goNext').onclick=()=>startStation(nx);bindInstall(v);
   $('#goReview').onclick=()=>startReview();
   $('#goMist').onclick=()=>startMistakes();
 }
