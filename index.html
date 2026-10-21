@@ -865,7 +865,7 @@ function installBtn(){return canInstall()?`<button class="instbtn" id="inst">${I
 async function doInstall(){
   if(DEFER){const e=DEFER;DEFER=null;e.prompt();try{await e.userChoice}catch(_){};render();return}
   sheet(`<div class="row"><h2>Ladda ner appen</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div>
-   <ol class="steps"><li>Tryck på Dela-knappen ${I.share.replace('<svg','<svg class="inl"')} längst ner i Safari.</li><li>Välj <b>Lägg till på hemskärmen</b>.</li><li>Tryck på <b>Lägg till</b>. SFI Kompis finns nu bland dina appar och fungerar även utan nät.</li></ol>
+   <ol class="steps"><li>Tryck på Dela-knappen ${I.share.replace('<svg','<svg class="inl"')} ${/CriOS/.test(navigator.userAgent)?'uppe till höger i adressfältet i Chrome':/FxiOS/.test(navigator.userAgent)?'i menyn i Firefox':/EdgiOS/.test(navigator.userAgent)?'i menyn i Edge':'längst ner i Safari'}.</li><li>Välj <b>Lägg till på hemskärmen</b>.</li><li>Tryck på <b>Lägg till</b>. SFI Kompis finns nu bland dina appar och fungerar även utan nät.</li></ol>
    <button class="btn block" data-close>Okej</button>`,(p,close)=>p.querySelectorAll('[data-close]').forEach(b=>b.onclick=close))}
 function vHome(v){
   const d=DAY(),today=P.days[d]||0,pct=Math.min(1,today/P.goal),due=dueKeys().length,nx=nextStation(),u=U[nx.ui],mist=mistakeKeys().length;
