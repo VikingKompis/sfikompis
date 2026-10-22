@@ -441,7 +441,23 @@ details.ctx .reader p{font-size:14px}
 .about summary b{font-weight:600}
 .about .rules{margin-top:12px;font-size:14px}
 audio{height:40px}
+.dm{padding:18px;display:flex;flex-direction:column;gap:10px;background:var(--surface);border-left:3px solid var(--sun)}
+.dmhead{display:flex;justify-content:space-between;align-items:center}
+.dmhead .chip svg{width:14px;height:14px}
+.dmsay{align-items:flex-start;gap:12px;display:flex}
+.dmsv{margin:0;flex:1;font-size:22px;font-weight:600;line-height:1.3;letter-spacing:-.015em}
+.dmen{margin:-4px 0 0;color:var(--muted);font-size:15px}
+.dmrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dmrow .btn{min-height:42px;font-size:15px;padding:0 16px}
+.week span.tod{color:var(--ink);font-weight:600}
+.today .week{margin-top:4px}
+#sayrec.recording{border-color:var(--bad);color:var(--bad)}
 .topr{display:flex;align-items:center;gap:6px}
+.lang{display:flex;background:var(--sunk);border-radius:999px;padding:2px;gap:0}
+.lang button{height:28px;min-width:30px;padding:0 7px;border-radius:999px;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.lang button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(19,32,43,.1)}
+.instbtn{white-space:nowrap}.instbtn .ls{display:none}
+@media (max-width:400px){.instbtn .ll{display:none}.instbtn .ls{display:inline}.brand b{font-size:18px}.sfib{font-size:14px}}
 .instbtn{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 12px 0 10px;border-radius:999px;background:var(--sun);color:#1D4F82;font-size:13px;font-weight:600;letter-spacing:-.005em}
 .instbtn svg{width:15px;height:15px}
 .instbtn:active{filter:brightness(.95)}
@@ -572,7 +588,7 @@ const PREPS=['innanför','utanför','ovanför','nedanför','inför','kring','run
 
 /* ---------- progress state ---------- */
 const KEY='sfi-linje-d-v1';
-const blank=()=>({v:1,xp:0,days:{},streak:{n:0,last:-1},srs:{},done:{},best:{},tests:{},goal:50,rate:.9,sound:true,updated:0,last:null});
+const blank=()=>({v:1,xp:0,days:{},streak:{n:0,last:-1},srs:{},done:{},best:{},tests:{},goal:50,rate:.9,sound:true,updated:0,last:null,lang:'sv',dm:-1});
 let P=blank();
 try{const s=localStorage.getItem(KEY);if(s)P=Object.assign(blank(),JSON.parse(s))}catch(e){}
 let saveT=null, dbRef=null, syncOn=false;
@@ -838,14 +854,14 @@ const root=$('#app');
 function render(){
   if(SES)return;
   root.innerHTML=`<div class="apphead">${topbarHTML()}</div><nav class="tabs" aria-label="Huvudmeny">${[['home','Hem',I.home],['lines','Kapitel',I.lines],['practice','Öva',I.practice],['test','Prov',I.test],['lib','Ordbok',I.book]].map(([k,n,ic])=>`<button class="tab" data-tab="${k}" ${TAB===k?'aria-current="page"':''}><span class="tico">${ic}</span>${n}</button>`).join('')}</nav><main class="view" id="view"></main>`;
-  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall};
+  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall;bindLang()};
   const v=$('#view');
   ({home:vHome,lines:vLines,practice:vPractice,test:vTest,lib:vLib})[TAB](v);
 }
 root.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){TAB=t.dataset.tab;try{sessionStorage.setItem('sfi-tab',TAB)}catch(_){};render();$('#view').scrollTop=0}});
 function topbar(){return ''}
 function topbarHTML(){return `<header class="top"><div class="brand" aria-label="SFI Kompis">${LOGO()}<b>Kompis</b></div>
-  <div class="topr">${installBtn()}<button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></div></header>`}
+  <div class="topr">${installBtn()}${langHTML()}<button class="iconbtn" id="settings" aria-label="Inställningar">${I.gear}</button></div></header>`}
 const CHEV='<svg class="rchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
 /* one list-row component for every menu in the app */
 function rowHTML({icon,label,color,title,sub,attrs='',right=''}){
@@ -861,30 +877,47 @@ const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='M
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();DEFER=e;if(!SES)render()});
 window.addEventListener('appinstalled',()=>{DEFER=null;toast('SFI Kompis finns nu på din hemskärm');if(!SES)render()});
 const canInstall=()=>!!window.SFI_PUBLIC&&!STANDALONE()&&(!!DEFER||IOS);
-function installBtn(){return canInstall()?`<button class="instbtn" id="inst">${I.download}<span>Ladda ner appen</span></button>`:''}
+function installBtn(){return canInstall()?`<button class="instbtn" id="inst" aria-label="Ladda ner appen">${I.download}<span class="ll">Ladda ner appen</span><span class="ls">Appen</span></button>`:''}
 async function doInstall(){
   if(DEFER){const e=DEFER;DEFER=null;e.prompt();try{await e.userChoice}catch(_){};render();return}
   sheet(`<div class="row"><h2>Ladda ner appen</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div>
    <ol class="steps"><li>Tryck på Dela-knappen ${I.share.replace('<svg','<svg class="inl"')} ${/CriOS/.test(navigator.userAgent)?'uppe till höger i adressfältet i Chrome':/FxiOS/.test(navigator.userAgent)?'i menyn i Firefox':/EdgiOS/.test(navigator.userAgent)?'i menyn i Edge':'längst ner i Safari'}.</li><li>Välj <b>Lägg till på hemskärmen</b>.</li><li>Tryck på <b>Lägg till</b>. SFI Kompis finns nu bland dina appar och fungerar även utan nät.</li></ol>
    <button class="btn block" data-close>Okej</button>`,(p,close)=>p.querySelectorAll('[data-close]').forEach(b=>b.onclick=close))}
+/* ---------- dagens mening: one everyday sentence a day ---------- */
+const DM_POOL=S.filter(s=>{const n=s.sv.split(/\s+/).length;return n>=4&&n<=10&&!/[;:()]/.test(s.sv)});
+function dagensMening(){const d=DAY();return DM_POOL[(d*7919+13)%DM_POOL.length]}
+function startDaily(){const s=dagensMening();
+  runSession({title:'Dagens mening',lc:'var(--accent)',daily:true,qs:[{type:'say',s,label:'Lyssna och säg meningen högt',key:null},Q.build(s,false),Q.sDict(s)].filter(Boolean)})}
+function weekHTML(){const d=DAY();const days=[...Array(7)].map((_,i)=>d-6+i);const max=Math.max(P.goal,...days.map(x=>P.days[x]||0));
+  const wd=['sön','mån','tis','ons','tor','fre','lör'];
+  return `<div class="week">${days.map(x=>{const v=P.days[x]||0;const dt=new Date((x)*86400000);return `<div><i class="${v>=P.goal?'goal':''}" style="height:${Math.max(4,v/max*100)}%"></i><span class="${x===d?'tod':''}">${wd[dt.getUTCDay()]}</span></div>`}).join('')}</div>`}
 function vHome(v){
   const d=DAY(),today=P.days[d]||0,pct=Math.min(1,today/P.goal),due=dueKeys().length,nx=nextStation(),u=U[nx.ui],mist=mistakeKeys().length;
+  const s=dagensMening(),dmDone=P.dm===d;
   v.innerHTML=`<div class="stack">
-  <section class="card today"><div class="trow"><div><span class="lab">${greet()}</span><b>${today} av ${P.goal} XP i dag</b></div>
-    <div class="tstat"><span title="Dagar i rad">${I.fire}${streakNow()}</span><span title="Total XP">${I.bolt}${P.xp}</span></div></div>
-    <div class="pbar"><i style="width:${pct*100}%"></i></div>
-    <div class="tmeta">${learnedCount()} ord sitter · ${Object.keys(P.done).length} av ${ALLST.length} lektioner klara</div></section>
-  ${headHTML('Fortsätt')}
+  ${headHTML(greet())}
   <button class="card go" id="goNext" style="--lc:${u.lc}"><span class="dot"></span><span class="rt"><span class="lab">${esc(u.lab)} · ${esc(u.n)}</span><b>${esc(nx.ti)}</b><span>${esc(nx.sub)}</span></span><span class="gobtn">Kör</span></button>
+  <section class="card dm"><div class="dmhead"><span class="lab">Dagens mening</span>${dmDone?`<span class="chip okc">${I.ok}Klar i dag</span>`:''}</div>
+    <div class="say dmsay"><p class="dmsv">${esc(s.sv)}</p>${spkBtn(s.sv)}</div>
+    <p class="dmen" id="dmen" hidden>${esc(s.en)}</p>
+    <div class="dmrow"><button class="linkbtn" id="dmShow">Visa översättning</button><button class="btn ${dmDone?'ghost':''}" id="dmGo">${dmDone?'Öva igen':'Öva meningen'}</button></div></section>
   ${headHTML('Repetera')}
   ${listHTML([
     rowHTML({icon:I.redo,color:'var(--l4)',title:'Dagens repetition',sub:due?`${due} kort väntar`:'Inget väntar, du får nya ord',attrs:'id="goReview"'}),
     rowHTML({icon:I.x,color:'var(--bad)',title:'Mina fel',sub:mist?`${mist} saker att öva igen`:'Inga fel just nu',attrs:'id="goMist"'})])}
+  ${headHTML('Din vecka')}
+  <section class="card today"><div class="trow"><div><span class="lab">I dag</span><b>${today} av ${P.goal} XP</b></div>
+    <div class="tstat"><span title="Dagar i rad">${I.fire}${streakNow()}</span><span title="Total XP">${I.bolt}${P.xp}</span></div></div>
+    <div class="pbar"><i style="width:${pct*100}%"></i></div>
+    ${weekHTML()}
+    <div class="tmeta">${learnedCount()} ord sitter · ${Object.keys(P.done).length} av ${ALLST.length} lektioner klara</div></section>
   <p class="foot"><span class="sync ${syncOn?'on':''}"><i></i>${syncOn?'Synkas mellan dina enheter':'Sparas på den här enheten'}</span></p>
   </div>`;
   $('#goNext').onclick=()=>startStation(nx);
   $('#goReview').onclick=()=>startReview();
   $('#goMist').onclick=()=>startMistakes();
+  $('#dmShow').onclick=()=>{const e=$('#dmen');e.hidden=!e.hidden;$('#dmShow').textContent=e.hidden?'Visa översättning':'Dölj översättning'};
+  $('#dmGo').onclick=startDaily;
 }
 function crownsHTML(n){return `<span class="crowns" aria-label="${n} av 3 kronor">${[0,1,2].map(i=>`<span class="${i<n?'':'off'}">${I.crown}</span>`).join('')}</span>`}
 let openUnit=null;
@@ -899,7 +932,7 @@ function vLines(v){
   v.innerHTML=h+`</div>`;
   $$('[data-unit]',v).forEach(b=>b.onclick=()=>{const ui=+b.dataset.unit;openUnit=openUnit===ui?-1:ui;vLines(v);const el=$(`[data-unit="${ui}"]`,v);el&&el.scrollIntoView({block:'start'})});
   $$('[data-st]',v).forEach(b=>b.onclick=()=>startStation(STBY[b.dataset.st]));
-  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall};
+  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall;bindLang()};
   const here=$('.st.here',v);if(here)setTimeout(()=>here.scrollIntoView({block:'center'}),30);
 }
 function vPractice(v){
@@ -957,7 +990,7 @@ function vLib(v){
   }
   v.innerHTML=h+`</div>`;
   $$('[data-seg]',v).forEach(b=>b.onclick=()=>{st.seg=b.dataset.seg;vLib(v)});
-  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall};
+  {const s=$('#settings');if(s)s.onclick=openSettings;const ib=$('#inst');if(ib)ib.onclick=doInstall;bindLang()};
   if(st.seg==='ord'){const draw=()=>{const q=norm(st.q);let list=W.filter(w=>(st.t==='all'||w.t===st.t)&&(st.u<0||w.c.includes(st.u)));
       if(q)list=list.filter(w=>norm(disp(w)+' '+w.en+' '+(w.f||[]).join(' ')).includes(q));
       const shown=list.slice(0,150);
@@ -1042,14 +1075,14 @@ function showQ(){
   setProg();
   if(SES.i>=SES.qs.length)return SES.exam?examResults():finishSession();
   const q=SES.qs[SES.i];const st=$('#stage'),ft=$('#foot');ft.className='sfoot';st.scrollTop=0;
-  const R_={intro:rIntro,mc:rMC,type:rType,build:rBuild,match:rMatch,open:rOpen,read:rRead,note:rNote,gram:rGram}[q.type];
+  const R_={intro:rIntro,mc:rMC,type:rType,build:rBuild,match:rMatch,open:rOpen,read:rRead,note:rNote,gram:rGram,say:rSay}[q.type];
   R_(q,st,ft);
 }
 function answered(q,ok,info={}){
   const ft=$('#foot');
   if(q.key&&!SES.exam&&!SES.noXP){grade(q.key,ok,ok&&q.type==='type'?1:1)}
   if(q.key&&SES.exam){grade(q.key,ok)}
-  const graded=q.type!=='intro'&&q.type!=='read'&&q.type!=='note'&&q.type!=='gram';
+  const graded=q.type!=='intro'&&q.type!=='read'&&q.type!=='note'&&q.type!=='gram'&&q.type!=='say';
   if(graded){SES.graded++;if(ok){SES.right++;SES.combo++;SES.xp+=SES.combo>=5?2:1}else{SES.combo=0}}
   SES.log.push({q,ok,user:info.user});
   if(!ok&&!SES.exam&&!q.retry&&!SES.requeued.has(q)&&q.type!=='open'){SES.requeued.add(q);const copy=q.type==='mc'?Object.assign({},q,{opts:shuffle(q.opts),retry:true}):Object.assign({},q,{retry:true});SES.qs.push(copy)}
@@ -1079,6 +1112,28 @@ function qHead(q){let h=`<div class="qlabel">${esc(q.label||'')}${q.retry?' · i
   if(q.sub)h+=`<div class="hint">${q.sub}</div>`;
   if(q.html)h+=q.html;
   return h}
+function rSay(q,st,ft){const s=q.s;let rec=null;
+  st.innerHTML=`<div class="qlabel">${esc(q.label)}</div><div class="say" style="gap:12px;align-items:flex-start"><div class="qtitle" style="flex:1;font-size:24px">${esc(s.sv)}</div></div>
+   <div class="say" style="gap:12px">${spkBtn(s.sv,'big')}${spkBtn(s.sv,'slow')}</div><p class="muted" style="margin:0">${esc(s.en)}</p><div id="heard"></div>`;
+  speak(s.sv);
+  const norm2=t=>norm(t).replace(/[^a-zåäöé0-9 ]/g,'').split(' ').filter(Boolean);
+  const done=()=>{try{rec&&rec.stop()}catch(e){};SES.i++;SES.xp+=2;showQ()};
+  const canRec=!!SR;
+  ft.innerHTML=`${canRec?`<button class="btn ghost block" id="sayrec">${I.mic} Säg den högt och kontrollera</button>`:'<div class="hint" style="text-align:center">Lyssna och säg meningen högt två gånger.</div>'}<button class="btn block" id="chk">Jag har sagt den</button>`;
+  $('#chk').onclick=done;
+  const rb=$('#sayrec');if(rb)rb.onclick=()=>{if(rec){try{rec.stop()}catch(e){};return}
+    try{rec=new SR();rec.lang='sv-SE';rec.interimResults=true;rec.continuous=false}catch(e){toast('Mikrofonen gick inte att starta');return}
+    rb.innerHTML=`${I.stop} Lyssnar… tryck för att sluta`;rb.classList.add('recording');let heard='';
+    rec.onresult=e=>{heard=[...e.results].map(r=>r[0].transcript).join(' ');$('#heard').innerHTML=`<p class="hint" style="margin:0">Jag hörde: <b>${esc(heard)}</b></p>`};
+    rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed')toast('Tillåt mikrofonen för att kontrollera uttalet')};
+    rec.onend=()=>{rec=null;if(!$('#sayrec'))return;rb.innerHTML=`${I.mic} Försök igen`;rb.classList.remove('recording');
+      if(!heard)return;const want=norm2(s.sv),got=new Set(norm2(heard));const hit=want.filter(w=>got.has(w)).length;const pc=Math.round(hit/want.length*100);
+      const miss=want.filter(w=>!got.has(w));
+      $('#heard').innerHTML=`<div class="aifb"><span class="eyebrow">${pc>=80?'Bra uttalat!':pc>=50?'Nästan':'Försök igen'} · ${pc}% av orden</span><p>Jag hörde: <b>${esc(heard)}</b></p>${miss.length?`<p class="small muted">Öva på: ${miss.map(esc).join(', ')}</p>`:''}</div>`;
+      if(pc>=80)beep(true)};
+    try{rec.start()}catch(e){rec=null;toast('Mikrofonen gick inte att starta')}};
+}
+
 function rIntro(q,st,ft){const w=q.w;
   st.innerHTML=`<div class="qlabel">Nytt ord · ${TYPE[w.t]}</div><div class="card intro"><span class="newtag">Nytt</span><div class="say" style="gap:12px"><div class="bigword">${dispH(w)}</div>${spkBtn(disp(w))}</div><div style="font-size:18px;font-weight:500">${esc(w.en)}</div>${formsHTML(w)}${w.ex?`<div class="ex"><p>${esc(w.ex[0])} ${spkBtn(w.ex[0],'sm')}</p><p>${esc(w.ex[1])}</p></div>`:''}</div>`;
   speak(disp(w));
@@ -1171,6 +1226,7 @@ function rNote(q,st,ft){const l=q.l;let lang='en';
   draw();ft.innerHTML=`<button class="btn block" id="chk">Klart</button>`;$('#chk').onclick=()=>{SES.i++;SES.xp+=3;showQ()}}
 
 function finishSession(){
+  if(SES.daily){P.dm=DAY()}
   const s=SES,secs=Math.round((Date.now()-s.start)/1000),acc=s.graded?Math.round(s.right/s.graded*100):100;
   let xp=s.noXP?0:s.xp+(s.graded?10:0)+(acc===100&&s.graded>=5?5:0);
   if(s.station){const prev=P.done[s.station.id]||0;P.done[s.station.id]=Math.min(3,prev+1);
@@ -1515,6 +1571,162 @@ function runBlitz(ws,lc){SES={blitz:true};pageOpened();let score=0,miss=[],i=0,l
   $('#stage').innerHTML=`<div class="done-hero"><div class="medal">${I.bolt}</div><h1>En eller ett?</h1><p class="muted" style="margin:0;max-width:36ch">Du får ett substantiv. Välj artikel så snabbt du kan. Klockan går i 60 sekunder.</p></div>`;
   $('#foot').innerHTML=`<button class="btn block" id="go">Starta</button>`;$('#go').onclick=start;
 }
+
+/* ---------- interface language: Swedish (default) or English ----------
+   Learning content (words, sentences, texts, exam items, grammar names) always stays Swedish.
+   Only the interface around it is translated. */
+const EN={
+ 'Nivå':'Level','Skriv här':'Write here','Skriv bestämd plural':'Write the definite plural','Skriv bestämd form plural':'Write the definite plural',
+ 'Starkt resultat på kapitel 8–9. Repetera de fel du har kvar i morgon.':'Strong result on chapters 8–9. Review your remaining mistakes tomorrow.',
+ 'Sikta på minst 16 av 20. Fel på presens particip: läs lektionen om -nde/-ende. Fel på tempus: öva tidslinjen före nu, nu, efter nu och före då, då, efter då.':'Aim for at least 16 of 20. Mistakes with present participles: read the lesson on -nde/-ende. Mistakes with tenses: practise the timeline before now, now, after now and before then, then, after then.',
+ 'Guidens mål är minst 16 av 20. Fel på substantiv eller adjektiv: repetera lektion 1–5. Fel på satt/suttit eller lade/låg: öva lektion 7. Svårt med ordföljd: lektion 15–16.':'The guide\'s target is at least 16 of 20. Mistakes with nouns or adjectives: review lessons 1–5. Mistakes with satt/suttit or lade/låg: practise lesson 7. Word order difficult: lessons 15–16.',
+ '34–40: god återgivning. Förklara varför svaren fungerar och träna flyt.':'34–40: good command. Explain why the answers work and practise fluency.',
+ '26–33: gå tillbaka till den svaga lektionen och gör om just de frågorna i morgon.':'26–33: go back to the weak lesson and redo those questions tomorrow.',
+ 'Under 26: öva ett grammatikområde i taget med kortare meningar och gör sedan om provet.':'Under 26: practise one grammar area at a time with shorter sentences, then retake the test.',
+ // navigation and shell
+ 'Hem':'Home','Kapitel':'Chapters','Öva':'Practise','Prov':'Tests','Ordbok':'Dictionary','Tillbaka':'Back','Inställningar':'Settings','Huvudmeny':'Main menu','Stäng':'Close','Lyssna':'Listen',
+ 'Ladda ner appen':'Get the app','Appen':'App','Lägg till på hemskärmen':'Add to Home Screen','Lägg till':'Add','Okej':'OK','Sparas på den här enheten':'Saved on this device','Synkas mellan dina enheter':'Synced across your devices',
+ 'SFI Kompis finns nu på din hemskärm':'SFI Kompis is now on your home screen',
+ // home
+ 'God morgon':'Good morning','Hej igen':'Hello again','God kväll':'Good evening','Fortsätt':'Continue','Kör':'Go','Dagens mening':'Sentence of the day','Visa översättning':'Show translation','Dölj översättning':'Hide translation',
+ 'Öva meningen':'Practise it','Öva igen':'Practise again','Klar i dag':'Done today','Repetera':'Review','Dagens repetition':'Daily review','Inget väntar, du får nya ord':'Nothing due, you get new words','Mina fel':'My mistakes',
+ 'Inga fel just nu':'No mistakes right now','Din vecka':'Your week','I dag':'Today','Dagar i rad':'Days in a row','Total XP':'Total XP',
+ 'mån':'Mon','tis':'Tue','ons':'Wed','tor':'Thu','fre':'Fri','lör':'Sat','sön':'Sun',
+ // chapters
+ 'Del 1':'Part 1','Del 2':'Part 2','Del 3':'Part 3','Kapiteltest':'Chapter test','Blandat test för hela kapitlet':'Mixed test for the whole chapter','Repetition':'Revision',
+ 'Bostad':'Housing','Sjukvård och hälsa':'Healthcare and health','Fritid och resor':'Leisure and travel','Skola och utbildning':'School and education','Pengar och ekonomi':'Money and finances','Miljö':'Environment',
+ 'Arbete':'Work','Språkinlärning':'Language learning','Familj och relationer':'Family and relationships','Grammatik och kärnord, kapitel 1–3':'Grammar and core words, chapters 1–3','Grammatik och kärnord, kapitel 4–7':'Grammar and core words, chapters 4–7',
+ 'Grammatik':'Grammar','Läsning':'Reading','Skriv':'Writing','Tala':'Tala (speaking)','Läsfrågor':'Reading questions','Skrivuppgift med modelltext':'Writing task with model text','Taluppgift · säg svaret högt':'Speaking task · answer out loud',
+ 'Snabbövning med 10 frågor':'Quick drill with 10 questions','Läsning · sammanfattning':'Reading · summary','regel, exempel och':'rule, examples and',
+ // practice
+ 'Spel':'Games','Kortlek':'Flashcards','Memory':'Memory','Meningsbygget':'Sentence builder','Lyssna och skriv':'Listen and write','Verbgymmet':'Verb gym','En eller ett?':'En or ett?',
+ 'Vänd kort, sortera efter hur väl du kan dem':'Flip cards, sort them by how well you know them','Para ihop svenska och engelska':'Match Swedish and English','Bygg meningar med ordbrickor':'Build sentences with word tiles',
+ 'Diktamen med ord och meningar':'Dictation with words and sentences','Presens, preteritum och supinum':'Present, past and supine','60 sekunder, så många du hinner':'60 seconds, as many as you can',
+ 'Övningsboken':'Workbook','Från studieguiden':'From the study guide','Hela guiden':'Whole guide','Välj':'Choose','Välj ord':'Choose words',
+ // tests
+ 'Nationella provet':'National test','Samma format som kurs D':'Same format as course D','Miniprov':'Mini test','Öva en del':'Practise one part','Välj version':'Choose a version',
+ 'Läsa A och B':'Läsa A and B (reading)','Höra':'Höra (listening)','Skriva':'Skriva (writing)','Så ser provet ut':'What the test looks like','Fyra delar, betyg G eller IG':'Four parts, grade G (pass) or IG (fail)',
+ 'Kursprov':'Course tests','Slutprov del 1':'Final test part 1','Slutprov del 2':'Final test part 2','Slutprov del 3':'Final test part 3','Snabbprov':'Quick test','Ordprov':'Word test',
+ '20 blandade uppgifter':'20 mixed questions','25 ord att skriva':'25 words to write','Vardag, boende och fritid':'Everyday life, housing and leisure','Arbete, hälsa och samhälle':'Work, health and society','Skola, ekonomi, miljö och familj':'School, money, environment and family',
+ 'alla fyra delar':'all four parts','15 minuter':'15 minutes','läsa, lucktext och höra, blandat':'reading, gap-fill and listening, mixed',
+ 'Annonser, tabeller, e-post, artiklar, insändare':'Ads, tables, emails, articles, letters to the editor','ca 90 min':'about 90 min','4 inspelningar, lyssna högst två gånger':'4 recordings, listen at most twice','ca 35 min':'about 35 min',
+ '1 informell och 1 formell text':'1 informal and 1 formal text','90 min':'90 min','Enskild uppgift och samtal i par':'Individual task and paired conversation','ca 15 min':'about 15 min',
+ 'Kursproven bygger på studieguiden. Mål: minst 16 av 20 på del 1 och del 3, och 34 av 40 på del 2.':'The course tests are based on the study guide. Target: at least 16 of 20 on parts 1 and 3, and 34 of 40 on part 2.',
+ 'Hela provet tar ungefär 4–5 timmar, ofta uppdelat på flera dagar. Du måste klara varje del för att få G.':'The whole test takes about 4–5 hours, often split over several days. You must pass every part to get G.',
+ 'Övningsprovet följer upplägget i det nationella provet för sfi kurs D. Texterna och uppgifterna är nyskrivna för övning och är inte riktiga provuppgifter. Gränserna för godkänt bestäms för varje prov och visas därför inte här.':'The practice test follows the format of the national test for SFI course D. The texts and tasks are newly written for practice and are not real test items. The pass marks are set for each test, so they are not shown here.',
+ 'Läsa.':'Läsa (reading).','Höra.':'Höra (listening).','Skriva.':'Skriva (writing).','Tala.':'Tala (speaking).',
+ 'Två häften, A och B. Annonser, tabeller, e-post, artiklar, insändare och intervjuer. Uppgifter med svarsalternativ, rubriker, lucktext och frågor som ska paras ihop med svar.':'Two booklets, A and B. Ads, tables, emails, articles, letters to the editor and interviews. Multiple choice, headings, gap-fill and questions to match with answers.',
+ 'Inspelningar med korta berättelser, samtal, nyheter och längre berättelser. I övningen kan du lyssna högst två gånger på varje inspelning.':'Recordings of short stories, conversations, news and longer stories. In this practice you can listen to each recording at most twice.',
+ 'Två texter på 90 minuter. Uppgift 1 är informell (till exempel ett mejl till en vän). Uppgift 2 är mer formell och har en allmän del.':'Two texts in 90 minutes. Task 1 is informal (for example an email to a friend). Task 2 is more formal and has a general part.',
+ 'En enskild uppgift (ungefär 5 minuter) och ett samtal i par (ungefär 10 minuter).':'An individual task (about 5 minutes) and a paired conversation (about 10 minutes).',
+ // mock exam
+ 'Läsförståelse, häfte A':'Reading comprehension, booklet A','Läsförståelse, häfte B':'Reading comprehension, booklet B','Hörförståelse':'Listening comprehension','Två texter':'Two texts','Enskilt och i par':'Individual and in pairs',
+ 'Läs texterna och svara på frågorna. Du kan gå fram och tillbaka mellan sidorna.':'Read the texts and answer the questions. You can move back and forth between pages.',
+ 'Längre texter: rubriker till stycken, åsikter och syfte, och frågor som ska paras ihop med svar.':'Longer texts: headings for paragraphs, opinions and purpose, and questions to match with answers.',
+ 'Läs frågorna först. Tryck sedan på Spela upp. Du får lyssna två gånger. Texten visas inte förrän du är klar.':'Read the questions first. Then tap Play. You can listen twice. The text is only shown when you have finished.',
+ 'Du har 90 minuter för båda texterna. Skriv på svenska, tänk på vem du skriver till och svara på alla delar av uppgiften.':'You have 90 minutes for both texts. Write in Swedish, think about who you are writing to, and answer every part of the task.',
+ 'Läs kortet, förbered dig en minut och prata sedan högt. Appen kan läsa upp samtalsfrågorna som en partner.':'Read the card, prepare for a minute, then speak out loud. The app can read the conversation questions aloud like a partner.',
+ 'Texter':'Texts','Frågor':'Questions','Uppgifter':'Tasks','Minuter':'Minutes','Minuter, ca':'Minutes, approx.','Föregående':'Previous','Nästa':'Next','Lämna in provet':'Hand in the test',
+ 'Spela upp':'Play','Spela igen':'Play again','Du har lyssnat två gånger':'You have listened twice','Två personer pratar.':'Two people are talking.','Välj…':'Choose…','Välj rubrik…':'Choose a heading…',
+ 'Välj det ord som passar i varje lucka.':'Choose the word that fits each gap.','Välj rätt rubrik till varje stycke. Två rubriker blir över.':'Choose the right heading for each paragraph. Two headings are left over.',
+ 'Välj rätt svar till varje fråga. Ett svar blir över.':'Choose the right answer to each question. One answer is left over.','Stycke':'Paragraph',
+ 'Skriv din text här':'Write your text here','Förbered 1 min':'Prepare 1 min','Spela in svar':'Record answer','Spela in igen':'Record again','Stoppa':'Stop','Stoppa klockan':'Stop the clock','Stoppa inspelningen':'Stop recording',
+ 'Samtalspartner':'Conversation partner','Tryck på en fråga för att höra den. Svara högt och ge skäl för din åsikt. Fråga också vad din partner tycker.':'Tap a question to hear it. Answer out loud and give reasons for your opinion. Ask what your partner thinks too.',
+ 'Tips':'Tips','Börja med en mening som svarar på frågan direkt.':'Start with a sentence that answers the question directly.','Ge exempel från ditt eget liv.':'Give examples from your own life.',
+ 'Använd bindeord: först, sedan, eftersom, men, till exempel, därför, å ena sidan … å andra sidan.':'Use linking words: först, sedan, eftersom, men, till exempel, därför, å ena sidan … å andra sidan.',
+ 'Visa att du lyssnar: Jag håller med dig. Hur menar du? Det har jag inte tänkt på.':'Show that you are listening: Jag håller med dig. Hur menar du? Det har jag inte tänkt på.',
+ 'Spela in ditt svar och lyssna. Välj sedan hur det gick.':'Record your answer and listen. Then choose how it went.','Spela in ditt svar så kan Claude bedöma det. Välj sedan hur det gick.':'Record your answer and Claude can assess it. Then choose how it went.',
+ 'Svårt':'Hard','Ganska bra':'Quite good','Bra':'Good','Visa ett exempelsvar':'Show a model answer','Exempelsvar':'Model answer','Spelar in':'Recording','Startar mikrofonen…':'Starting the microphone…',
+ 'Börja prata, texten visas här…':'Start talking, the text appears here…','Din inspelning':'Your recording','Låt Claude bedöma mitt svar':'Let Claude assess my answer',
+ 'Det telefonen hörde. Rätta bara ord som tydligt blev fel. Ord som ofta hörs fel kan vara ett tips om uttal.':'What the phone heard. Only fix words that are clearly wrong. Words that are often misheard can be a pronunciation hint.',
+ 'Din webbläsare kan inte skriva ut tal här, men du kan lyssna på dig själv efteråt.':'Your browser cannot transcribe speech here, but you can listen to yourself afterwards.',
+ 'Försök prata längre, minst 1–2 minuter. Utveckla med exempel och skäl.':'Try to speak for longer, at least 1–2 minutes. Develop your answer with examples and reasons.',
+ 'Du pratar ganska långsamt. Det är okej, men försök hålla flytet utan långa pauser.':'You speak quite slowly. That is fine, but try to keep going without long pauses.',
+ 'Använd fler bindeord, till exempel eftersom, därför, till exempel, dessutom, å andra sidan.':'Use more linking words, for example eftersom, därför, till exempel, dessutom, å andra sidan.',
+ 'Förberedelsen är slut. Börja prata!':'Preparation time is over. Start talking!','Tiden är slut.':'Time is up.','Tiden för Skriva är slut. Avsluta din text.':'Writing time is over. Finish your text.',
+ 'Säg minst ett par meningar först.':'Say at least a couple of sentences first.','Ditt resultat':'Your result','Godkänt i alla delar':'Passed every part',
+ 'I det riktiga provet måste du klara varje del för att få G. Öva den del som är svagast.':'In the real test you must pass every part to get G. Practise your weakest part.',
+ 'Om du klarar så här på provdagen ligger du bra till. Gör en annan version för att vara säker.':'If you do this well on test day, you are in good shape. Try another version to be sure.',
+ 'På god väg mot G':'On track for G','Nära, öva lite till':'Close, practise a bit more','Behöver mer övning':'Needs more practice','Inte bedömd än':'Not assessed yet','bedöm dina texter nedan':'assess your texts below',
+ 'Vägledning, inte en officiell bedömning. Gränserna för G sätts för varje riktigt prov. Här visas grönt från 75 %.':'Guidance, not an official assessment. The pass marks are set for each real test. Green here means 75% or more.',
+ 'Ditt svar:':'Your answer:','Rätt svar:':'Correct answer:','Visa vad som sades':'Show what was said','Visa vad du sa':'Show what you said','Visa exempeltext':'Show model text','Ingen text skriven.':'No text written.',
+ 'Din bedömning:':'Your rating:','Nära G':'Close to G','Bedöm själv efter att du har läst exempeltexten.':'Rate yourself after reading the model text.','Eller bedöm själv efter att du har läst exempeltexten.':'Or rate yourself after reading the model text.',
+ 'Claude läser din text… det kan ta en halv minut':'Claude is reading your text… this can take half a minute','Claude lyssnar på din text… det kan ta en halv minut':'Claude is listening to your text… this can take half a minute',
+ 'Låt Claude bedöma texten':'Let Claude assess the text','Öva uttalet:':'Practise pronouncing:','Så kan du säga det:':'You could say it like this:','Vilken rubrik passar stycket?':'Which heading fits the paragraph?','Vilket svar passar frågan?':'Which answer fits the question?',
+ 'Formell text':'Formal text','Informell text':'Informal text','Enskild uppgift':'Individual task','Samtal i par':'Paired conversation',
+ // lessons and questions
+ 'Nytt':'New','Nytt ord':'New word','Substantiv':'Noun','Verb':'Verb','Adjektiv':'Adjective','Uttryck':'Expression','Adverb':'Adverb','Jag har koll':'Got it','Kontrollera':'Check','Jag vet inte':'I don\'t know',
+ 'Vad betyder ordet?':'What does the word mean?','Vad betyder meningen?':'What does the sentence mean?','Lyssna och välj betydelsen':'Listen and choose the meaning','Välj rätt svenska ord':'Choose the right Swedish word',
+ 'Skriv på svenska':'Write in Swedish','Skriv på svenska med en/ett':'Write in Swedish with en/ett','Översätt till svenska':'Translate into Swedish','Lyssna och skriv meningen':'Listen and write the sentence','Lyssna och bygg meningen':'Listen and build the sentence',
+ 'Bygg meningen':'Build the sentence','Para ihop orden':'Match the words','Tryck på ett svenskt ord och sedan på dess betydelse':'Tap a Swedish word and then its meaning','Fyll i luckan':'Fill the gap',
+ 'Skriv bestämd form singular':'Write the definite singular','Skriv obestämd plural':'Write the indefinite plural','Skriv presens':'Write the present tense','Skriv preteritum':'Write the past tense','Skriv supinum':'Write the supine','Välj supinum':'Choose the supine',
+ 'Vilken form passar?':'Which form fits?','Vilket tempus?':'Which tense?','Lägga eller ligga?':'Lägga or ligga?','Lyssna och säg meningen högt':'Listen and say the sentence out loud','Jag har sagt den':'I have said it','Säg den högt och kontrollera':'Say it out loud and check',
+ 'Lyssna och säg meningen högt två gånger.':'Listen and say the sentence out loud twice.','Jag hörde:':'I heard:','Bra uttalat!':'Well pronounced!','Nästan':'Almost','Försök igen':'Try again','Öva på:':'Practise:',
+ 'Tillåt mikrofonen för att kontrollera uttalet':'Allow the microphone to check your pronunciation','Mikrofonen gick inte att starta':'The microphone could not start',
+ 'Rätt!':'Correct!','Snyggt!':'Nice!','Bra jobbat!':'Well done!','Precis!':'Exactly!','Utmärkt!':'Excellent!','Inte riktigt':'Not quite','Nästan rätt':'Almost right','Rätt, enligt Claude':'Correct, according to Claude',
+ 'Nästan, ett litet stavfel.':'Almost, a small spelling mistake.','Kolla å, ä och ö.':'Check å, ä and ö.','Guidens svar:':'Guide\'s answer:','Guidens svar':'Guide\'s answer','Rätt svar':'Correct answer',
+ 'Mitt svar var också rätt':'My answer was also right','Mitt svar var rätt':'My answer was right','igen':'again','Visa ledtråd':'Show hint','Visa modellsvar':'Show model answer','Modellsvar':'Model answer',
+ 'Jämför med ditt svar. Hur gick det?':'Compare with your answer. How did it go?','Inte än':'Not yet','Delvis':'Partly','Jag kunde':'I knew it','Claudes förslag':'Claude\'s suggestion',
+ 'Skriv ett svar så kan Claude ge feedback.':'Write an answer and Claude can give feedback.','Ditt svar på korrekt svenska':'Your answer in correct Swedish','Ditt svar rättat':'Your answer corrected',
+ 'Skriv ditt svar på svenska (valfritt), eller svara högt':'Write your answer in Swedish (optional), or answer out loud','Säg ditt svar högt. Skriv gärna stödord här.':'Say your answer out loud. You can write key words here.',
+ 'Jag har läst':'I have read it','Svenska':'Swedish','Svenska + English':'Swedish + English','English':'English','Tips från guiden: läs en gång, lyssna en gång och återberätta sedan med egna ord utan att titta.':'Tip from the guide: read once, listen once, then retell it in your own words without looking.',
+ 'The rule':'The rule','Regeln':'The rule','Pattern':'Pattern','Mönster':'Pattern','Examples':'Examples','Exempel':'Examples','Common mistakes':'Common mistakes','Vanliga misstag':'Common mistakes','Klart':'Done',
+ // completion
+ 'Fortsätt':'Continue','Klar':'Done','Toppen!':'Great!','Bra kämpat!':'Good effort!','Övningen är klar.':'The practice is finished.','Rätt':'Correct','Tid':'Time','Drag':'Moves','Rekord':'Record','Nytt rekord!':'New record!',
+ 'Alla par hittade!':'All pairs found!','Kortleken är klar':'The deck is finished','Kunde':'Knew','Öva mer':'Practise more','Starta':'Start',
+ 'Vänd kortet':'Flip the card','Tryck för att vända':'Tap to flip','Vänd två kort. Hitta det svenska ordet och dess betydelse.':'Flip two cards. Find the Swedish word and its meaning.','Försök klara det på så få drag som möjligt':'Try to finish in as few moves as possible',
+ 'Igen':'Again','Lätt':'Easy','Du får ett substantiv. Välj artikel så snabbt du kan. Klockan går i 60 sekunder.':'You get a noun. Choose the article as fast as you can. The clock runs for 60 seconds.',
+ 'Felen ligger nu i din repetition. Öva dem i lugn takt.':'Your mistakes are now in your review. Practise them at a calm pace.','Starkt resultat.':'Strong result.','Bra grund. Felen ligger nu i din repetition.':'Good foundation. Your mistakes are now in your review.',
+ 'Du nådde guidens mål på minst 16 av 20.':'You reached the guide\'s target of at least 16 of 20.','Claude har rättat om dina skrivna svar.':'Claude has re-marked your written answers.',
+ // dictionary
+ 'Ord':'Words','Sök på svenska eller engelska':'Search in Swedish or English','Alla':'All','Alla kapitel':'All chapters','Inga ord matchar.':'No words match.','Regel, exempel och övning':'Rule, examples and practice',
+ 'Studieguidens text':'Study guide text','Fördjupning':'Further reading',
+ // settings
+ 'Dagligt mål':'Daily goal','Uppläsningstakt':'Reading speed','Långsam':'Slow','Normal':'Normal','Snabb':'Fast','Testa rösten':'Test the voice','Claude-rättning':'Claude marking','Ljudeffekter':'Sound effects','På':'On','Av':'Off',
+ 'Framsteg':'Progress','Dina framsteg sparas i den här webbläsaren.':'Your progress is saved in this browser.','Nollställ allt':'Reset everything','Allt är nollställt':'Everything has been reset','Språk':'Language',
+ 'Inte tillgänglig här. Svaren jämförs med guidens facit.':'Not available here. Answers are compared with the guide\'s answer key.','Uppläsning stöds inte här.':'Read-aloud is not supported here.',
+ 'Ingen svensk röst hittades. Lägg till svenska under telefonens inställningar för uppläsning (Hjälpmedel › Uppläst innehåll › Röster).':'No Swedish voice was found. Add Swedish in your phone\'s speech settings (Accessibility › Spoken Content › Voices).',
+ 'Dina framsteg sparas i ditt konto och följer med mellan telefon och dator.':'Your progress is saved in your account and follows you between phone and computer.',
+ // toasts and messages
+ 'Inga fel att öva. Snyggt!':'No mistakes to practise. Nice!','Inget väntar. Här är nya ord.':'Nothing due. Here are new words.','Inget att öva här':'Nothing to practise here','Inga kort här än':'No cards here yet',
+ 'Inga verb här':'No verbs here','För få ord här':'Too few words here','För få substantiv här':'Too few nouns here','Uppläsning stöds inte i den här webbläsaren':'Read-aloud is not supported in this browser',
+ 'Claude kunde inte rätta just nu.':'Claude could not mark this right now.','Claude har många frågor just nu. Försök igen om en stund.':'Claude is busy right now. Try again in a moment.',
+ 'Claude-rättning är avstängd för den här sidan.':'Claude marking is turned off for this page.','Logga in igen för att använda Claude-rättning.':'Sign in again to use Claude marking.',
+ // install guide
+ 'Tryck på Dela-knappen':'Tap the Share button','längst ner i Safari.':'at the bottom of Safari.','uppe till höger i adressfältet i Chrome.':'at the top right of the address bar in Chrome.',
+ 'i menyn i Firefox.':'in the Firefox menu.','i menyn i Edge.':'in the Edge menu.','Välj':'Choose','Tryck på':'Tap','. SFI Kompis finns nu bland dina appar och fungerar även utan nät.':'. SFI Kompis is now among your apps and works offline too.',
+};
+const ENRX=[
+ [/^(\d+) av (\d+) XP$/,'$1 of $2 XP'],[/^(\d+) av (\d+)$/,'$1 of $2'],[/^(\d+) ord sitter$/,'$1 words learned'],[/^(\d+) av (\d+) lektioner klara$/,'$1 of $2 lessons done'],
+ [/^(\d+) av (\d+) lektioner$/,'$1 of $2 lessons'],[/^(\d+) ord$/,'$1 words'],[/^(\d+) kort väntar$/,'$1 cards due'],[/^(\d+) saker att öva igen$/,'$1 things to practise again'],
+ [/^Ord (\d+)$/,'Words $1'],[/^Meningar (\d+)$/,'Sentences $1'],[/^Kapitel (\d+)$/,'Chapter $1'],[/^Kapitel (\d+)–(\d+)$/,'Chapters $1–$2'],[/^Kapitel (\d+)–(\d+) · (\d+) uppgifter$/,'Chapters $1–$2 · $3 questions'],
+ [/^Version (\d+)$/,'Version $1'],[/^Poäng: (\d+)$/,'Score: $1'],[/^(\d+) drag$/,'$1 moves'],[/^(\d+) dag$/,'1 day'],[/^(\d+) dagar i rad$/,'$1 days in a row'],[/^Kort (\d+)$/,'Card $1'],
+ [/^(\d+) uppgifter$/,'$1 questions'],[/^(\d+) klara$/,'$1 done'],[/^(\d+) övningar$/,'$1 exercises'],[/^Öva nu · (\d+) frågor$/,'Practise now · $1 questions'],[/^Uppgift (\d+)$/,'Task $1'],
+ [/^Lektionen har nu (\d+) av 3 kronor\.$/,'This lesson now has $1 of 3 crowns.'],[/^Dagens mål är nått$/,'Daily goal reached'],[/^senast (.+) av (\d+)$/,'last $1 of $2'],
+ [/^Visar (\d+) av (\d+)\. Sök för att hitta fler\.$/,'Showing $1 of $2. Search to find more.'],[/^(\d+) ord · sikta på ungefär (.+) ord$/,'$1 words · aim for about $2 words'],
+ [/^Läsfrågor, kapitel (.+)$/,'Reading questions, chapters $1'],[/^Skrivuppgifter, alla kapitel$/,'Writing tasks, all chapters'],[/^Taluppgifter, alla kapitel$/,'Speaking tasks, all chapters'],
+ [/^Nästa lektion: (.+)$/,m=>'Next lesson: '+(trS(m[1])||m[1])],[/^Starta (.+)$/,m=>'Start '+(trS(m[1])||m[1])],[/^Klar med (.+)$/,m=>'Done with '+(trS(m[1])||m[1])],
+ [/^Övning: (.+)$/,m=>'Practice: '+m[1]],[/^Lucktext: (.+)$/,m=>'Gap-fill: '+m[1]],[/^Grammatik · regel, exempel och (\d+) övningar$/,'Grammar · rule, examples and $1 exercises'],
+ [/^Visa översättning$/,'Show translation'],[/^Jag hörde: (.+)$/,m=>'I heard: '+m[1]],[/^(\d+) min$/,'$1 min'],[/^Prata (\d+) min$/,'Speak $1 min'],[/^(\d+)% av orden$/,'$1% of the words'],
+ [/^(\d+) bindeord$/,'$1 linking words'],[/^(\d+) ord\/min$/,'$1 words/min'],[/^Bindeord du använde: (.+)$/,m=>'Linking words you used: '+m[1]],[/^(\d+) kvar$/,'$1 left'],
+ [/^Låt Claude rätta om (\d+) skrivna svar$/,'Let Claude re-mark $1 written answers'],
+];
+function trS(t){if(Object.prototype.hasOwnProperty.call(EN,t))return EN[t];
+  for(const [r,f] of ENRX){const m=t.match(r);if(m)return typeof f==='function'?f(m):t.replace(r,f)}
+  if(t.includes(' · ')){const ps=t.split(' · ');const tp=ps.map(p=>trS(p));if(tp.some(x=>x!=null))return ps.map((p,i)=>tp[i]!=null?tp[i]:p).join(' · ')}
+  return null}
+const NOTR='.bigword,.opt,.tile,.mt,.cloze,.qtitle,.reader,.exl b,.dmsv,.wl .wt,.forms,.xo,.xqq,.xsel,.sfib,.brand,.gtable,.livebox p,#trx,.ans,.dmen,.ex,.rules,.pit,.face,.mc .b,.xtext,.aifb p b,.lang,script,style,textarea,[data-notr]';
+const TRA=['placeholder','aria-label','title'];
+function trText(n){const el=n.parentElement;if(!el||el.closest(NOTR))return;const raw=n.nodeValue;const t=raw.trim();if(!t||t.length>400)return;const r=trS(t);if(r!=null&&r!==t)n.nodeValue=raw.replace(t,r)}
+function trTree(root){if(P.lang!=='en'||!root)return;
+  if(root.nodeType===3)return trText(root);if(root.nodeType!==1)return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;const ns=[];while(n=w.nextNode())ns.push(n);ns.forEach(trText);
+  const els=[root,...root.querySelectorAll('[placeholder],[aria-label],[title]')];
+  els.forEach(e=>{if(!e.getAttribute||e.closest(NOTR))return;TRA.forEach(a=>{const v=e.getAttribute(a);if(v){const r=trS(v.trim());if(r!=null&&r!==v)e.setAttribute(a,r)}})})}
+const LMO=new MutationObserver(ms=>{if(P.lang!=='en')return;for(const m of ms){if(m.type==='characterData')trText(m.target);else m.addedNodes.forEach(trTree)}});
+LMO.observe(document.body,{childList:true,subtree:true,characterData:true});
+function langHTML(){return `<div class="lang" role="group" aria-label="Språk"><button data-lang="sv" aria-pressed="${P.lang!=='en'}">SV</button><button data-lang="en" aria-pressed="${P.lang==='en'}">EN</button></div>`}
+function bindLang(){$$('[data-lang]').forEach(b=>b.onclick=()=>{const l=b.dataset.lang;if(P.lang===l)return;P.lang=l;save();render();if(l==='en')trTree(document.body)})}
 
 /* ---------- boot ---------- */
 render();
