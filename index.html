@@ -474,6 +474,9 @@ svg.flag{width:20px;height:13px;flex:none;border-radius:2px;box-shadow:0 0 0 1px
 .lrow .ri svg.flag{width:22px;height:14px;stroke:none}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sftag{background:#123049;color:#9ED0F2}:root:not([data-theme="light"]) .sfc{border-color:#24496A;background:linear-gradient(180deg,#132A3E 0,var(--surface) 120px)}:root:not([data-theme="light"]) .sffact{background:#2E2A17}}
 :root[data-theme="dark"] .sftag{background:#123049;color:#9ED0F2}:root[data-theme="dark"] .sfc{border-color:#24496A;background:linear-gradient(180deg,#132A3E 0,var(--surface) 120px)}:root[data-theme="dark"] .sffact{background:#2E2A17}
+.bd:not(.got) svg.flag{filter:grayscale(1);opacity:.45}
+.homefoot{display:flex;justify-content:space-between;align-items:center;gap:12px}.homefoot .linkbtn{font-size:13px}
+.aboutt p{margin:0 0 10px;font-size:15px;line-height:1.5}.aboutt p:first-child{font-weight:500}
 .week span.tod{color:var(--ink);font-weight:600}
 .today .week{margin-top:4px}
 #sayrec.recording{border-color:var(--bad);color:var(--bad)}
@@ -980,7 +983,7 @@ function vHome(v){
     ${weekHTML()}
     <div class="tmeta">${learnedCount()} ord sitter · ${Object.keys(P.done).length} av ${ALLST.length} lektioner klara</div></section>
   ${badgesHTML()}
-  <p class="foot"><span class="sync ${syncOn?'on':''}"><i></i>${syncOn?'Synkas mellan dina enheter':'Sparas på den här enheten'}</span></p>
+  <p class="foot homefoot"><span class="sync ${syncOn?'on':''}"><i></i>${syncOn?'Synkas mellan dina enheter':'Sparas på den här enheten'}</span><button class="linkbtn" id="about">Om appen</button></p>
   </div>`;
   $('#goNext').onclick=()=>startStation(nx);
   $('#goReview').onclick=()=>startReview();
@@ -988,6 +991,7 @@ function vHome(v){
   $('#dmShow').onclick=()=>{const e=$('#dmen');e.hidden=!e.hidden;$('#dmShow').textContent=e.hidden?'Visa översättning':'Dölj översättning'};
   $('#dmGo').onclick=startDaily;
   bindSfCard();
+  $('#about').onclick=openAbout;
 }
 function crownsHTML(n){return `<span class="crowns" aria-label="${n} av 3 kronor">${[0,1,2].map(i=>`<span class="${i<n?'':'off'}">${I.crown}</span>`).join('')}</span>`}
 let openUnit=null;
@@ -1080,6 +1084,7 @@ function vLib(v){
 /* ---------- sheets ---------- */
 function sheet(html,onMount){const s=document.createElement('div');s.className='sheet';s.innerHTML=`<div class="panel" role="dialog" aria-modal="true">${html}</div>`;
   s.addEventListener('click',e=>{if(e.target===s)s.remove()});document.body.appendChild(s);onMount&&onMount(s.firstChild,()=>s.remove());return s}
+function openAbout(){sheet(`<div class="row"><h2>Om SFI Kompis</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div><div class="aboutt"><p>SFI Kompis är ett privat studieprojekt. Appen hjälper dig att öva på kursens teman, ord och grammatik, kapitel för kapitel, och på Sverige i fokus inför medborgarskapsprovet.</p><p>Appen är ett komplement till kursboken och lektionerna. Den ersätter inte kursmaterialet. Läs texterna och gör uppgifterna i boken som vanligt.</p><p>SFI Kompis är inte kopplad till din skola, till kursbokens förlag eller till Skolverket.</p><p>Övningsproven är nyskrivna och följer bara upplägget i det nationella provet. Frågorna om Sverige i fokus bygger på utbildningsmaterialet från UHR och Skolverket (2026), men de är inte provets riktiga frågor.</p><p>Appen kan innehålla fel. Hittar du något som inte stämmer, säg gärna till.</p>${syncOn?'':'<p>Dina framsteg sparas bara på din telefon. Appen har inga konton och samlar inte in några uppgifter om dig.</p>'}</div><button class="btn block" data-close>Stäng</button>`,(p,close)=>$$('[data-close]',p).forEach(b=>b.onclick=close))}
 function openSettings(){let armed=false;
   sheet(`<div class="row"><h2>Inställningar</h2><button class="iconbtn" data-close aria-label="Stäng">${I.x}</button></div>
   <div><div class="eyebrow" style="margin-bottom:8px">Dagligt mål</div><div class="pick" id="pg">${[20,50,100,150].map(g=>`<button data-g="${g}" aria-pressed="${P.goal===g}">${g} XP</button>`).join('')}</div></div>
@@ -1089,7 +1094,9 @@ function openSettings(){let armed=false;
   <div><div class="eyebrow" style="margin-bottom:6px">Claude-rättning</div><p class="small muted" style="margin:0">${AI?'På. När ett skrivet svar inte matchar guiden exakt läser Claude det och bedömer om det ändå är rätt. Öppna frågor kan få feedback på innehåll och språk. Det använder ditt Claude-konto.':aiState==='denied'?'Avstängd. Du har inte gett sidan lov att använda Claude.':'Inte tillgänglig här. Svaren jämförs med guidens facit.'}</p></div>
   <div class="row"><div><div class="eyebrow">Ljudeffekter</div></div><div class="pick"><button id="snd" aria-pressed="${P.sound}">${P.sound?'På':'Av'}</button></div></div>
   <div><div class="eyebrow" style="margin-bottom:6px">Framsteg</div><p class="small muted" style="margin:0 0 8px">${syncOn?'Dina framsteg sparas i ditt konto och följer med mellan telefon och dator.':'Dina framsteg sparas i den här webbläsaren.'}</p>
-   <button class="btn ghost" id="reset" style="color:var(--bad)">Nollställ allt</button></div>`,(p,close)=>{
+   <button class="btn ghost" id="reset" style="color:var(--bad)">Nollställ allt</button></div>
+  <button class="linkbtn" id="aboutS" style="align-self:flex-start">Om SFI Kompis</button>`,(p,close)=>{
+    $('#aboutS',p).onclick=()=>{close();openAbout()};
     $('[data-close]',p).onclick=close;
     $$('[data-g]',p).forEach(b=>b.onclick=()=>{P.goal=+b.dataset.g;save();$$('[data-g]',p).forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
     $$('[data-r]',p).forEach(b=>b.onclick=()=>{P.rate=+b.dataset.r;save();$$('[data-r]',p).forEach(x=>x.setAttribute('aria-pressed',x===b))});
@@ -1976,6 +1983,7 @@ const EN={
  'Ladda ner appen':'Get the app','Appen':'App','Lägg till på hemskärmen':'Add to Home Screen','Lägg till':'Add','Okej':'OK','Sparas på den här enheten':'Saved on this device','Synkas mellan dina enheter':'Synced across your devices',
  'SFI Kompis finns nu på din hemskärm':'SFI Kompis is now on your home screen',
  // home
+ "SFI Kompis är ett privat studieprojekt. Appen hjälper dig att öva på kursens teman, ord och grammatik, kapitel för kapitel, och på Sverige i fokus inför medborgarskapsprovet.":"SFI Kompis is a private study project. It helps you practise the course's themes, vocabulary and grammar, chapter by chapter, and Sverige i fokus for the citizenship test.","Appen är ett komplement till kursboken och lektionerna. Den ersätter inte kursmaterialet. Läs texterna och gör uppgifterna i boken som vanligt.":"The app complements the coursebook and lessons. It doesn't replace the course material. Read the texts and do the tasks in the book as usual.","SFI Kompis är inte kopplad till din skola, till kursbokens förlag eller till Skolverket.":"SFI Kompis is not affiliated with your school, the coursebook's publisher or Skolverket.","Övningsproven är nyskrivna och följer bara upplägget i det nationella provet. Frågorna om Sverige i fokus bygger på utbildningsmaterialet från UHR och Skolverket (2026), men de är inte provets riktiga frågor.":"The practice exams are newly written and only follow the format of the national test. The Sverige i fokus questions are based on the study material from UHR and Skolverket (2026), but they are not the real test questions.","Appen kan innehålla fel. Hittar du något som inte stämmer, säg gärna till.":"The app may contain mistakes. If you find something that's wrong, please say so.","Dina framsteg sparas bara på din telefon. Appen har inga konton och samlar inte in några uppgifter om dig.":"Your progress is saved only on your phone. The app has no accounts and collects no information about you.","Om SFI Kompis":"About SFI Kompis","Om appen":"About the app","Stäng":"Close",
  'Visste du?':'Did you know?','Öva 10 frågor':'Practise 10 questions','Ny fråga i morgon':'New question tomorrow','Fråga om Sverige':'Question about Sweden','Dölj engelska':'Hide English','Medborgarskapsprovet':'Citizenship test','Snabbquiz':'Quick quiz','10 frågor om Sverige, med förklaring':'10 questions about Sweden, with explanations','Provträning':'Test practice','Alla 100 frågor':'All 100 questions','Hela materialet, kapitel för kapitel':'The whole material, chapter by chapter','Öva ett kapitel':'Practise a chapter','13 kapitel i Sverige i fokus':'13 chapters in Sverige i fokus','Samhällskunnig':'Society expert','Svara rätt på 50 frågor om Sverige':'Answer 50 questions about Sweden correctly','Klar i dag':'Done today','Bygger på Sverige i fokus, utbildningsmaterial till medborgarskapsprov (UHR och Skolverket, 2026). Frågorna är övningsfrågor, inte provets riktiga frågor.':'Based on Sverige i fokus, the official study material for the citizenship test (UHR and Skolverket, 2026). These are practice questions, not the real test questions.','Medborgarskapsprov · övning':'Citizenship test · practice','Sverige i fokus · alla 100':'Sverige i fokus · all 100',
  'God morgon':'Good morning','Hej igen':'Hello again','God kväll':'Good evening','Fortsätt':'Continue','Kör':'Go','Dagens mening':'Sentence of the day','Visa översättning':'Show translation','Dölj översättning':'Hide translation',
  'Öva meningen':'Practise it','Öva igen':'Practise again','Klar i dag':'Done today','Repetera':'Review','Dagens repetition':'Daily review','Inget väntar, du får nya ord':'Nothing due, you get new words','Mina fel':'My mistakes',
