@@ -467,6 +467,47 @@ svg.inl{width:16px;height:16px;vertical-align:-3px;color:var(--accent)}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 @media (min-width:560px){.grid2{grid-template-columns:repeat(3,1fr)}.mem{grid-template-columns:repeat(4,1fr)}}
+
+/* life: moose, illustrations, celebrations, badges */
+.greet{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 2px -4px}
+.greet h2{font-size:24px;font-weight:650;letter-spacing:-.02em}
+.greet span{font-size:14px;color:var(--muted)}
+.greet .mz{width:78px;flex:none;margin-bottom:-8px}
+.mz svg{display:block;width:100%;height:auto}
+.done-hero .mz{width:170px;margin-bottom:-6px}
+.mz.sm{width:72px;flex:none}
+.mz.xs{width:52px;flex:none}
+.banner{display:block;width:100%;background:var(--sky,#DCE8F3);overflow:hidden}
+.banner svg{display:block;width:100%;height:auto}
+.go2{display:flex;flex-direction:column;align-items:stretch;padding:0;gap:0;overflow:hidden}
+.go2 .banner{aspect-ratio:640/250}
+.go2 .banner svg{height:100%;width:100%;object-fit:cover}
+.gorow{display:flex;align-items:center;gap:14px;padding:14px 16px}
+.ubanner{aspect-ratio:640/220;border-top:1px solid var(--line)}
+.ubanner svg,.donebanner svg{height:100%}
+.donebanner{border-radius:var(--r);aspect-ratio:640/240;margin-bottom:-24px}
+.gtitle{display:flex;align-items:center;gap:12px}
+.gtitle h1{font-size:26px}
+.pep{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:var(--rctl);padding:8px 12px 8px 6px;border:1px solid var(--line)}
+.pep p{margin:0;font-size:14px;line-height:1.4;color:var(--ink)}
+.badge-new{display:inline-flex;align-items:center;gap:6px;background:#FFF4D1;color:#7A5800;font-weight:600;font-size:13px;padding:6px 12px;border-radius:999px;margin:2px}
+.badge-new svg{width:15px;height:15px}
+.goalhit{display:inline-flex;align-items:center;gap:6px;color:#8A6400;font-weight:600;margin:6px 0 0}
+.goalhit svg{width:16px;height:16px;color:var(--sun)}
+.tstat .lit svg{color:var(--sun);animation:flame 1.4s ease-in-out infinite}
+@keyframes flame{50%{transform:scale(1.18) rotate(-4deg)}}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:10px 8px}
+.bd{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:10px 4px}
+.bd .bi{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--sunk);color:var(--faint);border:2px dashed var(--line2)}
+.bd .bi svg{width:22px;height:22px}
+.bd b{font-size:12px;font-weight:600;line-height:1.25;color:var(--muted)}
+.bd small{display:none}
+.bd.got .bi{background:radial-gradient(circle at 35% 30%,#F6D96B,#E9B518 60%,#C99300);color:#1D4F82;border:2px solid #fff;box-shadow:0 0 0 2px #E9B518}
+.bd.got b{color:var(--ink)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:70;overflow:hidden}
+.confetti i{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;animation:fall 2.2s cubic-bezier(.25,.6,.4,1) forwards;opacity:.95}
+@keyframes fall{to{top:105%;transform:translateX(30px) rotate(540deg)}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .badge-new{background:#3A3010;color:#F2D27A}:root:not([data-theme="light"]) .goalhit{color:#F2D27A}:root:not([data-theme="light"]) .banner{filter:brightness(.92) saturate(.95)}}
 </style>
 </head>
 <body>
@@ -895,8 +936,8 @@ function vHome(v){
   const d=DAY(),today=P.days[d]||0,pct=Math.min(1,today/P.goal),due=dueKeys().length,nx=nextStation(),u=U[nx.ui],mist=mistakeKeys().length;
   const s=dagensMening(),dmDone=P.dm===d;
   v.innerHTML=`<div class="stack">
-  ${headHTML(greet())}
-  <button class="card go" id="goNext" style="--lc:${u.lc}"><span class="dot"></span><span class="rt"><span class="lab">${esc(u.lab)} · ${esc(u.n)}</span><b>${esc(nx.ti)}</b><span>${esc(nx.sub)}</span></span><span class="gobtn">Kör</span></button>
+  <div class="greet"><div><h2>${greet()}</h2><span>${streakNow()>1?`${streakNow()} dagar i rad. Fortsätt så!`:'Redo för lite svenska?'}</span></div>${mooseHTML(today>=P.goal?'cheer':'happy')}</div>
+  <button class="card go go2" id="goNext">${sceneHTML(nx.ui)}<span class="gorow"><span class="rt"><span class="lab">${esc(u.lab)} · ${esc(u.n)}</span><b>${esc(nx.ti)}</b><span>${esc(nx.sub)}</span></span><span class="gobtn">Kör</span></span></button>
   <section class="card dm"><div class="dmhead"><span class="lab">Dagens mening</span>${dmDone?`<span class="chip okc">${I.ok}Klar i dag</span>`:''}</div>
     <div class="say dmsay"><p class="dmsv">${esc(s.sv)}</p>${spkBtn(s.sv)}</div>
     <p class="dmen" id="dmen" hidden>${esc(s.en)}</p>
@@ -907,10 +948,11 @@ function vHome(v){
     rowHTML({icon:I.x,color:'var(--bad)',title:'Mina fel',sub:mist?`${mist} saker att öva igen`:'Inga fel just nu',attrs:'id="goMist"'})])}
   ${headHTML('Din vecka')}
   <section class="card today"><div class="trow"><div><span class="lab">I dag</span><b>${today} av ${P.goal} XP</b></div>
-    <div class="tstat"><span title="Dagar i rad">${I.fire}${streakNow()}</span><span title="Total XP">${I.bolt}${P.xp}</span></div></div>
+    <div class="tstat"><span title="Dagar i rad" class="${today>=P.goal?'lit':''}">${I.fire}${streakNow()}</span><span title="Total XP">${I.bolt}${P.xp}</span></div></div>
     <div class="pbar"><i style="width:${pct*100}%"></i></div>
     ${weekHTML()}
     <div class="tmeta">${learnedCount()} ord sitter · ${Object.keys(P.done).length} av ${ALLST.length} lektioner klara</div></section>
+  ${badgesHTML()}
   <p class="foot"><span class="sync ${syncOn?'on':''}"><i></i>${syncOn?'Synkas mellan dina enheter':'Sparas på den här enheten'}</span></p>
   </div>`;
   $('#goNext').onclick=()=>startStation(nx);
@@ -927,7 +969,7 @@ function vLines(v){
   [1,2,3].forEach(p=>{h+=headHTML(`Del ${p}`,`Kapitel ${p===1?'1–3':p===2?'4–7':'8–9'}`);
     U.forEach((u,ui)=>{if(u.p!==p)return;const line=LINES[ui];const dn=line.filter(s=>P.done[s.id]).length;
       h+=`<section class="card unit ${openUnit===ui?'open':''}" style="--lc:${u.lc}"><button class="uhead" data-unit="${ui}" aria-expanded="${openUnit===ui}"><span class="ri"><b>${u.code}</b></span><span class="rt"><b>${esc(u.n)}</b><span>${u.lab} · ${dn} av ${line.length} lektioner · ${UW[ui].length} ord</span><span class="pbar thin"><i style="width:${dn/line.length*100}%"></i></span></span><span class="chev">${I.chev}</span></button>`;
-      if(openUnit===ui){h+=`<ol class="stations">`+line.map(s=>{const c=P.done[s.id]||0;return `<li class="st ${c?'done':''} ${s===nx?'here':''}"><button data-st="${s.id}"><span class="pip"><i></i></span><span class="rt"><b>${esc(s.ti)}</b><span>${esc(s.sub)}</span></span>${c?crownsHTML(c):''}</button></li>`}).join('')+`</ol>`}
+      if(openUnit===ui){h+=sceneHTML(ui,'banner ubanner')+`<ol class="stations">`+line.map(s=>{const c=P.done[s.id]||0;return `<li class="st ${c?'done':''} ${s===nx?'here':''}"><button data-st="${s.id}"><span class="pip"><i></i></span><span class="rt"><b>${esc(s.ti)}</b><span>${esc(s.sub)}</span></span>${c?crownsHTML(c):''}</button></li>`}).join('')+`</ol>`}
       h+=`</section>`})});
   v.innerHTML=h+`</div>`;
   $$('[data-unit]',v).forEach(b=>b.onclick=()=>{const ui=+b.dataset.unit;openUnit=openUnit===ui?-1:ui;vLines(v);const el=$(`[data-unit="${ui}"]`,v);el&&el.scrollIntoView({block:'start'})});
@@ -1083,7 +1125,7 @@ function answered(q,ok,info={}){
   if(q.key&&!SES.exam&&!SES.noXP){grade(q.key,ok,ok&&q.type==='type'?1:1)}
   if(q.key&&SES.exam){grade(q.key,ok)}
   const graded=q.type!=='intro'&&q.type!=='read'&&q.type!=='note'&&q.type!=='gram'&&q.type!=='say';
-  if(graded){SES.graded++;if(ok){SES.right++;SES.combo++;SES.xp+=SES.combo>=5?2:1}else{SES.combo=0}}
+  if(graded){SES.graded++;if(ok){SES.right++;SES.combo++;SES.xp+=SES.combo>=5?2:1;SES.wrongRun=0}else{SES.combo=0;SES.wrongRun=(SES.wrongRun||0)+1}}
   SES.log.push({q,ok,user:info.user});
   if(!ok&&!SES.exam&&!q.retry&&!SES.requeued.has(q)&&q.type!=='open'){SES.requeued.add(q);const copy=q.type==='mc'?Object.assign({},q,{opts:shuffle(q.opts),retry:true}):Object.assign({},q,{retry:true});SES.qs.push(copy)}
   if(SES.exam){SES.i++;return showQ()}
@@ -1094,6 +1136,7 @@ function answered(q,ok,info={}){
   ft.className='sfoot '+cls;
   ft.innerHTML=`<div class="fb"><span class="fi">${ok?I.ok:I.x}</span><div style="flex:1;min-width:0"><h3>${title}</h3>${info.close?`<p>${esc(info.close)}</p>`:''}${ansLine}${q.fb&&!info.ai&&(!ok||q.type!=='mc'||q.w)?`<p class="small">${esc(q.fb)}</p>`:''}${info.note?`<p class="small muted">${esc(info.note)}</p>`:''}</div>${q.say?spkBtn(q.say,'sm'):''}</div>${info.ai?aiBox(info.ai,ok):''}
    ${!ok&&info.override?`<button class="linkbtn" id="ovr">Mitt svar var också rätt</button>`:''}
+   ${!ok&&SES.wrongRun>=3&&SES.wrongRun%3===0?`<div class="pep">${mooseHTML('sad','mz xs')}<p><b>Ingen fara!</b> Det här är svårt. Läs svaret högt en gång, så tar vi nästa.</p></div>`:''}
    <button class="btn block" id="cont">Fortsätt</button>`;
   if(q.say)speak(q.say);
   const cont=$('#cont');cont.focus({preventScroll:true});
@@ -1211,7 +1254,7 @@ function rRead(q,st,ft){const r=q.r;let en=false;
   draw();ft.innerHTML=`<button class="btn block" id="chk">Jag har läst</button>`;$('#chk').onclick=()=>{SES.i++;SES.xp+=3;showQ()}}
 function rGram(q,st,ft){const g=q.g;let lang='en';
   const draw=()=>{const rules=lang==='en'?g.ren:g.rsv;
-   st.innerHTML=`<div class="qlabel">Grammatik · ${esc(U[g.u].n)}</div><h1>${esc(g.ti)}</h1><p class="muted" style="margin:-6px 0 0">${esc(g.en)}</p>
+   st.innerHTML=`<div class="qlabel">Grammatik · ${esc(U[g.u].n)}</div><div class="gtitle">${mooseHTML('think','mz sm')}<div><h1>${esc(g.ti)}</h1><p class="muted" style="margin:2px 0 0">${esc(g.en)}</p></div></div>
    <div class="seg"><button data-l="en" aria-pressed="${lang==='en'}">English</button><button data-l="sv" aria-pressed="${lang==='sv'}">Svenska</button></div>
    <section class="gcard"><h3>${lang==='en'?'The rule':'Regeln'}</h3><ul class="rules">${rules.map(r=>`<li>${esc(r)}</li>`).join('')}</ul></section>
    <section class="gcard"><h3>${lang==='en'?'Pattern':'Mönster'}</h3><div class="gtable"><table><thead><tr>${g.tb.h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${g.tb.r.map(r=>`<tr>${r.map((c,i)=>`<td${i===0?' class="k"':''}>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
@@ -1226,21 +1269,25 @@ function rNote(q,st,ft){const l=q.l;let lang='en';
   draw();ft.innerHTML=`<button class="btn block" id="chk">Klart</button>`;$('#chk').onclick=()=>{SES.i++;SES.xp+=3;showQ()}}
 
 function finishSession(){
-  if(SES.daily){P.dm=DAY()}
+  if(SES.daily&&P.dm!==DAY()){P.dm=DAY();P.dmN=(P.dmN||0)+1}
   const s=SES,secs=Math.round((Date.now()-s.start)/1000),acc=s.graded?Math.round(s.right/s.graded*100):100;
   let xp=s.noXP?0:s.xp+(s.graded?10:0)+(acc===100&&s.graded>=5?5:0);
+  const ui=s.station?s.station.ui:-1,wasDone=ui>=0&&unitDone(ui);
   if(s.station){const prev=P.done[s.station.id]||0;P.done[s.station.id]=Math.min(3,prev+1);
-    // mark new words as learned once
     if(s.station.kind==='words')s.station.ws.forEach(w=>{const k='w'+w.i;if(!P.srs[k])P.srs[k]=[1,DAY()+1,1,0]})}
   if(xp)addXP(xp);else save();
+  const chapter=ui>=0&&!wasDone&&unitDone(ui);const nw=checkBadges();
   const st=$('#stage'),ft=$('#foot');$('#pbar').style.width='100%';
-  st.innerHTML=`<div class="done-hero"><div class="medal">${s.station?I.crown:I.star}</div><div class="eyebrow">${esc(s.title)}</div><h1>${acc>=90?'Toppen!':acc>=70?'Bra jobbat!':'Bra kämpat!'}</h1>
-   <p class="muted" style="margin:0">${s.station?`Lektionen har nu ${P.done[s.station.id]} av 3 kronor.`:'Övningen är klar.'}</p>
+  const goal=(P.days[DAY()]||0)>=P.goal&&(P.days[DAY()]||0)-xp<P.goal;
+  st.innerHTML=`<div class="done-hero">${chapter?sceneHTML(ui,'banner donebanner'):''}${mooseHTML(chapter?'cheer':moodFor(acc/100))}<div class="eyebrow">${esc(s.title)}</div>
+   <h1>${chapter?`${esc(/^G/.test(U[ui].code)?U[ui].n:U[ui].lab)} klart!`:acc>=90?'Toppen!':acc>=70?'Bra jobbat!':acc>=50?'Bra kämpat!':'Ingen fara, vi tar det igen!'}</h1>
+   <p class="muted" style="margin:0">${chapter?`Du har klarat alla lektioner i ${esc(U[ui].n)}.`:s.station?`Lektionen har nu ${P.done[s.station.id]} av 3 kronor.`:s.daily?'Dagens mening är klar. Ny mening i morgon.':'Övningen är klar.'}</p>
+   ${newBadgesHTML(nw)}
    <div class="kpis"><div class="card kpi"><b>+${xp}</b><span>XP</span></div><div class="card kpi"><b>${acc}%</b><span>Rätt</span></div><div class="card kpi"><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b><span>Tid</span></div></div>
-   ${(P.days[DAY()]||0)>=P.goal&&(P.days[DAY()]||0)-xp<P.goal?`<p style="color:var(--good);font-weight:600;margin:4px 0 0">Dagens mål är nått · ${streakNow()} dagar i rad</p>`:''}</div>`;
+   ${goal?`<p class="goalhit">${I.fire} Dagens mål är nått · ${streakNow()} dagar i rad</p>`:''}</div>`;
   const nx=s.station?nextStation():null;
   ft.innerHTML=`${nx?`<button class="btn block" id="nx">Nästa lektion: ${esc(nx.ti)}</button>`:''}<button class="btn ${nx?'ghost':''} block" id="home">Tillbaka</button>`;
-  beep(true);
+  beep(true);if(acc>=80||chapter||nw.length||goal)confetti();
   $('#home').onclick=()=>endSession();if(nx)$('#nx').onclick=()=>{SES=null;startStation(nx)};
 }
 function endSession(){try{speechSynthesis.cancel()}catch(e){}
@@ -1260,7 +1307,8 @@ function examResults(again){
   P.tests[s.exam]=[pts,n,DAY()];save();
   const st=$('#stage'),ft=$('#foot');$('#pbar').style.width='100%';ft.className='sfoot';
   const ansOf=l=>(l.q.ans||l.q.model||'').replace(/^SV:\s*/,'');
-  st.innerHTML=`<div class="done-hero"><div class="medal">${I.test}</div><div class="eyebrow">${esc(s.title)}</div><h1>${pts} av ${n}</h1><p class="muted" style="margin:0;max-width:44ch">${esc(band)}</p>${s.remarked?'<p class="small" style="margin:0;color:var(--good);font-weight:700">Claude har rättat om dina skrivna svar.</p>':''}</div>
+  if(!again){const nw=checkBadges();s.nw=nw;if(pct>=.8)confetti()}
+  st.innerHTML=`<div class="done-hero">${mooseHTML(moodFor(pct))}<div class="eyebrow">${esc(s.title)}</div><h1>${pts} av ${n}</h1>${newBadgesHTML(s.nw||[])}<p class="muted" style="margin:0;max-width:44ch">${esc(band)}</p>${s.remarked?'<p class="small" style="margin:0;color:var(--good);font-weight:700">Claude har rättat om dina skrivna svar.</p>':''}</div>
    <div class="review card" style="padding:4px 14px"><ul>${items.map((l,i)=>`<li><div class="row" style="align-items:flex-start"><span style="min-width:0"><span class="small muted">${i+1}.</span> ${esc(l.q.prompt||l.q.label||'')}${l.q.big&&!l.q.prompt?` <b>${l.q.big}</b>`:''}</span><span class="${l.ok?'ok':'no'}">${l.ok?'✓':l.half?'½':'✗'}</span></div>
      ${l.user!=null&&l.q.type!=='open'?`<div class="small">Ditt svar: <b>${esc(l.user||'–')}</b></div>`:''}
      ${l.ai&&l.ai.feedback_en?`<div class="small" style="color:var(--accent)">Claude: ${esc(l.ai.feedback_en)}</div>`:''}
@@ -1434,7 +1482,8 @@ function mockResults(again){const s=SES;clearInterval(MT);try{speechSynthesis.ca
        <details class="small"><summary>Visa exempeltext</summary><p>${esc(pg.t.model)} ${spkBtn(pg.t.model,'sm')}</p></details></li>`}
     if(pg.kind==='talk'){const g=(s.talk[pg.m.id+'_'+pg.t.n]||{}).g;return `<li><b>Tala, uppgift ${pg.t.n}</b> <span class="small muted">${esc(pg.t.task)}</span><div class="small">Din bedömning: <b>${g==null?'–':['Svårt','Ganska bra','Bra'][g]}</b>${(s.talk[pg.m.id+'_'+pg.t.n]||{}).ai?` · Claude: <b>${esc(s.talk[pg.m.id+'_'+pg.t.n].ai.grade)}</b>`:''}</div>${(s.talk[pg.m.id+'_'+pg.t.n]||{}).tr?`<details class="small"><summary>Visa vad du sa</summary><p>${esc(s.talk[pg.m.id+'_'+pg.t.n].tr)}</p></details>`:''}${pg.t.model?`<details class="small"><summary>Visa exempelsvar</summary><p>${esc(pg.t.model)}</p></details>`:''}</li>`}
     return ''}).join(''):'';
-  st.innerHTML=`<div class="done-hero"><div class="medal">${I.test}</div><div class="eyebrow">${esc(s.cfg.title)}</div><h1>${all?'Godkänt i alla delar':'Ditt resultat'}</h1><p class="muted" style="margin:0;max-width:42ch">${all?'Om du klarar så här på provdagen ligger du bra till. Gör en annan version för att vara säker.':'I det riktiga provet måste du klara varje del för att få G. Öva den del som är svagast.'}</p></div>
+  if(!again){s.nw=checkBadges();if(all)confetti()}
+  st.innerHTML=`<div class="done-hero">${mooseHTML(all?'cheer':'happy')}${newBadgesHTML(s.nw||[])}<div class="eyebrow">${esc(s.cfg.title)}</div><h1>${all?'Godkänt i alla delar':'Ditt resultat'}</h1><p class="muted" style="margin:0;max-width:42ch">${all?'Om du klarar så här på provdagen ligger du bra till. Gör en annan version för att vara säker.':'I det riktiga provet måste du klara varje del för att få G. Öva den del som är svagast.'}</p></div>
    <div class="card list">${rows.map(([n,o])=>{const un=n==='Skriva'&&sc.skriva&&sc.skriva.self;const [c,t]=un?['muted','Inte bedömd än · bedöm dina texter nedan']:bandOf(o);return `<div class="lrow static" style="--rc:var(--${c})"><span class="ri"><b>${Math.round(o.n?o.pts/o.n*100:0)}%</b></span><span class="rt"><b>${esc(n)} · ${Math.round(o.pts*10)/10} av ${o.n}</b><span style="color:var(--${c})">${esc(t)}</span></span></div>`}).join('')}</div>
    <p class="foot">Vägledning, inte en officiell bedömning. Gränserna för G sätts för varje riktigt prov. Här visas grönt från 75 %.</p>
    ${parts.filter(p=>sc[p]).map(p=>`<div class="review card" style="padding:4px 14px"><h3 style="margin:12px 0 4px">${esc(PART[p][0])}</h3><ul>${rev(p)}</ul></div>`).join('')}`;
@@ -1536,7 +1585,7 @@ function runFlash(ws,lc){let i=0,rev=false,stats=[0,0,0,0];SES={flash:true};page
       if(r===0){s[0]=1;s[1]=d;s[3]++;ws.push(ws[i])}else if(r===1){s[0]=Math.max(1,s[0]);s[1]=d+1}else{s[0]=Math.min(5,s[0]+(r===3?2:1));s[1]=d+INT[s[0]]}
       P.srs[k]=s;stats[r]++;i++;save();draw()})};
   const done=()=>{const xp=Math.round((stats[1]+stats[2]+stats[3])/2)+5;addXP(xp);
-    $('#pbar').style.width='100%';$('#stage').innerHTML=`<div class="done-hero"><div class="medal">${I.cards}</div><h1>Kortleken är klar</h1><div class="kpis"><div class="card kpi"><b>+${xp}</b><span>XP</span></div><div class="card kpi"><b>${stats[2]+stats[3]}</b><span>Kunde</span></div><div class="card kpi"><b>${stats[0]+stats[1]}</b><span>Öva mer</span></div></div></div>`;
+    $('#pbar').style.width='100%';const nw=checkBadges();confetti();$('#stage').innerHTML=`<div class="done-hero">${mooseHTML('cheer')}<h1>Kortleken är klar</h1>${newBadgesHTML(nw)}<div class="kpis"><div class="card kpi"><b>+${xp}</b><span>XP</span></div><div class="card kpi"><b>${stats[2]+stats[3]}</b><span>Kunde</span></div><div class="card kpi"><b>${stats[0]+stats[1]}</b><span>Öva mer</span></div></div></div>`;
     $('#foot').innerHTML=`<button class="btn block" id="home">Tillbaka</button>`;$('#home').onclick=()=>endSession()};
   draw()}
 
@@ -1551,7 +1600,7 @@ function runMemory(ws,lc){SES={mem:true};pageOpened();let moves=0,open=[],got=0,
         if(got===ws.length)setTimeout(win,500)}
       else{lock=true;open.forEach(e=>e.classList.add('miss'));setTimeout(()=>{open.forEach(e=>e.classList.remove('up','miss'));open=[];lock=false},900)}}});
   const memS=SES;const win=()=>{if(SES!==memS||!$('#stage'))return;const secs=Math.round((Date.now()-t0)/1000);const rec=!P.best.mem||moves<P.best.mem;if(rec)P.best.mem=moves;addXP(10+Math.max(0,ws.length*2-moves+6));
-    $('#stage').innerHTML=`<div class="done-hero"><div class="medal">${I.grid}</div><h1>${rec?'Nytt rekord!':'Alla par hittade!'}</h1><div class="kpis"><div class="card kpi"><b>${moves}</b><span>Drag</span></div><div class="card kpi"><b>${secs}s</b><span>Tid</span></div><div class="card kpi"><b>${P.best.mem}</b><span>Rekord</span></div></div>
+    const nw=checkBadges();confetti();$('#stage').innerHTML=`<div class="done-hero">${mooseHTML('cheer')}<h1>${rec?'Nytt rekord!':'Alla par hittade!'}</h1>${newBadgesHTML(nw)}<div class="kpis"><div class="card kpi"><b>${moves}</b><span>Drag</span></div><div class="card kpi"><b>${secs}s</b><span>Tid</span></div><div class="card kpi"><b>${P.best.mem}</b><span>Rekord</span></div></div>
      <div class="card" style="width:100%;text-align:left"><ul class="wl">${ws.map(w=>`<li><span class="wt"><b>${dispH(w)}</b><div>${esc(w.en)}</div></span>${spkBtn(disp(w),'sm')}</li>`).join('')}</ul></div></div>`;
     $('#foot').innerHTML=`<button class="btn block" id="again">Spela igen</button><button class="btn ghost block" id="home">Tillbaka</button>`;
     $('#home').onclick=()=>endSession();$('#again').onclick=()=>runMemory(shuffle(W.filter(w=>w.c.some(c=>ws[0].c.includes(c))&&enShort(w).length<=22&&disp(w).length<=18)).slice(0,6),lc)};
@@ -1566,16 +1615,291 @@ function runBlitz(ws,lc){SES={blitz:true};pageOpened();let score=0,miss=[],i=0,l
     $('#foot').innerHTML=`<div class="opts two"><button class="opt" data-g="en">en</button><button class="opt" data-g="ett">ett</button></div>`;
     $$('[data-g]').forEach(b=>b.onclick=()=>{if(b.closest('.opts').dataset.done)return;b.closest('.opts').dataset.done=1;const ok=b.dataset.g===w.g;b.classList.add(ok?'right':'wrong');beep(ok);grade('w'+w.i,ok);if(ok)score++;else miss.push(w);setTimeout(()=>{if(left>0)next()},ok?150:650)})};
   const end=()=>{const rec=!P.best.blitz||score>P.best.blitz;if(rec)P.best.blitz=score;addXP(score+5);
-    $('#stage').innerHTML=`<div class="done-hero"><div class="medal">${I.bolt}</div><h1>${score} rätt</h1><p class="muted" style="margin:0">${rec?'Nytt rekord!':`Rekord: ${P.best.blitz}`}</p></div>${miss.length?`<div class="card"><ul class="wl">${uniq(miss).map(w=>`<li><span class="wt"><b>${dispH(w)}</b><div>${esc(w.en)}</div></span>${spkBtn(disp(w),'sm')}</li>`).join('')}</ul></div>`:''}`;
+    const nw=checkBadges();if(rec)confetti();$('#stage').innerHTML=`<div class="done-hero">${mooseHTML(rec?'cheer':'happy')}<h1>${score} rätt</h1>${newBadgesHTML(nw)}<p class="muted" style="margin:0">${rec?'Nytt rekord!':`Rekord: ${P.best.blitz}`}</p></div>${miss.length?`<div class="card"><ul class="wl">${uniq(miss).map(w=>`<li><span class="wt"><b>${dispH(w)}</b><div>${esc(w.en)}</div></span>${spkBtn(disp(w),'sm')}</li>`).join('')}</ul></div>`:''}`;
     $('#foot').innerHTML=`<button class="btn block" id="again">Spela igen</button><button class="btn ghost block" id="home">Tillbaka</button>`;$('#home').onclick=()=>endSession();$('#again').onclick=()=>runBlitz(shuffle(ws),lc)};
-  $('#stage').innerHTML=`<div class="done-hero"><div class="medal">${I.bolt}</div><h1>En eller ett?</h1><p class="muted" style="margin:0;max-width:36ch">Du får ett substantiv. Välj artikel så snabbt du kan. Klockan går i 60 sekunder.</p></div>`;
+  $('#stage').innerHTML=`<div class="done-hero">${mooseHTML('happy')}<h1>En eller ett?</h1><p class="muted" style="margin:0;max-width:36ch">Du får ett substantiv. Välj artikel så snabbt du kan. Klockan går i 60 sekunder.</p></div>`;
   $('#foot').innerHTML=`<button class="btn block" id="go">Starta</button>`;$('#go').onclick=start;
 }
+
+/* ---------- art: Kompis the moose and the chapter illustrations (original, drawn in code) ---------- */
+// Kompis the moose: an original flat character in the SFI Kompis palette.
+// mood: 'happy' | 'cheer' | 'think' | 'sad'
+function moose(mood = 'happy') {
+  const FUR = '#7A4E33', FUR2 = '#93603F', MUZ = '#B98560', MUZ2 = '#A6734F', DARK = '#2E1D12', ANT = '#E9B518', ANT2 = '#C99300', NAVY = '#1D4F82', BLUSH = '#E07A6B';
+  // palmate antler drawn once, mirrored for the right side
+  const antler = `<path d="M92 70C76 70 56 66 42 56C28 46 20 34 18 20L30 30L32 10L42 26L50 6L56 26L66 10L68 32L80 24C82 42 88 54 100 60Z" fill="${ANT}"/>
+    <path d="M92 70C72 68 52 62 36 46" stroke="${ANT2}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+  const eyes = {
+    happy: `<path d="M86 106q9-10 18 0" stroke="${DARK}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M136 106q9-10 18 0" stroke="${DARK}" stroke-width="5" fill="none" stroke-linecap="round"/>`,
+    cheer: `<path d="M85 108q10-12 20 0" stroke="${DARK}" stroke-width="5.5" fill="none" stroke-linecap="round"/><path d="M135 108q10-12 20 0" stroke="${DARK}" stroke-width="5.5" fill="none" stroke-linecap="round"/>`,
+    think: `<circle cx="96" cy="104" r="7" fill="${DARK}"/><circle cx="146" cy="104" r="7" fill="${DARK}"/><circle cx="99" cy="100" r="2.5" fill="#fff"/><circle cx="149" cy="100" r="2.5" fill="#fff"/><path d="M84 90l20-5" stroke="${DARK}" stroke-width="4.5" stroke-linecap="round"/><path d="M136 86l20 3" stroke="${DARK}" stroke-width="4.5" stroke-linecap="round"/>`,
+    sad: `<circle cx="96" cy="107" r="6.5" fill="${DARK}"/><circle cx="144" cy="107" r="6.5" fill="${DARK}"/><circle cx="98.5" cy="104" r="2.3" fill="#fff"/><circle cx="146.5" cy="104" r="2.3" fill="#fff"/><path d="M84 97l18-5" stroke="${DARK}" stroke-width="4.5" stroke-linecap="round"/><path d="M156 97l-18-5" stroke="${DARK}" stroke-width="4.5" stroke-linecap="round"/>`,
+  }[mood];
+  const mouth = {
+    happy: `<path d="M106 196q14 10 28 0" stroke="${DARK}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`,
+    cheer: `<path d="M102 193q18 3 36 0q-3 18-18 18t-18-18z" fill="${DARK}"/><path d="M110 203q10 6 20 0q-3 8-10 8t-10-8z" fill="${BLUSH}"/>`,
+    think: `<path d="M110 199q8-4 20 1" stroke="${DARK}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`,
+    sad: `<path d="M108 201q12-5 24 0" stroke="${DARK}" stroke-width="4.5" fill="none" stroke-linecap="round"/>`,
+  }[mood];
+  const arms = {
+    happy: '', sad: '',
+    cheer: `<path d="M50 252q-28-40-18-82" stroke="${FUR}" stroke-width="20" stroke-linecap="round" fill="none"/><path d="M190 252q28-40 18-82" stroke="${FUR}" stroke-width="20" stroke-linecap="round" fill="none"/><ellipse cx="32" cy="166" rx="12" ry="9" fill="${DARK}"/><ellipse cx="208" cy="166" rx="12" ry="9" fill="${DARK}"/>`,
+    think: `<path d="M160 270q26-30 6-58" stroke="${FUR}" stroke-width="20" stroke-linecap="round" fill="none"/><ellipse cx="160" cy="214" rx="12" ry="9" fill="${DARK}"/>`,
+  }[mood];
+  const extra = mood === 'think'
+    ? `<circle cx="204" cy="66" r="5" fill="${NAVY}" opacity=".25"/><circle cx="220" cy="44" r="12" fill="${NAVY}" opacity=".18"/><text x="220" y="50" font-size="16" font-weight="700" text-anchor="middle" fill="${NAVY}" font-family="Schibsted Grotesk,Arial">?</text>`
+    : mood === 'cheer'
+      ? `<rect x="14" y="76" width="9" height="9" rx="2" fill="${ANT}" transform="rotate(20 18 80)"/><rect x="216" y="92" width="9" height="9" rx="2" fill="${NAVY}" transform="rotate(-15 220 96)"/><circle cx="36" cy="118" r="4.5" fill="${NAVY}"/><circle cx="214" cy="128" r="4" fill="${ANT}"/><rect x="200" y="140" width="8" height="8" rx="2" fill="${BLUSH}" transform="rotate(30 204 144)"/><rect x="26" y="140" width="7" height="7" rx="2" fill="${BLUSH}" transform="rotate(-25 30 144)"/>`
+      : '';
+  const tilt = mood === 'think' ? 'rotate(-5 120 150)' : mood === 'sad' ? 'rotate(4 120 150)' : '';
+  return `<svg viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kompis the moose">
+  ${extra}
+  <path d="M44 280q2-46 76-48q74 2 76 48z" fill="${FUR}"/>
+  <path d="M78 240h84l-6 20H84z" fill="${NAVY}"/><path d="M82 250h76" stroke="${ANT}" stroke-width="5"/><path d="M142 254l10 28h-18z" fill="${NAVY}"/><path d="M143 264h8" stroke="${ANT}" stroke-width="4"/>
+  ${arms}
+  <g transform="${tilt}">
+    ${antler}<g transform="translate(240 0) scale(-1 1)">${antler}</g>
+    <path d="M70 92q-22-8-30-24q20-2 34 12z" fill="${FUR2}"/><path d="M170 92q22-8 30-24q-20-2-34 12z" fill="${FUR2}"/>
+    <path d="M120 56c26 0 44 14 46 38c1 14-2 26-6 38H80c-4-12-7-24-6-38c2-24 20-38 46-38z" fill="${FUR}"/>
+    <path d="M80 128c4-6 10-8 18-8h44c8 0 14 2 18 8c10 14 14 30 12 46c-2 26-24 40-52 40s-50-14-52-40c-2-16 2-32 12-46z" fill="${MUZ}"/>
+    <path d="M86 150c10-6 22-8 34-8s24 2 34 8" stroke="${MUZ2}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="102" cy="176" rx="8" ry="10" fill="${DARK}" transform="rotate(-12 102 176)"/><ellipse cx="138" cy="176" rx="8" ry="10" fill="${DARK}" transform="rotate(12 138 176)"/>
+    <path d="M112 216q8 22 16 0" fill="${MUZ2}"/>
+    ${eyes}
+    ${mood === 'happy' || mood === 'cheer' ? `<ellipse cx="84" cy="124" rx="8" ry="4.5" fill="${BLUSH}" opacity=".35"/><ellipse cx="156" cy="124" rx="8" ry="4.5" fill="${BLUSH}" opacity=".35"/>` : ''}
+    ${mouth}
+  </g>
+</svg>`;
+}
+
+
+// Chapter illustrations: flat, calm Scandinavian scenes in a shared palette. 640 x 300.
+const SC = {
+  sky: '#DCE8F3', sky2: '#EEF3F8', navy: '#1D4F82', gold: '#E9B518', ink: '#13202B',
+  pine: '#2F5D50', pine2: '#3E7363', leaf: '#5E8C6A', grass: '#A9C4A0', water: '#8DB6D6', water2: '#B7D2E6',
+  ochre: '#D9A441', falu: '#9E3B2E', cream: '#F4EFE6', wall: '#E7DDD0', wall2: '#C9B79F', roof: '#5A6670',
+};
+function windows(x0, y0, cols, rows, w, h, gx, gy, lit) {
+  let s = '';
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const on = lit && ((r * 7 + c * 3) % 5 === 0);
+    s += `<rect x="${x0 + c * (w + gx)}" y="${y0 + r * (h + gy)}" width="${w}" height="${h}" rx="1.5" fill="${on ? SC.gold : '#9FB6CB'}" opacity="${on ? 0.95 : 0.85}"/>`;
+  }
+  return s;
+}
+function bostad() {
+  return `<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bostad: apartment blocks and a tree">
+  <rect width="640" height="300" fill="${SC.sky}"/>
+  <circle cx="540" cy="70" r="34" fill="${SC.gold}" opacity=".9"/>
+  <path d="M0 190q120-30 240-6t260-4 140 10v110H0z" fill="${SC.sky2}"/>
+  <!-- left block: ochre lamellhus -->
+  <rect x="40" y="92" width="190" height="168" fill="${SC.ochre}"/><rect x="40" y="86" width="190" height="10" fill="${SC.roof}"/>
+  ${windows(56, 108, 6, 5, 18, 20, 10, 12, true)}
+  <rect x="122" y="228" width="26" height="32" fill="${SC.navy}"/>
+  <!-- right block: cream with balconies -->
+  <rect x="268" y="60" width="160" height="200" fill="${SC.cream}"/><rect x="268" y="54" width="160" height="10" fill="${SC.roof}"/>
+  ${windows(284, 76, 5, 6, 18, 18, 11, 12, true)}
+  ${[0,1,2,3,4].map(i=>`<rect x="268" y="${96+i*30}" width="160" height="4" fill="${SC.wall2}"/>`).join('')}
+  <rect x="336" y="228" width="26" height="32" fill="${SC.navy}"/>
+  <!-- small falu red house -->
+  <path d="M462 200l50-38 50 38v60H462z" fill="${SC.falu}"/><path d="M454 204l58-46 58 46" stroke="${SC.cream}" stroke-width="7" fill="none" stroke-linejoin="round"/>
+  <rect x="480" y="214" width="20" height="18" fill="${SC.cream}"/><rect x="522" y="222" width="20" height="38" fill="${SC.cream}"/>
+  <!-- trees -->
+  <circle cx="246" cy="214" r="24" fill="${SC.leaf}"/><rect x="243" y="230" width="6" height="30" fill="#6B4A33"/>
+  <g transform="translate(598 260) scale(.85)"><rect x="-3" y="-14" width="6" height="14" fill="#5B3E2B"/><path d="M0 -104L13 -80H7L22 -54H13L28 -26H-28L-13 -54H-22L-7 -80H-13Z" fill="${SC.pine}"/></g>
+  <!-- ground and a bike -->
+  <rect y="258" width="640" height="42" fill="${SC.grass}"/><rect y="258" width="640" height="6" fill="${SC.leaf}" opacity=".5"/>
+  <g stroke="${SC.navy}" stroke-width="3" fill="none"><circle cx="420" cy="280" r="11"/><circle cx="452" cy="280" r="11"/><path d="M420 280l12-18h14l6 18M432 262l-4-8h-6M446 262l2-6h6"/></g>
+</svg>`;
+}
+function miljo() {
+  const pine = (x, y, s, c) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-3" y="-14" width="6" height="14" fill="#5B3E2B"/><path d="M0 -104L13 -80H7L22 -54H13L28 -26H-28L-13 -54H-22L-7 -80H-13Z" fill="${c}"/></g>`;
+  return `<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Miljö: forest lake with pine trees">
+  <rect width="640" height="300" fill="${SC.sky}"/>
+  <circle cx="470" cy="96" r="40" fill="${SC.gold}" opacity=".85"/>
+  <path d="M0 150q80-40 170-20t180-18 170 8 120-6v60H0z" fill="#B9CBBE"/>
+  ${[30,70,110,150,190,230,270].map((x,i)=>pine(x,178,0.7+((i*37)%5)/12,SC.pine2)).join('')}
+  ${[400,440,480,520,560,600,640].map((x,i)=>pine(x,176,0.65+((i*29)%5)/12,SC.pine2)).join('')}
+  <rect y="176" width="640" height="124" fill="${SC.water}"/>
+  <path d="M0 176h640" stroke="${SC.water2}" stroke-width="3"/>
+  <g stroke="${SC.water2}" stroke-width="3" stroke-linecap="round" opacity=".9"><path d="M60 214h70M200 236h90M380 206h60M470 248h110M120 270h80"/></g>
+  <path d="M440 196q30-6 60 0" stroke="${SC.gold}" stroke-width="4" opacity=".7" stroke-linecap="round"/>
+  <!-- shore, cottage, jetty -->
+  <path d="M0 300v-56q60-14 140-6t110 22v40z" fill="${SC.grass}"/>
+  ${pine(60,262,1.05,SC.pine)}${pine(112,270,0.85,SC.pine)}
+  <path d="M168 248l26-20 26 20v24h-52z" fill="${SC.falu}"/><path d="M162 250l32-25 32 25" stroke="${SC.cream}" stroke-width="5" fill="none" stroke-linejoin="round"/>
+  <rect x="178" y="254" width="10" height="9" fill="${SC.cream}"/>
+  <path d="M232 262h96" stroke="#6B4A33" stroke-width="6"/><path d="M246 262v14M276 262v14M306 262v14" stroke="#6B4A33" stroke-width="4"/>
+  <!-- canoe -->
+  <path d="M414 226h92q-8 14-46 14t-46-14z" fill="${SC.gold}"/><path d="M452 226l6-14 6 14" stroke="${SC.navy}" stroke-width="3" fill="none"/>
+</svg>`;
+}
+
+
+const _pine = (x, y, sc, c) => `<g transform="translate(${x} ${y}) scale(${sc})"><rect x="-3" y="-14" width="6" height="14" fill="#5B3E2B"/><path d="M0 -104L13 -80H7L22 -54H13L28 -26H-28L-13 -54H-22L-7 -80H-13Z" fill="${c}"/></g>`;
+const _tree = (x, y, r, c) => `<rect x="${x-3}" y="${y-r*0.4}" width="6" height="${r*1.6}" fill="#6B4A33"/><circle cx="${x}" cy="${y-r*0.6}" r="${r}" fill="${c||SC.leaf}"/>`;
+const _sun = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${SC.gold}" opacity=".9"/>`;
+const _svg = (label, body, sky) => `<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${label}"><rect width="640" height="300" fill="${sky||SC.sky}"/>${body}</svg>`;
+const _ground = (c) => `<rect y="258" width="640" height="42" fill="${c||SC.grass}"/><rect y="258" width="640" height="5" fill="${SC.leaf}" opacity=".45"/>`;
+const _txt = (x, y, t, sz, c, w) => `<text x="${x}" y="${y}" font-family="Schibsted Grotesk,Helvetica,Arial,sans-serif" font-size="${sz}" font-weight="${w||700}" fill="${c}" text-anchor="middle">${t}</text>`;
+
+function halsa() {
+  return _svg('Sjukvård och hälsa: a health centre and a walking path', `
+  ${_sun(560, 64, 30)}
+  <path d="M0 196q140-26 300-4t340-6v80H0z" fill="${SC.sky2}"/>
+  <rect x="150" y="128" width="300" height="132" fill="${SC.cream}"/><rect x="142" y="118" width="316" height="14" rx="3" fill="${SC.roof}"/>
+  ${windows(170, 150, 6, 2, 30, 26, 14, 16, false)}
+  <rect x="276" y="206" width="48" height="54" fill="${SC.navy}"/><rect x="298" y="206" width="4" height="54" fill="${SC.cream}" opacity=".6"/>
+  <rect x="250" y="84" width="100" height="30" rx="6" fill="${SC.navy}"/><rect x="258" y="90" width="18" height="18" rx="4" fill="#fff"/><path d="M267 93v12M261 99h12" stroke="${SC.navy}" stroke-width="3.5" stroke-linecap="round"/>
+  ${_txt(314, 104, 'Vård', 13, '#fff', 600)}
+  <rect x="270" y="114" width="4" height="14" fill="${SC.roof}"/><rect x="326" y="114" width="4" height="14" fill="${SC.roof}"/>
+  ${_tree(90, 230, 30)}${_tree(520, 232, 26, SC.pine2)}${_tree(580, 236, 20)}
+  ${_ground()}
+  <path d="M0 290q160-26 320-10t320-12" stroke="${SC.cream}" stroke-width="10" fill="none"/>
+  <path d="M470 220c0-10 14-14 18-4c4-10 18-6 18 4c0 12-18 22-18 22s-18-10-18-22z" fill="#E07A6B" opacity=".9"/>`);
+}
+function fritid() {
+  return _svg('Fritid och resor: a sailing boat, a train and the archipelago', `
+  ${_sun(120, 70, 34)}
+  <path d="M0 170q60-26 150-14t140 6 120-20 230 18v40H0z" fill="#B9CBBE"/>
+  ${[360,392,424,456].map((x,i)=>_pine(x,182,0.55+(i%2)*0.15,SC.pine2)).join('')}
+  <rect y="180" width="640" height="120" fill="${SC.water}"/><path d="M0 180h640" stroke="${SC.water2}" stroke-width="3"/>
+  <g stroke="${SC.water2}" stroke-width="3" stroke-linecap="round"><path d="M40 220h80M180 250h120M420 236h90M520 270h80"/></g>
+  <path d="M190 204h96l-12 16h-72z" fill="${SC.falu}"/><path d="M238 200V112" stroke="${SC.roof}" stroke-width="4"/><path d="M242 116l44 80h-44z" fill="${SC.gold}"/><path d="M234 124l-34 72h34z" fill="#fff"/>
+  <path d="M0 152h640" stroke="${SC.roof}" stroke-width="4" opacity=".0"/>
+  <rect x="440" y="120" width="200" height="8" fill="${SC.roof}"/>${[460,520,580].map(x=>`<rect x="${x}" y="128" width="8" height="52" fill="${SC.roof}"/>`).join('')}
+  <rect x="470" y="92" width="62" height="28" rx="6" fill="${SC.navy}"/><rect x="534" y="92" width="62" height="28" rx="4" fill="${SC.navy}"/><path d="M598 92h18q16 0 18 28h-36z" fill="${SC.navy}"/>
+  ${[478,494,510,542,558,574].map(x=>`<rect x="${x}" y="98" width="12" height="9" rx="2" fill="${SC.water2}"/>`).join('')}<rect x="470" y="112" width="160" height="4" fill="${SC.gold}"/>
+  <path d="M60 300v-30q50-14 120 0v30z" fill="${SC.grass}"/>${_pine(80,276,0.8,SC.pine)}`);
+}
+function _desk(extra) {
+  return `<rect y="196" width="640" height="104" fill="#C9A47E"/><rect y="196" width="640" height="8" fill="#B08A63"/>
+  <rect x="40" y="40" width="150" height="110" rx="6" fill="#fff" opacity=".7"/><path d="M115 40v110M40 95h150" stroke="${SC.sky}" stroke-width="5"/>
+  ${extra}`;
+}
+function gram1() {
+  return _svg('Grammatik och kärnord, del 1: an open notebook and fika', _desk(`
+  <path d="M190 236l130-30 130 30-130 26z" fill="#fff"/><path d="M320 206v56" stroke="${SC.wall2}" stroke-width="3"/>
+  <g stroke="${SC.water}" stroke-width="2.5"><path d="M214 236l92-20M222 246l90-20M330 216l92 20M330 226l92 20"/></g>
+  ${_txt(262, 150, 'en · ett', 34, SC.navy, 700)}${_txt(420, 120, 'Hej!', 26, SC.gold, 700)}
+  <path d="M470 248l70-58" stroke="${SC.gold}" stroke-width="10" stroke-linecap="round"/><path d="M540 190l10-8" stroke="${SC.ink}" stroke-width="10" stroke-linecap="round"/>
+  <rect x="96" y="214" width="46" height="40" rx="6" fill="${SC.navy}"/><path d="M142 224q16 2 14 14t-14 10" stroke="${SC.navy}" stroke-width="6" fill="none"/>
+  <path d="M106 206q6-10 0-18M122 206q6-10 0-18" stroke="${SC.wall2}" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="590" cy="240" rx="26" ry="10" fill="#D9A441"/><path d="M572 238q18-8 36 0" stroke="#9C6B2E" stroke-width="3" fill="none"/>`), '#E8EEF4');
+}
+function gram2() {
+  return _svg('Grammatik och kärnord, del 2: books, a lamp and verb forms', _desk(`
+  <rect x="80" y="160" width="150" height="20" rx="3" fill="${SC.navy}"/><rect x="90" y="140" width="130" height="20" rx="3" fill="${SC.falu}"/><rect x="74" y="180" width="164" height="18" rx="3" fill="${SC.ochre}"/>
+  <path d="M470 196v-90l60-40" stroke="${SC.roof}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M510 50l50 40-30 10z" fill="${SC.navy}"/><path d="M548 96l40 90h-120z" fill="${SC.gold}" opacity=".25"/>
+  <rect x="452" y="190" width="40" height="8" rx="3" fill="${SC.roof}"/>
+  <rect x="270" y="210" width="190" height="56" rx="6" fill="#fff"/>${_txt(365, 245, 'har · hade', 24, SC.navy, 700)}
+  ${_txt(330, 130, 'är → var → varit', 22, SC.ink, 600)}`), '#E8EEF4');
+}
+function skola() {
+  return _svg('Skola och utbildning: a school with a flag and bicycles', `
+  ${_sun(80, 64, 28)}
+  <rect x="170" y="110" width="300" height="150" fill="#B5674C"/><path d="M160 112l160-60 160 60z" fill="${SC.roof}"/>
+  <circle cx="320" cy="92" r="16" fill="${SC.cream}"/><path d="M320 84v8l6 4" stroke="${SC.ink}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  ${windows(192, 130, 6, 3, 30, 26, 16, 14, false)}
+  <rect x="296" y="214" width="48" height="46" fill="${SC.navy}"/>
+  <path d="M540 260V90" stroke="${SC.roof}" stroke-width="4"/><path d="M542 92h56v36h-56z" fill="${SC.navy}"/><path d="M542 106h56v8h-56zM558 92h8v36h-8z" fill="${SC.gold}"/>
+  ${_tree(110, 228, 28)}
+  ${_ground()}
+  <g stroke="${SC.navy}" stroke-width="3" fill="none"><circle cx="400" cy="280" r="10"/><circle cx="428" cy="280" r="10"/><path d="M400 280l10-16h12l6 16M410 264l-3-7"/><circle cx="456" cy="282" r="10" stroke="${SC.falu}"/><circle cx="484" cy="282" r="10" stroke="${SC.falu}"/><path d="M456 282l10-16h12l6 16" stroke="${SC.falu}"/></g>
+  <rect x="210" y="268" width="40" height="10" rx="2" fill="${SC.falu}"/><rect x="214" y="260" width="34" height="8" rx="2" fill="${SC.navy}"/>`);
+}
+function pengar() {
+  return _svg('Pengar och ekonomi: a corner shop, coins and a piggy bank', `
+  ${_sun(560, 60, 26)}
+  <rect x="60" y="80" width="300" height="180" fill="${SC.cream}"/><rect x="52" y="70" width="316" height="14" rx="3" fill="${SC.roof}"/>
+  <path d="M60 110h300v26H60z" fill="${SC.navy}"/>${[0,1,2,3,4,5,6,7,8,9].map(i=>`<path d="M${60+i*30} 136h30l-15 18z" fill="${i%2?SC.navy:'#fff'}"/>`).join('')}
+  ${_txt(210, 129, 'Livs & Kaffe', 18, '#fff', 600)}
+  <rect x="84" y="166" width="120" height="70" fill="${SC.water2}"/><rect x="228" y="166" width="60" height="94" fill="${SC.navy}"/>
+  <circle cx="120" cy="214" r="10" fill="${SC.ochre}"/><circle cx="150" cy="218" r="9" fill="#E07A6B"/><circle cx="178" cy="212" r="10" fill="${SC.leaf}"/>
+  ${_ground('#C9CFD4')}
+  <ellipse cx="470" cy="226" rx="62" ry="46" fill="#E9A3A0"/><circle cx="516" cy="214" r="18" fill="#E9A3A0"/><ellipse cx="530" cy="218" rx="7" ry="6" fill="#D37F7B"/>
+  <path d="M440 186l10-18 12 14" fill="#E9A3A0"/><rect x="452" y="182" width="28" height="6" rx="3" fill="${SC.ink}" opacity=".6"/>
+  <rect x="430" y="264" width="12" height="18" rx="3" fill="#D37F7B"/><rect x="494" y="264" width="12" height="18" rx="3" fill="#D37F7B"/><circle cx="508" cy="208" r="3" fill="${SC.ink}"/>
+  ${[0,1,2,3].map(i=>`<ellipse cx="590" cy="${276-i*9}" rx="22" ry="6" fill="${SC.gold}" stroke="#C99300" stroke-width="2"/>`).join('')}
+  <ellipse cx="560" cy="150" rx="14" ry="14" fill="${SC.gold}" stroke="#C99300" stroke-width="2"/>${_txt(560, 156, 'kr', 13, '#8A6400', 700)}`);
+}
+function arbete() {
+  return _svg('Arbete: a city with offices, a crane and a delivery truck', `
+  ${_sun(90, 70, 30)}
+  <rect x="200" y="70" width="90" height="190" fill="${SC.navy}"/>${windows(212, 84, 3, 8, 18, 12, 10, 9, true)}
+  <rect x="300" y="120" width="120" height="140" fill="${SC.cream}"/>${windows(314, 134, 4, 5, 18, 14, 10, 10, false)}
+  <rect x="120" y="140" width="70" height="120" fill="${SC.ochre}"/>${windows(130, 152, 2, 5, 18, 12, 14, 9, false)}
+  <path d="M500 260V60" stroke="${SC.gold}" stroke-width="8"/><path d="M430 64h170" stroke="${SC.gold}" stroke-width="8"/><path d="M500 60l-40 6M500 60l50 6" stroke="${SC.gold}" stroke-width="3"/>
+  <path d="M580 68v60" stroke="${SC.roof}" stroke-width="2"/><rect x="568" y="128" width="24" height="16" fill="${SC.falu}"/><rect x="430" y="68" width="22" height="20" fill="${SC.roof}"/>
+  ${_ground('#C9CFD4')}
+  <rect x="40" y="226" width="96" height="40" rx="4" fill="#fff"/><path d="M136 236h28l14 16v14h-42z" fill="${SC.navy}"/><rect x="146" y="240" width="16" height="10" rx="2" fill="${SC.water2}"/>
+  <circle cx="68" cy="270" r="10" fill="${SC.ink}"/><circle cx="154" cy="270" r="10" fill="${SC.ink}"/><rect x="52" y="238" width="60" height="8" rx="2" fill="${SC.gold}"/>`);
+}
+function sprak() {
+  return _svg('Språkinlärning: speech bubbles, books and headphones', `
+  <rect x="60" y="56" width="220" height="96" rx="20" fill="#fff"/><path d="M110 152l-10 30 36-30z" fill="#fff"/>${_txt(170, 118, 'Hej! Fika?', 34, SC.navy, 700)}
+  <rect x="330" y="96" width="250" height="96" rx="20" fill="${SC.navy}"/><path d="M520 192l14 30-40-30z" fill="${SC.navy}"/>${_txt(455, 158, 'Ja, gärna!', 34, '#fff', 700)}
+  <rect y="230" width="640" height="70" fill="#C9A47E"/><rect y="230" width="640" height="7" fill="#B08A63"/>
+  <rect x="70" y="208" width="120" height="22" rx="3" fill="${SC.falu}"/><rect x="80" y="188" width="104" height="20" rx="3" fill="${SC.gold}"/>
+  <path d="M430 230q0-48 40-48t40 48" stroke="${SC.ink}" stroke-width="8" fill="none"/><rect x="420" y="214" width="22" height="30" rx="8" fill="${SC.navy}"/><rect x="498" y="214" width="22" height="30" rx="8" fill="${SC.navy}"/>
+  <circle cx="600" cy="56" r="7" fill="${SC.gold}"/><circle cx="34" cy="200" r="5" fill="${SC.navy}" opacity=".5"/>`, '#E3EDE6');
+}
+function familj() {
+  return _svg('Familj och relationer: a house, a garden table and a swing', `
+  ${_sun(560, 62, 30)}
+  <path d="M60 160l110-80 110 80v100H60z" fill="${SC.falu}"/><path d="M48 166l122-90 122 90" stroke="${SC.cream}" stroke-width="9" fill="none" stroke-linejoin="round"/>
+  <rect x="88" y="176" width="36" height="32" fill="${SC.cream}"/><rect x="216" y="176" width="36" height="32" fill="${SC.cream}"/><rect x="150" y="200" width="40" height="60" fill="${SC.cream}"/>
+  <path d="M106 176v32M88 192h36M234 176v32M216 192h36" stroke="${SC.falu}" stroke-width="3"/>
+  ${_tree(400, 210, 52, SC.leaf)}
+  <path d="M430 190v60M470 190v60" stroke="#6B4A33" stroke-width="3"/><path d="M424 250h52" stroke="#6B4A33" stroke-width="6" stroke-linecap="round"/>
+  ${_ground()}
+  <rect x="500" y="230" width="110" height="10" rx="3" fill="#fff"/><path d="M512 240v26M598 240v26" stroke="#fff" stroke-width="5"/>
+  <circle cx="530" cy="224" r="7" fill="${SC.gold}"/><rect x="548" y="214" width="14" height="16" rx="3" fill="${SC.navy}"/><circle cx="584" cy="224" r="8" fill="#E07A6B"/>
+  <path d="M308 110c0-10 14-14 18-4c4-10 18-6 18 4c0 12-18 22-18 22s-18-10-18-22z" fill="#E07A6B"/>`);
+}
+const SCENES = [bostad, halsa, fritid, gram1, skola, pengar, miljo, arbete, gram2, sprak, familj];
+
+
+const ARTC={};
+function sceneHTML(ui,cls='banner'){const k='s'+ui;if(!ARTC[k])ARTC[k]=SCENES[ui]();return `<div class="${cls}" aria-hidden="true">${ARTC[k]}</div>`}
+function mooseHTML(mood,cls='mz'){const k='m'+mood;if(!ARTC[k])ARTC[k]=moose(mood);return `<div class="${cls}" aria-hidden="true">${ARTC[k]}</div>`}
+function moodFor(p){return p>=.8?'cheer':p>=.5?'happy':'sad'}
+function confetti(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}
+  const host=$('.session')||document.body;const box=document.createElement('div');box.className='confetti';box.setAttribute('aria-hidden','true');
+  const C=['#E9B518','#1D4F82','#E07A6B','#5E8C6A','#8DB6D6'];
+  for(let i=0;i<46;i++){const p=document.createElement('i');p.style.left=(Math.random()*100)+'%';p.style.background=C[i%C.length];p.style.animationDelay=(Math.random()*.5)+'s';p.style.animationDuration=(1.6+Math.random()*1.2)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;if(i%3===0)p.style.borderRadius='50%';box.appendChild(p)}
+  host.appendChild(box);setTimeout(()=>box.remove(),3400)}
+/* ---------- badges ---------- */
+const unitDone=ui=>LINES[ui].every(s=>P.done[s.id]);
+const BADGES=[
+ {id:'forsta',ti:'Första lektionen',d:'Klara din första lektion',ic:'star',ok:()=>Object.keys(P.done).length>=1},
+ {id:'mening7',ti:'Sju meningar',d:'Öva dagens mening sju dagar',ic:'spk',ok:()=>(P.dmN||0)>=7},
+ {id:'dagar7',ti:'7 dagar i rad',d:'Öva sju dagar i rad',ic:'fire',ok:()=>streakNow()>=7},
+ {id:'dagar30',ti:'30 dagar i rad',d:'Öva trettio dagar i rad',ic:'fire',ok:()=>streakNow()>=30},
+ {id:'ord100',ti:'100 ord',d:'Lär dig 100 ord',ic:'book',ok:()=>learnedCount()>=100},
+ {id:'ord500',ti:'500 ord',d:'Lär dig 500 ord',ic:'book',ok:()=>learnedCount()>=500},
+ {id:'verb',ti:'Verbmästare',d:'Klara alla sex verbformsavsnitt',ic:'verb',ok:()=>['vinf','vpres','vpret','vsup','vimp','vform'].every(g=>LINES.flat().some(s=>s.kind==='gram'&&s.g.id===g&&P.done[s.id]))},
+ {id:'kapitel1',ti:'Första kapitlet',d:'Klara alla lektioner i ett kapitel',ic:'crown',ok:()=>U.some((u,ui)=>unitDone(ui))},
+ {id:'kapitelAlla',ti:'Hela kursen',d:'Klara alla elva kapitel',ic:'crown',ok:()=>U.every((u,ui)=>unitDone(ui))},
+ {id:'prov',ti:'Första provet',d:'Gör ett prov eller övningsprov',ic:'test',ok:()=>Object.keys(P.tests).length>=1},
+ {id:'mot_g',ti:'På väg mot G',d:'Minst 75 % på ett helt övningsprov',ic:'test',ok:()=>Object.entries(P.tests).some(([k,v])=>/^mock_p\d_all$/.test(k)&&v[1]&&v[0]/v[1]>=.75)},
+];
+function checkBadges(){P.badges=P.badges||{};const nw=[];BADGES.forEach(b=>{if(!P.badges[b.id]){let ok=false;try{ok=b.ok()}catch(e){}if(ok){P.badges[b.id]=DAY();nw.push(b)}}});if(nw.length)save();return nw}
+function newBadgesHTML(nw){return nw.map(b=>`<span class="badge-new">${I[b.ic]}Nytt märke · ${esc(b.ti)}</span>`).join('')}
+function badgesHTML(){P.badges=P.badges||{};const n=BADGES.filter(b=>P.badges[b.id]).length;
+  return `${headHTML('Märken',`${n} av ${BADGES.length}`)}<div class="card badges">${BADGES.map(b=>{const got=!!P.badges[b.id];return `<div class="bd ${got?'got':''}" title="${esc(b.d)}"><span class="bi">${I[b.ic]}</span><b>${esc(b.ti)}</b><small>${esc(b.d)}</small></div>`}).join('')}</div>`}
 
 /* ---------- interface language: Swedish (default) or English ----------
    Learning content (words, sentences, texts, exam items, grammar names) always stays Swedish.
    Only the interface around it is translated. */
 const EN={
+ 'Redo för lite svenska?':'Ready for some Swedish?','Märken':'Badges','Nytt märke':'New badge','Ingen fara, vi tar det igen!':'No problem, let\'s try again!','Dagens mening är klar. Ny mening i morgon.':'Today\'s sentence is done. A new one tomorrow.',
+ 'Ingen fara!':'No problem!','Det här är svårt. Läs svaret högt en gång, så tar vi nästa.':'This one is hard. Read the answer out loud once, then we\'ll take the next one.',
+ 'Första lektionen':'First lesson','Klara din första lektion':'Finish your first lesson','Sju meningar':'Seven sentences','Öva dagens mening sju dagar':'Practise the sentence of the day seven times',
+ '7 dagar i rad':'7 days in a row','Öva sju dagar i rad':'Practise seven days in a row','30 dagar i rad':'30 days in a row','Öva trettio dagar i rad':'Practise thirty days in a row',
+ '100 ord':'100 words','Lär dig 100 ord':'Learn 100 words','500 ord':'500 words','Lär dig 500 ord':'Learn 500 words','Verbmästare':'Verb master','Klara alla sex verbformsavsnitt':'Finish all six verb form topics',
+ 'Första kapitlet':'First chapter','Klara alla lektioner i ett kapitel':'Finish every lesson in a chapter','Hela kursen':'Whole course','Klara alla elva kapitel':'Finish all eleven chapters',
+ 'Första provet':'First test','Gör ett prov eller övningsprov':'Take a test or practice test','På väg mot G':'On track for G','Minst 75 % på ett helt övningsprov':'At least 75% on a full practice test',
  'Nivå':'Level','Skriv här':'Write here','Skriv bestämd plural':'Write the definite plural','Skriv bestämd form plural':'Write the definite plural',
  'Starkt resultat på kapitel 8–9. Repetera de fel du har kvar i morgon.':'Strong result on chapters 8–9. Review your remaining mistakes tomorrow.',
  'Sikta på minst 16 av 20. Fel på presens particip: läs lektionen om -nde/-ende. Fel på tempus: öva tidslinjen före nu, nu, efter nu och före då, då, efter då.':'Aim for at least 16 of 20. Mistakes with present participles: read the lesson on -nde/-ende. Mistakes with tenses: practise the timeline before now, now, after now and before then, then, after then.',
@@ -1697,6 +2021,9 @@ const EN={
  'i menyn i Firefox.':'in the Firefox menu.','i menyn i Edge.':'in the Edge menu.','Välj':'Choose','Tryck på':'Tap','. SFI Kompis finns nu bland dina appar och fungerar även utan nät.':'. SFI Kompis is now among your apps and works offline too.',
 };
 const ENRX=[
+ [/^(\d+) dagar i rad\. Fortsätt så!$/,'$1 days in a row. Keep it up!'],[/^(\d+) av (\d+)$/,'$1 of $2'],[/^(.+) klart!$/,m=>(trS(m[1])||m[1])+' done!'],
+ [/^Du har klarat alla lektioner i (.+)\.$/,m=>'You have finished every lesson in '+(trS(m[1])||m[1])+'.'],[/^Nytt märke · (.+)$/,m=>'New badge · '+(trS(m[1])||m[1])],
+ [/^Dagens mål är nått · (\d+) dagar i rad$/,'Daily goal reached · $1 days in a row'],
  [/^(\d+) av (\d+) XP$/,'$1 of $2 XP'],[/^(\d+) av (\d+)$/,'$1 of $2'],[/^(\d+) ord sitter$/,'$1 words learned'],[/^(\d+) av (\d+) lektioner klara$/,'$1 of $2 lessons done'],
  [/^(\d+) av (\d+) lektioner$/,'$1 of $2 lessons'],[/^(\d+) ord$/,'$1 words'],[/^(\d+) kort väntar$/,'$1 cards due'],[/^(\d+) saker att öva igen$/,'$1 things to practise again'],
  [/^Ord (\d+)$/,'Words $1'],[/^Meningar (\d+)$/,'Sentences $1'],[/^Kapitel (\d+)$/,'Chapter $1'],[/^Kapitel (\d+)–(\d+)$/,'Chapters $1–$2'],[/^Kapitel (\d+)–(\d+) · (\d+) uppgifter$/,'Chapters $1–$2 · $3 questions'],
