@@ -1,4 +1,4 @@
-/* SFI Kompis service worker: works offline, fetches the newest version whenever online */
+/* SFI Kompis service worker: works offline, fetches the newest version whenever online (build 202610222050) */
 const V='sfi-f223dc6405';
 const CORE=['/','/fonts/schibsted-grotesk.woff2','/favicon.svg','/icon-192.png','/icon-512.png','/icon-maskable-512.png','/apple-touch-icon.png','/site.webmanifest'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
